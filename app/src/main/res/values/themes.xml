@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.FoodDeliveryApp" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="Theme.FoodDeliveryApp.Splash" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@color/primary</item>
+        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:navigationBarColor">@color/primary</item>
+    </style>
+
+    <!-- Toolbar -->
+    <style name="AppToolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">@color/primary</item>
+        <item name="titleTextColor">@color/white</item>
+    </style>
+
+    <!-- Material Button Primary -->
+    <style name="Button.Primary" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/primary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Material Button Outline -->
+    <style name="Button.Outline" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/primary</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+    </style>
+
+    <!-- Card -->
+    <style name="AppCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardElevation">4dp</item>
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardBackgroundColor">@color/card_background</item>
+    </style>
+
+    <!-- EditText -->
+    <style name="AppEditText" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/primary</item>
+        <item name="hintTextColor">@color/text_secondary</item>
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+    </style>
+
+    <!-- Badge TextView -->
+    <style name="Badge">
+        <item name="android:background">@drawable/badge_background</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minWidth">18dp</item>
+        <item name="android:minHeight">18dp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+    </style>
+
+    <!-- Status Chip -->
+    <style name="StatusChip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:textSize">12sp</item>
+        <item name="chipCornerRadius">8dp</item>
+    </style>
+
+    <!-- Section Header -->
+    <style name="SectionHeader">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Body Text -->
+    <style name="BodyText">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <!-- Price Text -->
+    <style name="PriceText">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/primary"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvHomeGreeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etHomeSearch"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/search_background"
+            android:hint="@string/search_hint"
+            android:paddingHorizontal="16dp"
+            android:inputType="text"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <!-- Category Chips -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:paddingVertical="8dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp">
+            <TextView android:id="@+id/chipAll" android:layout_width="wrap_content"
+                android:layout_height="36dp" android:text="All" android:gravity="center"
+                android:paddingHorizontal="16dp" android:textColor="@color/white"
+                android:background="@drawable/chip_selected" android:layout_marginEnd="8dp" />
+            <TextView android:id="@+id/chipBurgers" android:layout_width="wrap_content"
+                android:layout_height="36dp" android:text="🍔 Burgers" android:gravity="center"
+                android:paddingHorizontal="16dp" android:textColor="@color/text_primary"
+                android:background="@drawable/chip_unselected" android:layout_marginEnd="8dp" />
+            <TextView android:id="@+id/chipPizza" android:layout_width="wrap_content"
+                android:layout_height="36dp" android:text="🍕 Pizza" android:gravity="center"
+                android:paddingHorizontal="16dp" android:textColor="@color/text_primary"
+                android:background="@drawable/chip_unselected" android:layout_marginEnd="8dp" />
+            <TextView android:id="@+id/chipSushi" android:layout_width="wrap_content"
+                android:layout_height="36dp" android:text="🍣 Sushi" android:gravity="center"
+                android:paddingHorizontal="16dp" android:textColor="@color/text_primary"
+                android:background="@drawable/chip_unselected" android:layout_marginEnd="8dp" />
+            <TextView android:id="@+id/chipChicken" android:layout_width="wrap_content"
+                android:layout_height="36dp" android:text="🍗 Chicken" android:gravity="center"
+                android:paddingHorizontal="16dp" android:textColor="@color/text_primary"
+                android:background="@drawable/chip_unselected" android:layout_marginEnd="8dp" />
+            <TextView android:id="@+id/chipFreeDelivery" android:layout_width="wrap_content"
+                android:layout_height="36dp" android:text="🚚 Free Delivery" android:gravity="center"
+                android:paddingHorizontal="16dp" android:textColor="@color/text_primary"
+                android:background="@drawable/chip_unselected" android:layout_marginEnd="8dp" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Restaurants"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:padding="16dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvHomeRestaurants"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp" />
+
+</LinearLayout>
