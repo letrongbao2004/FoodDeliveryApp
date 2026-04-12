@@ -80,6 +80,7 @@ public class HomeFragment extends Fragment implements RestaurantAdapter.OnRestau
         apiService.getRestaurants().enqueue(new Callback<List<Restaurant>>() {
             @Override
             public void onResponse(Call<List<Restaurant>> call, Response<List<Restaurant>> response) {
+                if (!isAdded() || getContext() == null) return;
                 if (response.isSuccessful() && response.body() != null) {
                     allRestaurants = response.body();
                     adapter.updateData(allRestaurants);
@@ -90,6 +91,7 @@ public class HomeFragment extends Fragment implements RestaurantAdapter.OnRestau
 
             @Override
             public void onFailure(Call<List<Restaurant>> call, Throwable t) {
+                if (!isAdded() || getContext() == null) return;
                 Toast.makeText(requireContext(), "Network Error", Toast.LENGTH_SHORT).show();
             }
         });

@@ -20,6 +20,7 @@ public class OrderTrackingActivity extends AppCompatActivity {
 
     private OrderManager orderManager;
     private Order order;
+    private android.os.Handler handler;
 
     private TextView tvOrderCode, tvStatus, tvRestaurantName,
                      tvTotal, tvAddress, tvPayment, tvEstimatedTime;
@@ -32,6 +33,7 @@ public class OrderTrackingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_order_tracking);
 
         orderManager = OrderManager.getInstance(this);
+        handler = new android.os.Handler(android.os.Looper.getMainLooper());
 
         int orderId = getIntent().getIntExtra(EXTRA_ORDER_ID, -1);
         if (orderId == -1) { finish(); return; }
@@ -39,6 +41,7 @@ public class OrderTrackingActivity extends AppCompatActivity {
         orderManager.getOrderById(orderId, new OrderManager.OrderCallback() {
             @Override
             public void onSuccess(Order o) {
+                if (isFinishing() || isDestroyed()) return;
                 order = o;
                 populateOrder();
                 simulateOrderProgress();
@@ -46,6 +49,7 @@ public class OrderTrackingActivity extends AppCompatActivity {
 
             @Override
             public void onError(String message) {
+                if (isFinishing() || isDestroyed()) return;
                 AppUtils.showToast(OrderTrackingActivity.this, "Order not found");
                 finish();
             }
@@ -124,9 +128,6 @@ public class OrderTrackingActivity extends AppCompatActivity {
     }
 
     private void simulateOrderProgress() {
-        // In production, this would use WebSocket or polling.
-        // Here we simulate auto-advancement every 5 seconds for demo.
-        android.os.Handler handler = new android.os.Handler(android.os.Looper.getMainLooper());
         String[] statusFlow = {
             Order.STATUS_CONFIRMED, Order.STATUS_PREPARING,
             Order.STATUS_DELIVERING, Order.STATUS_DELIVERED
@@ -138,15 +139,17 @@ public class OrderTrackingActivity extends AppCompatActivity {
                 orderManager.updateOrderStatus(orderId, nextStatus, new OrderManager.OrderCallback() {
                     @Override
                     public void onSuccess(Order updatedOrder) {
+                        if (isFinishing() || isDestroyed()) return;
                         order.setStatus(updatedOrder.getStatus());
                         tvStatus.setText(updatedOrder.getStatus());
                         updateStepIndicators(updatedOrder.getStatus());
                     }
 
                     @Override
-                    public void onError(String message) {}
+                    public void onError(String message) {
+                        if (isFinishing() || isDestroyed()) return;
+                    }
                 });
-                // ui steps handled by callback
             }, (long) (i + 1) * 5000);
         }
     }
@@ -155,5 +158,13 @@ public class OrderTrackingActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) { onBackPressed(); return true; }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
     }
 }

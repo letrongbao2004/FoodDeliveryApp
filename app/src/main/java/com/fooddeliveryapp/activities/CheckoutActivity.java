@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.fooddeliveryapp.R;
 import com.fooddeliveryapp.managers.OrderManager;
-import com.fooddeliveryapp.managers.SessionManager;
+import com.fooddeliveryapp.utils.SessionManager;
 import com.fooddeliveryapp.models.Order;
 
 public class CheckoutActivity extends AppCompatActivity {
@@ -48,7 +48,7 @@ public class CheckoutActivity extends AppCompatActivity {
         orderManager.placeOrder(newOrder, new OrderManager.OrderCallback() {
             @Override
             public void onSuccess(Order order) {
-                // UI Thread executes here
+                if (isFinishing() || isDestroyed()) return;
                 setLoadingState(false);
                 Toast.makeText(CheckoutActivity.this, "Order Confirmed: #" + order.getId(), Toast.LENGTH_LONG).show();
                 finish(); // Close activity and go back to home screen
@@ -56,7 +56,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
             @Override
             public void onError(String message) {
-                // UI Thread executes here
+                if (isFinishing() || isDestroyed()) return;
                 setLoadingState(false);
                 Toast.makeText(CheckoutActivity.this, "Transaction Failed: " + message, Toast.LENGTH_LONG).show();
             }
@@ -66,7 +66,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private Order buildOrderFromUI() {
         // Collects mock or layout data. Simplified for example.
         Order order = new Order();
-        order.setUserId(sessionManager.getUserId());
+        order.setUserId((int) sessionManager.getUserId());
         order.setRestaurantId(1);
         order.setTotal(45.99);
         order.setDeliveryAddress("123 Cloud Server Lane");

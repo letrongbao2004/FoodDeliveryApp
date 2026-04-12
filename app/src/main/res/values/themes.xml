@@ -20,13 +20,13 @@
     <!-- Toolbar -->
     <style name="AppToolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="android:background">@color/primary</item>
-        <item name="titleTextColor">@color/white</item>
+        <item name="titleTextColor">@color/black</item>
     </style>
 
     <!-- Material Button Primary -->
     <style name="Button.Primary" parent="Widget.MaterialComponents.Button">
         <item name="backgroundTint">@color/primary</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/black</item>
         <item name="cornerRadius">12dp</item>
         <item name="android:paddingTop">14dp</item>
         <item name="android:paddingBottom">14dp</item>

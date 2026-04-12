@@ -76,7 +76,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
             holder.btnAddToCart.setText("Closed");
             // Set background tint/resource instead of flat color to preserve corners
             holder.btnAddToCart.setBackgroundResource(R.drawable.bg_rounded_primary);
-            holder.btnAddToCart.getBackground().setTint(Color.parseColor("#AAAAAA"));
+            holder.btnAddToCart.getBackground().mutate().setTint(Color.parseColor("#AAAAAA"));
 
             // Không cho click vào item
             holder.itemView.setOnClickListener(null);
@@ -92,7 +92,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
             holder.btnAddToCart.setEnabled(false);
             holder.btnAddToCart.setText("Unavailable");
             holder.btnAddToCart.setBackgroundResource(R.drawable.bg_rounded_primary);
-            holder.btnAddToCart.getBackground().setTint(Color.parseColor("#AAAAAA"));
+            holder.btnAddToCart.getBackground().mutate().setTint(Color.parseColor("#AAAAAA"));
             holder.btnAddToCart.setOnClickListener(null); // Clear click
 
         } else {
@@ -103,7 +103,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
             holder.btnAddToCart.setEnabled(true);
             holder.btnAddToCart.setText("+");
             holder.btnAddToCart.setBackgroundResource(R.drawable.bg_rounded_primary);
-            holder.btnAddToCart.getBackground().setTintList(null); // Reset tint to default primary
+            holder.btnAddToCart.getBackground().mutate().setTintList(null); // Reset tint to default primary
 
             holder.itemView.setOnClickListener(v -> listener.onFoodClick(food));
             holder.btnAddToCart.setOnClickListener(v -> listener.onAddToCartClick(food));

@@ -76,6 +76,6 @@ public class Food {
     public void setOrderCount(int orderCount) { this.orderCount = orderCount; }
 
     public String getPriceText() {
-        return String.format("%,.0f đ", price);
+        return com.fooddeliveryapp.utils.AppUtils.formatPrice(price);
     }
 }

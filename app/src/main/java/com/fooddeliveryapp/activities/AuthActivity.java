@@ -113,6 +113,7 @@ public class AuthActivity extends AppCompatActivity {
         apiService.login(credentials).enqueue(new Callback<Map<String, String>>() {
             @Override
             public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     Map<String, String> data = response.body();
                     long id = Long.parseLong(data.getOrDefault("id", "0"));
@@ -128,6 +129,7 @@ public class AuthActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Map<String, String>> call, Throwable t) {
+                if (isFinishing() || isDestroyed()) return;
                 AppUtils.showToast(AuthActivity.this, "Network Error: " + t.getMessage());
             }
         });
@@ -161,6 +163,7 @@ public class AuthActivity extends AppCompatActivity {
         apiService.register(user).enqueue(new Callback<Map<String, String>>() {
             @Override
             public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     Map<String, String> data = response.body();
                     long id = Long.parseLong(data.getOrDefault("id", "0"));
@@ -181,6 +184,7 @@ public class AuthActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Map<String, String>> call, Throwable t) {
+                if (isFinishing() || isDestroyed()) return;
                 AppUtils.showToast(AuthActivity.this, "Network Error: " + t.getMessage());
             }
         });

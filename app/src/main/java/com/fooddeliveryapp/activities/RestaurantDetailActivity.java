@@ -77,6 +77,7 @@ public class RestaurantDetailActivity extends AppCompatActivity
         apiService.getRestaurants().enqueue(new Callback<List<Restaurant>>() {
             @Override
             public void onResponse(Call<List<Restaurant>> call, Response<List<Restaurant>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     for (Restaurant r : response.body()) {
                         if (r.getId() == restaurantId) {
@@ -97,6 +98,7 @@ public class RestaurantDetailActivity extends AppCompatActivity
 
             @Override
             public void onFailure(Call<List<Restaurant>> call, Throwable t) {
+                if (isFinishing() || isDestroyed()) return;
                 Toast.makeText(RestaurantDetailActivity.this, "Network error", Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -134,6 +136,7 @@ public class RestaurantDetailActivity extends AppCompatActivity
         apiService.getFoods(restaurant.getId()).enqueue(new Callback<List<Food>>() {
             @Override
             public void onResponse(Call<List<Food>> call, Response<List<Food>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     List<Food> foods = response.body();
                     // Pass restaurant open status — adapter disables ordering when closed
@@ -150,6 +153,7 @@ public class RestaurantDetailActivity extends AppCompatActivity
 
             @Override
             public void onFailure(Call<List<Food>> call, Throwable t) {
+                if (isFinishing() || isDestroyed()) return;
                 Toast.makeText(RestaurantDetailActivity.this, "Failed to load menu", Toast.LENGTH_SHORT).show();
             }
         });
@@ -162,7 +166,15 @@ public class RestaurantDetailActivity extends AppCompatActivity
 
     @Override
     public void onAddToCartClick(Food food) {
-        showCustomizationDialog(food);
+        cartManager.addToCart(session.getUserId(), food, 1, "Regular", "Normal", "", "");
+        
+        com.google.android.material.snackbar.Snackbar.make(
+                findViewById(android.R.id.content),
+                String.format("Đã thêm 1x %s vào giỏ hàng!", food.getName()),
+                com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+        ).setAction("GIỎ HÀNG", v -> {
+            startActivity(new Intent(RestaurantDetailActivity.this, CartActivity.class));
+        }).show();
     }
 
     private void showCustomizationDialog(Food food) {

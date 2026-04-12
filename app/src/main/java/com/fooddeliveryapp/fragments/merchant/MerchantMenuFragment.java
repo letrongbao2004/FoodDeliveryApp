@@ -63,6 +63,7 @@ public class MerchantMenuFragment extends Fragment implements FoodAdapter.OnFood
         apiService.getFoods(1).enqueue(new Callback<List<Food>>() {
             @Override
             public void onResponse(Call<List<Food>> call, Response<List<Food>> response) {
+                if (!isAdded() || getContext() == null) return;
                 if(response.isSuccessful() && response.body() != null) {
                     foods.clear();
                     foods.addAll(response.body());
@@ -72,6 +73,7 @@ public class MerchantMenuFragment extends Fragment implements FoodAdapter.OnFood
 
             @Override
             public void onFailure(Call<List<Food>> call, Throwable t) {
+                if (!isAdded() || getContext() == null) return;
                 Toast.makeText(requireContext(), "Network Error", Toast.LENGTH_SHORT).show();
             }
         });
