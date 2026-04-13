@@ -1,9 +1,14 @@
 package com.fooddeliveryapp.api.controllers;
 
+import com.fooddeliveryapp.api.dto.RegisterRequest;
+import com.fooddeliveryapp.api.services.AuthService;
 import com.fooddeliveryapp.api.models.User;
 import com.fooddeliveryapp.api.repositories.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,9 +19,13 @@ import java.util.Optional;
 public class AuthController {
 
     private final UserRepository userRepository;
+    private final AuthService authService;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserRepository userRepository) {
+    public AuthController(UserRepository userRepository, AuthService authService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.authService = authService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
@@ -24,14 +33,16 @@ public class AuthController {
         Optional<User> userOptional = userRepository.findByEmail(loginUser.getEmail());
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            if (user.getPassword().equals(loginUser.getPassword())) {
+            // Since we upgraded to BCrypt, we match using passwordEncoder.
+            if (passwordEncoder.matches(loginUser.getPassword(), user.getPassword()) || 
+                user.getPassword().equals(loginUser.getPassword())) {  // Fallback for old plain-text passwords
                 Map<String, String> response = new HashMap<>();
                 response.put("id", String.valueOf(user.getId()));
                 response.put("name", user.getName() != null ? user.getName() : "");
                 response.put("email", user.getEmail());
                 response.put("phone", user.getPhone() != null ? user.getPhone() : "");
                 response.put("address", user.getAddress() != null ? user.getAddress() : "");
-                response.put("role", user.getRole() != null ? user.getRole() : "customer");
+                response.put("role", user.getRole() != null ? user.getRole().name() : "CUSTOMER");
                 return ResponseEntity.ok(response);
             }
         }
@@ -39,18 +50,11 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("Email already registered");
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
+        try {
+            return ResponseEntity.ok(authService.registerUser(request));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        User savedUser = userRepository.save(user);
-        Map<String, String> response = new HashMap<>();
-        response.put("id", String.valueOf(savedUser.getId()));
-        response.put("name", savedUser.getName() != null ? savedUser.getName() : "");
-        response.put("email", savedUser.getEmail());
-        response.put("phone", savedUser.getPhone() != null ? savedUser.getPhone() : "");
-        response.put("address", savedUser.getAddress() != null ? savedUser.getAddress() : "");
-        response.put("role", savedUser.getRole() != null ? savedUser.getRole() : "customer");
-        return ResponseEntity.ok(response);
     }
 }

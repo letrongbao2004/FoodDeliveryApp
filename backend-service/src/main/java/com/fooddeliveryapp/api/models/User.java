@@ -29,7 +29,10 @@ public class User {
 
     private String phone;
     private String address;
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
     @Version
     private Long version;
