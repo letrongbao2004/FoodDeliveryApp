@@ -119,7 +119,38 @@
                 android:layout_width="match_parent" android:layout_height="56dp"
                 android:hint="Confirm Password" android:inputType="textPassword"
                 android:background="@drawable/edittext_background"
-                android:padding="14dp" android:layout_marginBottom="24dp" />
+                android:padding="14dp" android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="I want to sign up as:"
+                android:textSize="16sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="8dp"/>
+
+            <RadioGroup
+                android:id="@+id/rgRole"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
+
+                <RadioButton
+                    android:id="@+id/rbCustomer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Customer"
+                    android:layout_weight="1"
+                    android:checked="true"/>
+
+                <RadioButton
+                    android:id="@+id/rbMerchant"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Merchant"
+                    android:layout_weight="1"/>
+            </RadioGroup>
 
             <Button android:id="@+id/btnRegister"
                 android:layout_width="match_parent" android:layout_height="56dp"

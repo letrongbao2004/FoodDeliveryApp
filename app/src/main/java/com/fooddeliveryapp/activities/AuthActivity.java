@@ -35,6 +35,7 @@ public class AuthActivity extends AppCompatActivity {
 
     // Views – Register
     private EditText etRegName, etRegEmail, etRegPhone, etRegPassword, etRegConfirmPassword;
+    private android.widget.RadioGroup rgRole;
     private Button btnRegister;
     private TextView tvGoLogin;
 
@@ -73,6 +74,7 @@ public class AuthActivity extends AppCompatActivity {
         etRegPhone             = findViewById(R.id.etRegPhone);
         etRegPassword          = findViewById(R.id.etRegPassword);
         etRegConfirmPassword   = findViewById(R.id.etRegConfirmPassword);
+        rgRole                 = findViewById(R.id.rgRole);
         btnRegister            = findViewById(R.id.btnRegister);
         tvGoLogin              = findViewById(R.id.tvGoLogin);
     }
@@ -159,7 +161,12 @@ public class AuthActivity extends AppCompatActivity {
             AppUtils.showToast(this, "Passwords do not match");
             return;
         }
-        User user = new User(name, email, phone, pass, "customer");
+
+        int selectedId = rgRole.getCheckedRadioButtonId();
+        android.widget.RadioButton rbSelected = findViewById(selectedId);
+        String role = (rbSelected != null) ? rbSelected.getText().toString().toUpperCase() : "CUSTOMER";
+
+        User user = new User(name, email, phone, pass, role);
         apiService.register(user).enqueue(new Callback<Map<String, String>>() {
             @Override
             public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
@@ -192,7 +199,7 @@ public class AuthActivity extends AppCompatActivity {
 
     private void navigateAfterLogin(String role) {
         Intent intent;
-        if ("merchant".equals(role)) {
+        if ("merchant".equalsIgnoreCase(role)) {
             intent = new Intent(this, MerchantMainActivity.class);
         } else {
             intent = new Intent(this, MainActivity.class);
