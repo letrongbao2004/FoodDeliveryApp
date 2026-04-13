@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:elevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Restaurant Image -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="180dp">
+
+            <ImageView android:id="@+id/ivRestaurant"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@color/primary_light" />
+
+            <!-- Badges -->
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="top|start"
+                android:padding="8dp">
+                <TextView android:id="@+id/tvBadgeFeatured"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="⭐ Featured" android:textColor="@color/white"
+                    android:background="@color/accent"
+                    android:padding="4dp" android:textSize="11sp"
+                    android:layout_marginEnd="4dp"
+                    android:visibility="gone" />
+                <TextView android:id="@+id/tvBadgeFree"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Free Delivery" android:textColor="@color/white"
+                    android:background="@color/success"
+                    android:padding="4dp" android:textSize="11sp"
+                    android:layout_marginEnd="4dp"
+                    android:visibility="gone" />
+                <TextView android:id="@+id/tvBadgePromo"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Promo" android:textColor="@color/white"
+                    android:background="@color/danger"
+                    android:padding="4dp" android:textSize="11sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- Restaurant Info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView android:id="@+id/tvRestaurantName"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="16sp" android:textStyle="bold"
+                    android:textColor="@color/text_primary" android:maxLines="1" />
+                <TextView android:id="@+id/tvStatus"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textSize="12sp" android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView android:id="@+id/tvCategory"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textSize="13sp" android:textColor="@color/text_secondary"
+                android:layout_marginTop="2dp" />
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginTop="8dp">
+                <TextView android:id="@+id/tvRating"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="@color/accent" android:textStyle="bold"
+                    android:textSize="13sp" android:layout_marginEnd="12dp" />
+                <TextView android:id="@+id/tvDistance"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="@color/text_secondary" android:textSize="13sp"
+                    android:layout_marginEnd="12dp" />
+                <TextView android:id="@+id/tvDeliveryTime"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="@color/text_secondary" android:textSize="13sp" />
+            </LinearLayout>
+
+            <TextView android:id="@+id/tvDeliveryFee"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textSize="12sp" android:textColor="@color/primary"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

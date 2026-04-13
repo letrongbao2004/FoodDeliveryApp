@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Customize Order"
+            android:textSize="20sp" android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="16dp" />
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="12dp">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical">
+                <TextView android:id="@+id/tvDialogFoodName"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textSize="17sp" android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
+                <TextView android:id="@+id/tvDialogFoodDesc"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textSize="13sp" android:textColor="@color/text_secondary"
+                    android:layout_marginTop="4dp" android:maxLines="2" />
+            </LinearLayout>
+            <TextView android:id="@+id/tvDialogPrice"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textSize="18sp" android:textStyle="bold"
+                android:textColor="@color/primary" />
+        </LinearLayout>
+
+        <!-- Size -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Size" android:textStyle="bold" android:textColor="@color/text_primary"
+            android:layout_marginBottom="8dp" />
+        <RadioGroup android:id="@+id/rgDialogSize"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="16dp">
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Regular" android:checked="true" android:layout_marginEnd="16dp" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Large" android:layout_marginEnd="16dp" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Extra Large" />
+        </RadioGroup>
+
+        <!-- Spice Level -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Spice Level" android:textStyle="bold" android:textColor="@color/text_primary"
+            android:layout_marginBottom="8dp" />
+        <RadioGroup android:id="@+id/rgDialogSpice"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="16dp">
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Mild" android:checked="true" android:layout_marginEnd="16dp" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Medium" android:layout_marginEnd="16dp" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Hot" />
+        </RadioGroup>
+
+        <!-- Add Ons -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Add-ons" android:textStyle="bold" android:textColor="@color/text_primary"
+            android:layout_marginBottom="8dp" />
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/cgDialogAddOns"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+            <com.google.android.material.chip.Chip
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Extra Sauce" style="@style/Widget.MaterialComponents.Chip.Filter" />
+            <com.google.android.material.chip.Chip
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Extra Cheese" style="@style/Widget.MaterialComponents.Chip.Filter" />
+            <com.google.android.material.chip.Chip
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="No Onions" style="@style/Widget.MaterialComponents.Chip.Filter" />
+            <com.google.android.material.chip.Chip
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Well Done" style="@style/Widget.MaterialComponents.Chip.Filter" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <!-- Notes -->
+        <EditText android:id="@+id/etDialogNotes"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:hint="Special notes (optional)"
+            android:inputType="textMultiLine" android:minLines="2"
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Quantity -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="Quantity"
+                android:textStyle="bold" android:textColor="@color/text_primary" />
+            <TextView android:id="@+id/btnDialogDecrease"
+                android:layout_width="36dp" android:layout_height="36dp"
+                android:text="−" android:gravity="center"
+                android:textSize="18sp" android:textColor="@color/primary"
+                android:background="@drawable/btn_qty_background" />
+            <TextView android:id="@+id/tvDialogQuantity"
+                android:layout_width="40dp" android:layout_height="wrap_content"
+                android:text="1" android:gravity="center"
+                android:textSize="16sp" android:textStyle="bold" />
+            <TextView android:id="@+id/btnDialogIncrease"
+                android:layout_width="36dp" android:layout_height="36dp"
+                android:text="+" android:gravity="center"
+                android:textSize="18sp" android:textColor="@color/white"
+                android:background="@drawable/btn_circle_primary" />
+        </LinearLayout>
+
+        <!-- Add To Cart -->
+        <TextView android:id="@+id/btnDialogAddToCart"
+            android:layout_width="match_parent" android:layout_height="56dp"
+            android:text="Add to Cart" android:gravity="center"
+            android:background="@color/primary"
+            android:textColor="@color/white"
+            android:textSize="16sp" android:textStyle="bold" />
+
+    </LinearLayout>
+</ScrollView>

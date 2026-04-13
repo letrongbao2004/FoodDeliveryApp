@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Wolf Base Silhouette (Mint Green Primary) -->
+    <path
+        android:fillColor="#D2F3E0"
+        android:pathData="M 54,90 L 24,60 L 14,40 L 30,10 L 44,24 L 54,40 L 64,24 L 78,10 L 94,40 L 84,60 Z" />
+
+    <!-- Wolf Inner Ears (Dark Green) -->
+    <path
+        android:fillColor="#A2CDB3"
+        android:pathData="M 32,18 L 40,30 L 22,40 Z" />
+    <path
+        android:fillColor="#A2CDB3"
+        android:pathData="M 76,18 L 68,30 L 86,40 Z" />
+
+    <!-- Wolf Forehead Highlight (Light Green) -->
+    <path
+        android:fillColor="#EFFFF5"
+        android:pathData="M 54,40 L 46,26 L 54,16 L 62,26 Z" />
+
+    <!-- Wolf Muzzle (White) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 54,90 L 38,66 L 54,54 L 70,66 Z" />
+
+    <!-- Wolf Nose (Gaming Black) -->
+    <path
+        android:fillColor="#0F0F0F"
+        android:pathData="M 54,90 L 48,80 L 54,76 L 60,80 Z" />
+
+    <!-- Wolf Fierce Eyes (Accent Pink) -->
+    <path
+        android:fillColor="#FEB9C8"
+        android:pathData="M 38,46 L 46,50 L 36,54 Z" />
+    <path
+        android:fillColor="#FEB9C8"
+        android:pathData="M 70,46 L 62,50 L 72,54 Z" />
+
+</vector>

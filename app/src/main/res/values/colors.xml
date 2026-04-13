@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand Colors -->
+    <color name="primary">#6FCF97</color>
+    <color name="primary_dark">#A2CDB3</color>
+    <color name="primary_light">#EFFFF5</color>
+    <color name="accent">#FEB9C8</color> <!-- Pastel Pink -->
+
+    <!-- Neutral -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="background">#FFFFFF</color> <!-- Bright background -->
+    <color name="surface">#F8F9FA</color> <!-- Soft Surface -->
+    <color name="divider">#E2E8F0</color>
+
+    <!-- Text -->
+    <color name="text_primary">#000000</color> <!-- Black Text -->
+    <color name="text_secondary">#4B5563</color> <!-- Dark Gray -->
+    <color name="text_hint">#9CA3AF</color>
+
+    <!-- Status Colors -->
+    <color name="success">#22C55E</color>
+    <color name="warning">#F59E0B</color>
+    <color name="danger">#EF4444</color>
+    <color name="info">#3B82F6</color>
+
+    <!-- Order Status Colors -->
+    <color name="status_pending">#F59E0B</color>
+    <color name="status_processing">#3B82F6</color>
+    <color name="status_delivering">#8B5CF6</color>
+    <color name="status_delivered">#22C55E</color>
+    <color name="status_cancelled">#EF4444</color>
+
+    <!-- Card / Shadow -->
+    <color name="card_background">#FFFFFF</color>
+    <color name="shadow">#1A000000</color>
+
+    <!-- Rating Star -->
+    <color name="star_filled">#FEB9C8</color> <!-- Switch to pink for accent -->
+    <color name="star_empty">#E5E7EB</color>
+</resources>
