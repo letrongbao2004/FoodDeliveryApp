@@ -177,30 +177,68 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a3ef64de-7da1-4752-99b8-beb48d3ca1a7" name="Changes" comment="updated">
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/CheckoutActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/CheckoutActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/OrderDetailActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/OrderDetailActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/OrderTrackingActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/OrderTrackingActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/adapters/OrderAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/adapters/OrderAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/fragments/merchant/MerchantOrdersFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/fragments/merchant/MerchantOrdersFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/models/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/models/Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/models/OrderDetail.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/models/OrderDetail.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/utils/AppUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/utils/AppUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_order_detail.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_order_detail.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/config/WebSocketConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/controllers/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/controllers/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/models/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/models/Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/models/OrderStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/models/OrderStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/services/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/services/OrderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/config/WebSocketConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/config/WebSocketConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/AuthActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/AuthActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/MerchantMainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/MerchantMainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/adapters/FoodAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/adapters/FoodAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/fragments/ProfileFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/fragments/ProfileFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/fragments/merchant/MerchantDashboardFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/fragments/merchant/MerchantMenuFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/fragments/merchant/MerchantOrdersFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/remote/ApiClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/remote/ApiClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/remote/ApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/remote/ApiService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/utils/SessionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/utils/SessionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_merchant_main.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_add_food.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_add_food.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_merchant_dashboard.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_merchant_menu.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_merchant_orders.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_profile.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_profile.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/mvnw.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/controllers/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/controllers/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/controllers/FoodController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/controllers/FoodController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/controllers/RestaurantController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/controllers/RestaurantController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/models/Food.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/models/Food.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/models/Restaurant.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/models/Restaurant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/models/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/repositories/RestaurantRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/repositories/RestaurantRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/AuthController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/BusinessHoursController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/BusinessHoursController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/FoodController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/FoodController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/OrderController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/OrderController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/OrderTrackingController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/OrderTrackingController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/PaymentController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/PaymentController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/RestaurantController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/RestaurantController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dto/OrderDetailDto$OrderDetailItemDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dto/OrderDetailDto$OrderDetailItemDto.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dto/OrderDetailDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dto/OrderDetailDto.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dto/OrderRequest$OrderItemRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dto/OrderRequest$OrderItemRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dto/OrderRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dto/OrderRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dto/OrderStatusResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dto/OrderStatusResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dto/OrderStatusUpdateRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dto/OrderStatusUpdateRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dto/RegisterRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dto/RegisterRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dtos/OrderStatusUpdateEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dtos/OrderStatusUpdateEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dtos/StatusUpdateRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/dtos/StatusUpdateRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/exception/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/exception/GlobalExceptionHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/models/BusinessHours.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/models/BusinessHours.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/models/Food.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/models/Food.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/models/Order.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/models/Order.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/models/OrderStatus.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/models/OrderStatus.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/models/OrderItem.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/models/OrderItem.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/models/Restaurant.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/models/Restaurant.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/models/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/models/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/repositories/RestaurantRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/repositories/RestaurantRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/security/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/security/SecurityConfig.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/services/OrderService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/services/OrderService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/services/OrderTrackingService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/services/OrderTrackingService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/websocket/OrderWebSocketHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/websocket/OrderWebSocketHandler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -210,7 +248,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[LocalEmulator::path=C:\Users\Admin\.android\avd\Small_Phone_2.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PhysicalDevice::serial=jn8twow4kjnrbuus]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -280,7 +318,7 @@
     &quot;accountId&quot;: &quot;c1e41c29-1d59-4d9c-a48d-66651eefe23d&quot;
   }
 }</component>
-  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="C:\Users\Admin\.gradle\wrapper\dists\gradle-9.3.1-bin\23ovyewtku6u96viwx3xl3oks\gradle-9.3.1" javaHome="C:\Program Files\Android\Android Studio\jbr" gradleVersion="9.3.1" />
+  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="D:\AndroidStudioPackage\wrapper\dists\gradle-9.3.1-bin\23ovyewtku6u96viwx3xl3oks\gradle-9.3.1" javaHome="D:\AndroidStudio\jbr" gradleVersion="9.3.1" />
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 2
@@ -336,6 +374,8 @@
       <option name="CLEAR_LOGCAT" value="false" />
       <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
       <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
       <option name="DEBUGGER_TYPE" value="Auto" />
       <Auto>
         <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
@@ -412,12 +452,12 @@
       <map>
         <entry key="com.fooddeliveryapp">
           <value>
-            <CheckInfo lastCheckTimestamp="1776004856723" />
+            <CheckInfo lastCheckTimestamp="1776100438481" />
           </value>
         </entry>
         <entry key="com.fooddeliveryapp.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1776004856725" />
+            <CheckInfo lastCheckTimestamp="1776100438487" />
           </value>
         </entry>
       </map>

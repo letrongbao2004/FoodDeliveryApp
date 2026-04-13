@@ -28,6 +28,7 @@ public class Food {
     private String description;
     private double price;
     private String imageUrl;
+    private String imagePublicId;
     private String category;
     
     private boolean isAvailable;

@@ -79,6 +79,26 @@
             android:name=".activities.MerchantMainActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".activities.MerchantRestaurantSetupActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.MerchantMainActivity" />
+
+        <activity
+            android:name=".activities.MerchantRestaurantDetailActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.MerchantMainActivity" />
+
+        <activity
+            android:name=".activities.MerchantDashboardActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.MerchantRestaurantDetailActivity" />
+
+        <activity
+            android:name=".activities.MerchantOrderHistoryActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.MerchantRestaurantDetailActivity" />
+
     </application>
 
 </manifest>

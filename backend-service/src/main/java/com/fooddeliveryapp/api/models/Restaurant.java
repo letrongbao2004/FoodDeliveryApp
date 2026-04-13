@@ -3,6 +3,8 @@ package com.fooddeliveryapp.api.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -25,11 +27,23 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** Merchant owner user id */
+    @NotNull
+    // Keep DB column nullable to avoid breaking existing rows during ddl-auto:update.
+    // Validation still requires ownerId for create/update via @Valid.
+    @Column
+    private Long ownerId;
+
+    @NotBlank
     @Column(nullable = false)
     private String name;
 
     private String description;
     private String imageUrl;
+    private String imagePublicId;
+    private String address;
+    private String phone;
+    private String category;
     private double rating;
     private int deliveryTime;
     private double deliveryFee;

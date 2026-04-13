@@ -11,9 +11,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.fooddeliveryapp.R;
-import com.fooddeliveryapp.models.User;
 import com.fooddeliveryapp.remote.ApiClient;
 import com.fooddeliveryapp.remote.ApiService;
+import com.fooddeliveryapp.remote.dto.RegisterRequest;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -169,8 +169,15 @@ public class AuthActivity extends AppCompatActivity {
         android.widget.RadioButton rbSelected = findViewById(selectedId);
         String role = (rbSelected != null) ? rbSelected.getText().toString().toUpperCase() : "CUSTOMER";
 
-        User user = new User(name, email, phone, pass, role);
-        apiService.register(user).enqueue(new Callback<Map<String, String>>() {
+        RegisterRequest request = new RegisterRequest(
+                name,
+                email,
+                pass,
+                phone,
+                "", // address (optional in UI for now)
+                role
+        );
+        apiService.register(request).enqueue(new Callback<Map<String, String>>() {
             @Override
             public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
                 if (isFinishing() || isDestroyed())

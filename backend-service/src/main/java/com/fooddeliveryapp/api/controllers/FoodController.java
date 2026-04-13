@@ -52,6 +52,7 @@ public class FoodController {
             food.setDescription(updated.getDescription());
             food.setPrice(updated.getPrice());
             food.setImageUrl(updated.getImageUrl());
+            food.setImagePublicId(updated.getImagePublicId());
             food.setCategory(updated.getCategory());
             food.setAvailable(updated.isAvailable());
             food.setBestSeller(updated.isBestSeller());

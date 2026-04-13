@@ -1,6 +1,7 @@
 package com.fooddeliveryapp.remote;
 
 import android.content.Context;
+import android.os.Build;
 import com.fooddeliveryapp.utils.SessionManager;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -12,12 +13,33 @@ import com.google.gson.GsonBuilder;
 import java.util.concurrent.TimeUnit;
 
 public class ApiClient {
-    private static final String BASE_URL = "http://10.0.2.2:8080/api/";
+    // Emulator uses 10.0.2.2 to reach host machine; real devices must use host's LAN IP.
+    private static final String BASE_URL_EMULATOR = "http://10.0.2.2:8080/api/";
+    private static final String BASE_URL_DEVICE = "http://192.168.1.91:8080/api/";
     private static Retrofit retrofit = null;
 
     /** Call this if you need to reset the singleton (e.g., after logout) */
     public static void reset() {
         retrofit = null;
+    }
+
+    private static boolean isEmulator() {
+        String fingerprint = Build.FINGERPRINT;
+        String model = Build.MODEL;
+        String manufacturer = Build.MANUFACTURER;
+        String brand = Build.BRAND;
+        String device = Build.DEVICE;
+        String product = Build.PRODUCT;
+
+        return (fingerprint != null && (fingerprint.startsWith("generic") || fingerprint.startsWith("unknown")))
+                || (model != null && (model.contains("google_sdk") || model.contains("Emulator") || model.contains("Android SDK built for x86")))
+                || (manufacturer != null && manufacturer.contains("Genymotion"))
+                || (brand != null && brand.startsWith("generic") && device != null && device.startsWith("generic"))
+                || ("google_sdk".equals(product));
+    }
+
+    private static String getBaseUrl() {
+        return isEmulator() ? BASE_URL_EMULATOR : BASE_URL_DEVICE;
     }
 
     public static Retrofit getClient(Context context) {
@@ -44,7 +66,7 @@ public class ApiClient {
                     .create();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+                    .baseUrl(getBaseUrl())
                     .client(client)
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create(gson))

@@ -17,6 +17,7 @@ public class SessionManager {
     private static final String KEY_ADDRESS = "address";
     private static final String KEY_LOGGED = "is_logged_in";
     private static final String KEY_TOKEN = "auth_token";
+    private static final String KEY_AVATAR_URL = "avatar_url";
 
     private final SharedPreferences prefs;
     private final SharedPreferences.Editor editor;
@@ -96,6 +97,14 @@ public class SessionManager {
 
     public String getToken() {
         return prefs.getString(KEY_TOKEN, null);
+    }
+
+    public void setAvatarUrl(String url) {
+        editor.putString(KEY_AVATAR_URL, url).apply();
+    }
+
+    public String getAvatarUrl() {
+        return prefs.getString(KEY_AVATAR_URL, null);
     }
 
     public void logout() {

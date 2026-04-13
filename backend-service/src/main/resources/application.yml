@@ -18,3 +18,14 @@ server:
   error:
     whitelabel:
       enabled: false
+
+app:
+  jwt:
+    # In production, set via env var: APP_JWT_SECRET
+    secret: Qm4T7vN2Kp9Xr5Ls8Hd1Zc3Ya6Wf0JjE2uB7iS9gV4tN1xC5oR8pL6kD3hZ0aF2q
+    issuer: 645545824261147
+    expiresMinutes: 43200 # 30 days
+
+cloudinary:
+  url: cloudinary://645545824261147:Ag-iwCsQrpD_zMLR2oXShHp4dnY@dwowqg06t
+  folder: food-delivery

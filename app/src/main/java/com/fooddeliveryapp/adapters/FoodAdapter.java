@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.fooddeliveryapp.R;
 import com.fooddeliveryapp.models.Food;
 
@@ -30,13 +31,21 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 
     /** true = nhà hàng đang mở cửa, false = đóng cửa */
     private boolean isRestaurantOpen;
+    /** true = merchant mode (manage menu), false = customer mode */
+    private final boolean isMerchantMode;
 
     public FoodAdapter(Context context, List<Food> foods,
             OnFoodClickListener listener, boolean isRestaurantOpen) {
+        this(context, foods, listener, isRestaurantOpen, false);
+    }
+
+    public FoodAdapter(Context context, List<Food> foods,
+            OnFoodClickListener listener, boolean isRestaurantOpen, boolean isMerchantMode) {
         this.context = context;
         this.foods = foods;
         this.listener = listener;
         this.isRestaurantOpen = isRestaurantOpen;
+        this.isMerchantMode = isMerchantMode;
     }
 
     public void updateData(List<Food> newList) {
@@ -66,10 +75,26 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         holder.tvPrice.setText(food.getPriceText());
         holder.tvCategory.setText(food.getCategory());
 
+        if (food.getImageUrl() != null && !food.getImageUrl().isEmpty()) {
+            Glide.with(context).load(food.getImageUrl()).centerCrop().into(holder.ivFood);
+        } else {
+            holder.ivFood.setImageResource(R.mipmap.ic_launcher);
+        }
+
         holder.tvBadgeBestSeller.setVisibility(food.isBestSeller() ? View.VISIBLE : View.GONE);
         holder.tvBadgeNew.setVisibility(food.isNew() ? View.VISIBLE : View.GONE);
 
-        boolean canOrder = isRestaurantOpen && food.isAvailable();
+        if (isMerchantMode) {
+            // Merchant: allow managing regardless of availability/open state; hide add-to-cart button.
+            holder.itemView.setAlpha(1f);
+            holder.itemView.setClickable(true);
+            holder.itemView.setOnClickListener(v -> listener.onFoodClick(food));
+
+            holder.btnAddToCart.setVisibility(View.GONE);
+            holder.btnAddToCart.setOnClickListener(null);
+            holder.btnAddToCart.setEnabled(false);
+            return;
+        }
 
         if (!isRestaurantOpen) {
             // Nhà hàng đóng cửa: mờ toàn bộ item, disable nút
