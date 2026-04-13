@@ -59,24 +59,24 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     private void bindViewsLogin() {
-        layoutLogin        = findViewById(R.id.layoutLogin);
-        etLoginEmail       = findViewById(R.id.etLoginEmail);
-        etLoginPassword    = findViewById(R.id.etLoginPassword);
-        btnLogin           = findViewById(R.id.btnLogin);
-        tvGoRegister       = findViewById(R.id.tvGoRegister);
-        tvMerchantLogin    = findViewById(R.id.tvMerchantLogin);
+        layoutLogin = findViewById(R.id.layoutLogin);
+        etLoginEmail = findViewById(R.id.etLoginEmail);
+        etLoginPassword = findViewById(R.id.etLoginPassword);
+        btnLogin = findViewById(R.id.btnLogin);
+        tvGoRegister = findViewById(R.id.tvGoRegister);
+        tvMerchantLogin = findViewById(R.id.tvMerchantLogin);
     }
 
     private void bindViewsRegister() {
-        layoutRegister         = findViewById(R.id.layoutRegister);
-        etRegName              = findViewById(R.id.etRegName);
-        etRegEmail             = findViewById(R.id.etRegEmail);
-        etRegPhone             = findViewById(R.id.etRegPhone);
-        etRegPassword          = findViewById(R.id.etRegPassword);
-        etRegConfirmPassword   = findViewById(R.id.etRegConfirmPassword);
-        rgRole                 = findViewById(R.id.rgRole);
-        btnRegister            = findViewById(R.id.btnRegister);
-        tvGoLogin              = findViewById(R.id.tvGoLogin);
+        layoutRegister = findViewById(R.id.layoutRegister);
+        etRegName = findViewById(R.id.etRegName);
+        etRegEmail = findViewById(R.id.etRegEmail);
+        etRegPhone = findViewById(R.id.etRegPhone);
+        etRegPassword = findViewById(R.id.etRegPassword);
+        etRegConfirmPassword = findViewById(R.id.etRegConfirmPassword);
+        rgRole = findViewById(R.id.rgRole);
+        btnRegister = findViewById(R.id.btnRegister);
+        tvGoLogin = findViewById(R.id.tvGoLogin);
     }
 
     private void showLogin() {
@@ -95,7 +95,7 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     private void attemptLogin() {
-        String email    = etLoginEmail.getText().toString().trim();
+        String email = etLoginEmail.getText().toString().trim();
         String password = etLoginPassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
@@ -115,14 +115,16 @@ public class AuthActivity extends AppCompatActivity {
         apiService.login(credentials).enqueue(new Callback<Map<String, String>>() {
             @Override
             public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
-                if (isFinishing() || isDestroyed()) return;
+                if (isFinishing() || isDestroyed())
+                    return;
                 if (response.isSuccessful() && response.body() != null) {
                     Map<String, String> data = response.body();
                     long id = Long.parseLong(data.getOrDefault("id", "0"));
                     String role = data.getOrDefault("role", "customer");
                     session.createSession(id, data.get("name"), email, data.get("phone"), role, data.get("address"));
                     String token = data.getOrDefault("token", "");
-                    if (token != null && !token.isEmpty()) session.setToken(token);
+                    if (token != null && !token.isEmpty())
+                        session.setToken(token);
                     navigateAfterLogin(role);
                 } else {
                     AppUtils.showToast(AuthActivity.this, "Invalid email or password");
@@ -131,21 +133,22 @@ public class AuthActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Map<String, String>> call, Throwable t) {
-                if (isFinishing() || isDestroyed()) return;
+                if (isFinishing() || isDestroyed())
+                    return;
                 AppUtils.showToast(AuthActivity.this, "Network Error: " + t.getMessage());
             }
         });
     }
 
     private void attemptRegister() {
-        String name    = etRegName.getText().toString().trim();
-        String email   = etRegEmail.getText().toString().trim();
-        String phone   = etRegPhone.getText().toString().trim();
-        String pass    = etRegPassword.getText().toString().trim();
+        String name = etRegName.getText().toString().trim();
+        String email = etRegEmail.getText().toString().trim();
+        String phone = etRegPhone.getText().toString().trim();
+        String pass = etRegPassword.getText().toString().trim();
         String confirm = etRegConfirmPassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) ||
-            TextUtils.isEmpty(phone) || TextUtils.isEmpty(pass)) {
+                TextUtils.isEmpty(phone) || TextUtils.isEmpty(pass)) {
             AppUtils.showToast(this, "Please fill in all fields");
             return;
         }
@@ -170,7 +173,8 @@ public class AuthActivity extends AppCompatActivity {
         apiService.register(user).enqueue(new Callback<Map<String, String>>() {
             @Override
             public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
-                if (isFinishing() || isDestroyed()) return;
+                if (isFinishing() || isDestroyed())
+                    return;
                 if (response.isSuccessful() && response.body() != null) {
                     Map<String, String> data = response.body();
                     long id = Long.parseLong(data.getOrDefault("id", "0"));
@@ -184,14 +188,16 @@ public class AuthActivity extends AppCompatActivity {
                     navigateAfterLogin(role);
                 } else {
                     String errMsg = "Registration failed (code: " + response.code() + ")";
-                    if (response.code() == 400) errMsg = "Email already registered!";
+                    if (response.code() == 400)
+                        errMsg = "Email already registered!";
                     AppUtils.showToast(AuthActivity.this, errMsg);
                 }
             }
 
             @Override
             public void onFailure(Call<Map<String, String>> call, Throwable t) {
-                if (isFinishing() || isDestroyed()) return;
+                if (isFinishing() || isDestroyed())
+                    return;
                 AppUtils.showToast(AuthActivity.this, "Network Error: " + t.getMessage());
             }
         });

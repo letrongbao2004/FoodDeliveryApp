@@ -35,9 +35,10 @@ public class MerchantMenuFragment extends Fragment implements FoodAdapter.OnFood
     private FoodAdapter adapter;
     private List<Food> foods = new ArrayList<>();
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+            @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_merchant_menu, container, false);
     }
 
@@ -48,8 +49,9 @@ public class MerchantMenuFragment extends Fragment implements FoodAdapter.OnFood
         apiService = ApiClient.getClient(requireContext()).create(ApiService.class);
         RecyclerView rvMenu = view.findViewById(R.id.rvMerchantMenu);
         View btnAddFood = view.findViewById(R.id.btnAddFood);
-        
-        // Merchant always has full access to manage menu (true = no closed-state disabling)
+
+        // Merchant always has full access to manage menu (true = no closed-state
+        // disabling)
         adapter = new FoodAdapter(requireContext(), foods, this, true);
         rvMenu.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvMenu.setAdapter(adapter);
@@ -63,8 +65,9 @@ public class MerchantMenuFragment extends Fragment implements FoodAdapter.OnFood
         apiService.getFoods(1).enqueue(new Callback<List<Food>>() {
             @Override
             public void onResponse(Call<List<Food>> call, Response<List<Food>> response) {
-                if (!isAdded() || getContext() == null) return;
-                if(response.isSuccessful() && response.body() != null) {
+                if (!isAdded() || getContext() == null)
+                    return;
+                if (response.isSuccessful() && response.body() != null) {
                     foods.clear();
                     foods.addAll(response.body());
                     adapter.notifyDataSetChanged();
@@ -73,7 +76,8 @@ public class MerchantMenuFragment extends Fragment implements FoodAdapter.OnFood
 
             @Override
             public void onFailure(Call<List<Food>> call, Throwable t) {
-                if (!isAdded() || getContext() == null) return;
+                if (!isAdded() || getContext() == null)
+                    return;
                 Toast.makeText(requireContext(), "Network Error", Toast.LENGTH_SHORT).show();
             }
         });
@@ -82,45 +86,46 @@ public class MerchantMenuFragment extends Fragment implements FoodAdapter.OnFood
     private void showAddFoodDialog() {
         View dialogView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.dialog_add_food, null);
-        EditText etName  = dialogView.findViewById(R.id.etAddFoodName);
-        EditText etDesc  = dialogView.findViewById(R.id.etAddFoodDesc);
+        EditText etName = dialogView.findViewById(R.id.etAddFoodName);
+        EditText etDesc = dialogView.findViewById(R.id.etAddFoodDesc);
         EditText etPrice = dialogView.findViewById(R.id.etAddFoodPrice);
-        EditText etCat   = dialogView.findViewById(R.id.etAddFoodCategory);
+        EditText etCat = dialogView.findViewById(R.id.etAddFoodCategory);
 
         new AlertDialog.Builder(requireContext())
-            .setTitle("Add New Food")
-            .setView(dialogView)
-            .setPositiveButton("Add", (dialog, which) -> {
-                String name  = etName.getText().toString().trim();
-                String desc  = etDesc.getText().toString().trim();
-                String priceStr = etPrice.getText().toString().trim();
-                String cat   = etCat.getText().toString().trim();
-                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(priceStr)) {
-                    AppUtils.showToast(requireContext(), "Name and price are required");
-                    return;
-                }
-                
-                // Note: Need Backend @POST endpoint to truly save this.
-                AppUtils.showToast(requireContext(), "[Demo] Network Save Pending API Endpoint");
-                
-            })
-            .setNegativeButton("Cancel", null)
-            .show();
+                .setTitle("Add New Food")
+                .setView(dialogView)
+                .setPositiveButton("Add", (dialog, which) -> {
+                    String name = etName.getText().toString().trim();
+                    String desc = etDesc.getText().toString().trim();
+                    String priceStr = etPrice.getText().toString().trim();
+                    String cat = etCat.getText().toString().trim();
+                    if (TextUtils.isEmpty(name) || TextUtils.isEmpty(priceStr)) {
+                        AppUtils.showToast(requireContext(), "Name and price are required");
+                        return;
+                    }
+
+                    // Note: Need Backend @POST endpoint to truly save this.
+                    AppUtils.showToast(requireContext(), "[Demo] Network Save Pending API Endpoint");
+
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     @Override
     public void onFoodClick(Food food) {
         new AlertDialog.Builder(requireContext())
-            .setTitle(food.getName())
-            .setMessage("What would you like to do?")
-            .setPositiveButton("Delete", (d, w) -> {
-                 // Note: Need Backend @DELETE endpoint to truly delete this.
-                AppUtils.showToast(requireContext(), "[Demo] Delete Pending API Endpoint");
-            })
-            .setNegativeButton("Cancel", null)
-            .show();
+                .setTitle(food.getName())
+                .setMessage("What would you like to do?")
+                .setPositiveButton("Delete", (d, w) -> {
+                    // Note: Need Backend @DELETE endpoint to truly delete this.
+                    AppUtils.showToast(requireContext(), "[Demo] Delete Pending API Endpoint");
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     @Override
-    public void onAddToCartClick(Food food) { /* Not applicable for merchant */ }
+    public void onAddToCartClick(Food food) {
+        /* Not applicable for merchant */ }
 }

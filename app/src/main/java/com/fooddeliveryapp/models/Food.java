@@ -25,10 +25,11 @@ public class Food {
     private double rating;
     private int orderCount;
 
-    public Food() {}
+    public Food() {
+    }
 
     public Food(int restaurantId, String name, String description, double price,
-                String imageUrl, String category, boolean isAvailable) {
+            String imageUrl, String category, boolean isAvailable) {
         this.restaurantId = restaurantId;
         this.name = name;
         this.description = description;
@@ -39,41 +40,101 @@ public class Food {
     }
 
     // Getters & Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public int getRestaurantId() { return restaurantId; }
-    public void setRestaurantId(int restaurantId) { this.restaurantId = restaurantId; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public int getRestaurantId() {
+        return restaurantId;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public void setRestaurantId(int restaurantId) {
+        this.restaurantId = restaurantId;
+    }
 
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
+    public String getName() {
+        return name;
+    }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public String getDescription() {
+        return description;
+    }
 
-    public boolean isAvailable() { return isAvailable; }
-    public void setAvailable(boolean available) { isAvailable = available; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public boolean isBestSeller() { return isBestSeller; }
-    public void setBestSeller(boolean bestSeller) { isBestSeller = bestSeller; }
+    public double getPrice() {
+        return price;
+    }
 
-    public boolean isNew() { return isNew; }
-    public void setNew(boolean aNew) { isNew = aNew; }
+    public void setPrice(double price) {
+        this.price = price;
+    }
 
-    public double getRating() { return rating; }
-    public void setRating(double rating) { this.rating = rating; }
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
-    public int getOrderCount() { return orderCount; }
-    public void setOrderCount(int orderCount) { this.orderCount = orderCount; }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
+    public boolean isBestSeller() {
+        return isBestSeller;
+    }
+
+    public void setBestSeller(boolean bestSeller) {
+        isBestSeller = bestSeller;
+    }
+
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean aNew) {
+        isNew = aNew;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public int getOrderCount() {
+        return orderCount;
+    }
+
+    public void setOrderCount(int orderCount) {
+        this.orderCount = orderCount;
+    }
 
     public String getPriceText() {
         return com.fooddeliveryapp.utils.AppUtils.formatPrice(price);

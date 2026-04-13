@@ -23,7 +23,7 @@ public class OrderTrackingActivity extends AppCompatActivity {
     private android.os.Handler handler;
 
     private TextView tvOrderCode, tvStatus, tvRestaurantName,
-                     tvTotal, tvAddress, tvPayment, tvEstimatedTime;
+            tvTotal, tvAddress, tvPayment, tvEstimatedTime;
     private ProgressBar progressTracking;
     private View stepPending, stepConfirmed, stepPreparing, stepDelivering, stepDelivered;
 
@@ -35,13 +35,20 @@ public class OrderTrackingActivity extends AppCompatActivity {
         orderManager = OrderManager.getInstance(this);
         handler = new android.os.Handler(android.os.Looper.getMainLooper());
 
-        int orderId = getIntent().getIntExtra(EXTRA_ORDER_ID, -1);
-        if (orderId == -1) { finish(); return; }
+        long orderId = getIntent().getLongExtra(EXTRA_ORDER_ID, -1L);
+        if (orderId == -1L) {
+            orderId = getIntent().getIntExtra(EXTRA_ORDER_ID, -1);
+            if (orderId == -1) {
+                finish();
+                return;
+            }
+        }
 
         orderManager.getOrderById(orderId, new OrderManager.OrderCallback() {
             @Override
             public void onSuccess(Order o) {
-                if (isFinishing() || isDestroyed()) return;
+                if (isFinishing() || isDestroyed())
+                    return;
                 order = o;
                 populateOrder();
                 simulateOrderProgress();
@@ -49,7 +56,8 @@ public class OrderTrackingActivity extends AppCompatActivity {
 
             @Override
             public void onError(String message) {
-                if (isFinishing() || isDestroyed()) return;
+                if (isFinishing() || isDestroyed())
+                    return;
                 AppUtils.showToast(OrderTrackingActivity.this, "Order not found");
                 finish();
             }
@@ -67,19 +75,19 @@ public class OrderTrackingActivity extends AppCompatActivity {
     }
 
     private void bindViews() {
-        tvOrderCode      = findViewById(R.id.tvTrackOrderCode);
-        tvStatus         = findViewById(R.id.tvTrackStatus);
+        tvOrderCode = findViewById(R.id.tvTrackOrderCode);
+        tvStatus = findViewById(R.id.tvTrackStatus);
         tvRestaurantName = findViewById(R.id.tvTrackRestaurantName);
-        tvTotal          = findViewById(R.id.tvTrackTotal);
-        tvAddress        = findViewById(R.id.tvTrackAddress);
-        tvPayment        = findViewById(R.id.tvTrackPayment);
-        tvEstimatedTime  = findViewById(R.id.tvEstimatedTime);
+        tvTotal = findViewById(R.id.tvTrackTotal);
+        tvAddress = findViewById(R.id.tvTrackAddress);
+        tvPayment = findViewById(R.id.tvTrackPayment);
+        tvEstimatedTime = findViewById(R.id.tvEstimatedTime);
         progressTracking = findViewById(R.id.progressTracking);
-        stepPending      = findViewById(R.id.stepPending);
-        stepConfirmed    = findViewById(R.id.stepConfirmed);
-        stepPreparing    = findViewById(R.id.stepPreparing);
-        stepDelivering   = findViewById(R.id.stepDelivering);
-        stepDelivered    = findViewById(R.id.stepDelivered);
+        stepPending = findViewById(R.id.stepPending);
+        stepConfirmed = findViewById(R.id.stepConfirmed);
+        stepPreparing = findViewById(R.id.stepPreparing);
+        stepDelivering = findViewById(R.id.stepDelivering);
+        stepDelivered = findViewById(R.id.stepDelivered);
     }
 
     private void populateOrder() {
@@ -94,7 +102,7 @@ public class OrderTrackingActivity extends AppCompatActivity {
     }
 
     private void updateStepIndicators(String status) {
-        int activeColor   = getColor(R.color.primary);
+        int activeColor = getColor(R.color.primary);
         int inactiveColor = getColor(R.color.divider);
 
         stepPending.setBackgroundColor(activeColor);
@@ -118,28 +126,35 @@ public class OrderTrackingActivity extends AppCompatActivity {
 
     private int getProgressForStatus(String status) {
         switch (status) {
-            case Order.STATUS_PENDING:    return 10;
-            case Order.STATUS_CONFIRMED:  return 30;
-            case Order.STATUS_PREPARING:  return 55;
-            case Order.STATUS_DELIVERING: return 80;
-            case Order.STATUS_DELIVERED:  return 100;
-            default: return 0;
+            case Order.STATUS_PENDING:
+                return 10;
+            case Order.STATUS_CONFIRMED:
+                return 30;
+            case Order.STATUS_PREPARING:
+                return 55;
+            case Order.STATUS_DELIVERING:
+                return 80;
+            case Order.STATUS_DELIVERED:
+                return 100;
+            default:
+                return 0;
         }
     }
 
     private void simulateOrderProgress() {
         String[] statusFlow = {
-            Order.STATUS_CONFIRMED, Order.STATUS_PREPARING,
-            Order.STATUS_DELIVERING, Order.STATUS_DELIVERED
+                Order.STATUS_CONFIRMED, Order.STATUS_PREPARING,
+                Order.STATUS_DELIVERING, Order.STATUS_DELIVERED
         };
         for (int i = 0; i < statusFlow.length; i++) {
             final String nextStatus = statusFlow[i];
-            final int orderId = order.getId();
+            final long orderId = order.getId();
             handler.postDelayed(() -> {
                 orderManager.updateOrderStatus(orderId, nextStatus, new OrderManager.OrderCallback() {
                     @Override
                     public void onSuccess(Order updatedOrder) {
-                        if (isFinishing() || isDestroyed()) return;
+                        if (isFinishing() || isDestroyed())
+                            return;
                         order.setStatus(updatedOrder.getStatus());
                         tvStatus.setText(updatedOrder.getStatus());
                         updateStepIndicators(updatedOrder.getStatus());
@@ -147,7 +162,8 @@ public class OrderTrackingActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String message) {
-                        if (isFinishing() || isDestroyed()) return;
+                        if (isFinishing() || isDestroyed())
+                            return;
                     }
                 });
             }, (long) (i + 1) * 5000);
@@ -156,7 +172,10 @@ public class OrderTrackingActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) { onBackPressed(); return true; }
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

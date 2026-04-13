@@ -29,7 +29,7 @@ public class OrderController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(orderRepository.findByUserId(userId));
+        return ResponseEntity.ok(orderRepository.findByUser_Id(userId));
     }
     
     @GetMapping("/{id}")
@@ -37,6 +37,15 @@ public class OrderController {
         return orderRepository.findById(id)
                 .<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{id}/detail")
+    public ResponseEntity<?> getOrderDetail(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(orderService.getOrderDetail(id));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/restaurant/{id}")

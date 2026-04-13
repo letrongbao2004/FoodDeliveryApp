@@ -19,10 +19,11 @@ public class ProfileFragment extends Fragment {
 
     private SessionManager session;
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -32,9 +33,9 @@ public class ProfileFragment extends Fragment {
 
         session = SessionManager.getInstance(requireContext());
 
-        TextView tvName    = view.findViewById(R.id.tvProfileName);
-        TextView tvEmail   = view.findViewById(R.id.tvProfileEmail);
-        TextView tvPhone   = view.findViewById(R.id.tvProfilePhone);
+        TextView tvName = view.findViewById(R.id.tvProfileName);
+        TextView tvEmail = view.findViewById(R.id.tvProfileEmail);
+        TextView tvPhone = view.findViewById(R.id.tvProfilePhone);
         TextView tvAddress = view.findViewById(R.id.tvProfileAddress);
         TextView btnLogout = view.findViewById(R.id.btnProfileLogout);
 

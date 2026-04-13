@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.fooddeliveryapp.R;
 import com.fooddeliveryapp.models.Food;
+import com.fooddeliveryapp.utils.AppUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -26,12 +27,12 @@ public class FoodCustomizationDialog extends BottomSheetDialogFragment {
         void onAddToCart(Food food, int qty, String size, String spice, String addOns, String notes);
     }
 
-    private static final String ARG_FOOD_ID         = "food_id";
-    private static final String ARG_FOOD_NAME        = "food_name";
-    private static final String ARG_FOOD_PRICE       = "food_price";
-    private static final String ARG_FOOD_DESC        = "food_desc";
-    private static final String ARG_RESTAURANT_ID    = "restaurant_id";
-    private static final String ARG_IS_AVAILABLE     = "is_available";
+    private static final String ARG_FOOD_ID = "food_id";
+    private static final String ARG_FOOD_NAME = "food_name";
+    private static final String ARG_FOOD_PRICE = "food_price";
+    private static final String ARG_FOOD_DESC = "food_desc";
+    private static final String ARG_RESTAURANT_ID = "restaurant_id";
+    private static final String ARG_IS_AVAILABLE = "is_available";
 
     private Food food;
     private OnAddToCartListener listener;
@@ -41,7 +42,7 @@ public class FoodCustomizationDialog extends BottomSheetDialogFragment {
     public static FoodCustomizationDialog newInstance(Food food) {
         FoodCustomizationDialog dialog = new FoodCustomizationDialog();
         Bundle args = new Bundle();
-        args.putInt(ARG_FOOD_ID,      food.getId());
+        args.putInt(ARG_FOOD_ID, food.getId());
         args.putString(ARG_FOOD_NAME, food.getName());
         args.putDouble(ARG_FOOD_PRICE, food.getPrice());
         args.putString(ARG_FOOD_DESC, food.getDescription());
@@ -56,10 +57,11 @@ public class FoodCustomizationDialog extends BottomSheetDialogFragment {
         this.listener = listener;
     }
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.dialog_food_customization, container, false);
     }
 
@@ -77,43 +79,49 @@ public class FoodCustomizationDialog extends BottomSheetDialogFragment {
             food.setAvailable(getArguments().getBoolean(ARG_IS_AVAILABLE, true));
         }
 
-        if (food == null) { dismiss(); return; }   // safety guard
+        if (food == null) {
+            dismiss();
+            return;
+        } // safety guard
 
         basePrice = food.getPrice();
 
-        TextView tvFoodName  = view.findViewById(R.id.tvDialogFoodName);
-        TextView tvFoodDesc  = view.findViewById(R.id.tvDialogFoodDesc);
-        TextView tvPrice     = view.findViewById(R.id.tvDialogPrice);
-        TextView tvQty       = view.findViewById(R.id.tvDialogQuantity);
+        TextView tvFoodName = view.findViewById(R.id.tvDialogFoodName);
+        TextView tvFoodDesc = view.findViewById(R.id.tvDialogFoodDesc);
+        TextView tvPrice = view.findViewById(R.id.tvDialogPrice);
+        TextView tvQty = view.findViewById(R.id.tvDialogQuantity);
         TextView btnIncrease = view.findViewById(R.id.btnDialogIncrease);
         TextView btnDecrease = view.findViewById(R.id.btnDialogDecrease);
-        TextView btnAdd      = view.findViewById(R.id.btnDialogAddToCart);
-        RadioGroup rgSize    = view.findViewById(R.id.rgDialogSize);
-        RadioGroup rgSpice   = view.findViewById(R.id.rgDialogSpice);
-        ChipGroup cgAddOns   = view.findViewById(R.id.cgDialogAddOns);
+        TextView btnAdd = view.findViewById(R.id.btnDialogAddToCart);
+        RadioGroup rgSize = view.findViewById(R.id.rgDialogSize);
+        RadioGroup rgSpice = view.findViewById(R.id.rgDialogSpice);
+        ChipGroup cgAddOns = view.findViewById(R.id.cgDialogAddOns);
         android.widget.EditText etNotes = view.findViewById(R.id.etDialogNotes);
 
         tvFoodName.setText(food.getName());
         tvFoodDesc.setText(food.getDescription() != null ? food.getDescription() : "");
-        tvPrice.setText(String.format("%,.0f đ", basePrice * quantity));
+        tvPrice.setText(AppUtils.formatPrice(basePrice * quantity));
         tvQty.setText(String.valueOf(quantity));
 
         btnIncrease.setOnClickListener(v -> {
             quantity++;
             tvQty.setText(String.valueOf(quantity));
-            tvPrice.setText(String.format("%,.0f đ", basePrice * quantity));
+            tvPrice.setText(AppUtils.formatPrice(basePrice * quantity));
         });
 
         btnDecrease.setOnClickListener(v -> {
             if (quantity > 1) {
                 quantity--;
                 tvQty.setText(String.valueOf(quantity));
-                tvPrice.setText(String.format("%,.0f đ", basePrice * quantity));
+                tvPrice.setText(AppUtils.formatPrice(basePrice * quantity));
             }
         });
 
         btnAdd.setOnClickListener(v -> {
-            if (listener == null) { dismiss(); return; }
+            if (listener == null) {
+                dismiss();
+                return;
+            }
 
             // Size
             int sizeId = rgSize.getCheckedRadioButtonId();
@@ -135,10 +143,11 @@ public class FoodCustomizationDialog extends BottomSheetDialogFragment {
             List<String> addOnList = new ArrayList<>();
             for (int i = 0; i < cgAddOns.getChildCount(); i++) {
                 Chip chip = (Chip) cgAddOns.getChildAt(i);
-                if (chip.isChecked()) addOnList.add(chip.getText().toString());
+                if (chip.isChecked())
+                    addOnList.add(chip.getText().toString());
             }
             String addOns = String.join(", ", addOnList);
-            String notes  = etNotes.getText().toString().trim();
+            String notes = etNotes.getText().toString().trim();
 
             listener.onAddToCart(food, quantity, size, spice, addOns, notes);
             dismiss();

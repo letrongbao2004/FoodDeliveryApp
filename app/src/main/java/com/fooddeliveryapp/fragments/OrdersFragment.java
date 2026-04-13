@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fooddeliveryapp.R;
-import com.fooddeliveryapp.activities.OrderTrackingActivity;
+import com.fooddeliveryapp.activities.OrderDetailActivity;
 import com.fooddeliveryapp.adapters.OrderAdapter;
 import com.fooddeliveryapp.managers.OrderManager;
 import com.fooddeliveryapp.models.Order;
@@ -28,10 +28,11 @@ public class OrdersFragment extends Fragment implements OrderAdapter.OnOrderClic
     private RecyclerView rvOrders;
     private View layoutEmpty;
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_orders, container, false);
     }
 
@@ -40,9 +41,9 @@ public class OrdersFragment extends Fragment implements OrderAdapter.OnOrderClic
         super.onViewCreated(view, savedInstanceState);
 
         orderManager = OrderManager.getInstance(requireContext());
-        session      = SessionManager.getInstance(requireContext());
+        session = SessionManager.getInstance(requireContext());
 
-        rvOrders    = view.findViewById(R.id.rvOrderHistory);
+        rvOrders = view.findViewById(R.id.rvOrderHistory);
         layoutEmpty = view.findViewById(R.id.layoutEmptyOrders);
 
         loadOrders();
@@ -80,13 +81,14 @@ public class OrdersFragment extends Fragment implements OrderAdapter.OnOrderClic
 
     @Override
     public void onOrderClick(Order order) {
-        Intent intent = new Intent(requireContext(), OrderTrackingActivity.class);
-        intent.putExtra(OrderTrackingActivity.EXTRA_ORDER_ID, order.getId());
+        Intent intent = new Intent(requireContext(), OrderDetailActivity.class);
+        intent.putExtra(OrderDetailActivity.EXTRA_ORDER_ID, order.getId());
         startActivity(intent);
     }
 
     @Override
     public void onTrackOrder(Order order) {
+        // Also navigate to detail (tracking is inside detail)
         onOrderClick(order);
     }
 }

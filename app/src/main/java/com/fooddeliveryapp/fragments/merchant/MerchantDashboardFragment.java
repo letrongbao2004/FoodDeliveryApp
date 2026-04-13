@@ -20,9 +20,10 @@ public class MerchantDashboardFragment extends Fragment {
 
     private ApiService apiService;
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+            @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_merchant_dashboard, container, false);
     }
 
@@ -36,12 +37,13 @@ public class MerchantDashboardFragment extends Fragment {
         // Hard-coded restaurant ID 1 for demo merchant
         int restaurantId = 1;
 
-        TextView tvRevenue    = view.findViewById(R.id.tvDashRevenue);
-        TextView tvTotalOrders= view.findViewById(R.id.tvDashTotalOrders);
-        TextView tvNewOrders  = view.findViewById(R.id.tvDashNewOrders);
+        TextView tvRevenue = view.findViewById(R.id.tvDashRevenue);
+        TextView tvTotalOrders = view.findViewById(R.id.tvDashTotalOrders);
+        TextView tvNewOrders = view.findViewById(R.id.tvDashNewOrders);
 
         // Note: Waiting for Backend endpoint `/api/restaurants/{id}/stats`
-        // Providing mocked zero states temporarily to fix removed SQLite compilation errors
+        // Providing mocked zero states temporarily to fix removed SQLite compilation
+        // errors
         double revenue = 0.0;
         int totalOrders = 0;
 

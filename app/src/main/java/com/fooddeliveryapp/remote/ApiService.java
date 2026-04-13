@@ -2,6 +2,8 @@ package com.fooddeliveryapp.remote;
 
 import com.fooddeliveryapp.models.Food;
 import com.fooddeliveryapp.models.Order;
+import com.fooddeliveryapp.models.OrderDetail;
+import com.fooddeliveryapp.models.OrderRequest;
 import com.fooddeliveryapp.models.Restaurant;
 import com.fooddeliveryapp.models.User;
 import retrofit2.Call;
@@ -33,17 +35,21 @@ public interface ApiService {
 
     // ==== ORDERS ====
     @POST("orders")
-    Call<Order> placeOrder(@Body Order order);
+    Call<Order> placeOrder(@Body OrderRequest request);
 
     @GET("orders/user/{userId}")
     Call<List<Order>> getUserOrders(@Path("userId") long userId);
 
     @GET("orders/{id}")
-    Call<Order> getOrderById(@Path("id") int id);
+    Call<Order> getOrderById(@Path("id") long id);
+
+    /** Full order detail with items list */
+    @GET("orders/{id}/detail")
+    Call<OrderDetail> getOrderDetail(@Path("id") long id);
 
     @GET("orders/restaurant/{id}")
     Call<List<Order>> getRestaurantOrders(@Path("id") int id);
 
     @PUT("orders/{id}/status")
-    Call<Order> updateOrderStatus(@Path("id") int id, @Query("status") String status);
+    Call<Order> updateOrderStatus(@Path("id") long id, @Query("status") String status);
 }

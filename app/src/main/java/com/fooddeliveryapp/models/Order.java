@@ -1,16 +1,20 @@
 package com.fooddeliveryapp.models;
 
 import java.util.List;
+import java.util.Date;
+import com.fooddeliveryapp.utils.AppUtils;
+import com.google.gson.annotations.SerializedName;
 
 public class Order {
-    public static final String STATUS_PENDING    = "Pending";
-    public static final String STATUS_CONFIRMED  = "Confirmed";
-    public static final String STATUS_PREPARING  = "Preparing";
-    public static final String STATUS_DELIVERING = "Delivering";
-    public static final String STATUS_DELIVERED  = "Delivered";
-    public static final String STATUS_CANCELLED  = "Cancelled";
+    // Must match backend OrderStatus enum / string values exactly
+    public static final String STATUS_PENDING    = "PENDING";
+    public static final String STATUS_CONFIRMED  = "CONFIRMED";
+    public static final String STATUS_PREPARING  = "PREPARING";
+    public static final String STATUS_DELIVERING = "DELIVERING";
+    public static final String STATUS_DELIVERED  = "DELIVERED";
+    public static final String STATUS_CANCELLED  = "CANCELLED";
 
-    private int id;
+    private long id;
     private int userId;
     private int restaurantId;
     private String restaurantName;
@@ -24,69 +28,158 @@ public class Order {
     private String paymentMethod;
     private String voucherCode;
     private String notes;
-    private long createdAt;
+    
+    @SerializedName("orderDate")
+    private Date orderDate;
+    
     private long updatedAt;
     private String estimatedDelivery;
 
-    public Order() {}
+    public Order() {
+    }
 
     // Getters & Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public long getId() {
+        return id;
+    }
 
-    public int getUserId() { return userId; }
-    public void setUserId(int userId) { this.userId = userId; }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-    public int getRestaurantId() { return restaurantId; }
-    public void setRestaurantId(int restaurantId) { this.restaurantId = restaurantId; }
+    public int getUserId() {
+        return userId;
+    }
 
-    public String getRestaurantName() { return restaurantName; }
-    public void setRestaurantName(String restaurantName) { this.restaurantName = restaurantName; }
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
-    public List<CartItem> getItems() { return items; }
-    public void setItems(List<CartItem> items) { this.items = items; }
+    public int getRestaurantId() {
+        return restaurantId;
+    }
 
-    public double getSubtotal() { return subtotal; }
-    public void setSubtotal(double subtotal) { this.subtotal = subtotal; }
+    public void setRestaurantId(int restaurantId) {
+        this.restaurantId = restaurantId;
+    }
 
-    public double getDeliveryFee() { return deliveryFee; }
-    public void setDeliveryFee(double deliveryFee) { this.deliveryFee = deliveryFee; }
+    public String getRestaurantName() {
+        return restaurantName;
+    }
 
-    public double getDiscount() { return discount; }
-    public void setDiscount(double discount) { this.discount = discount; }
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
+    }
 
-    public double getTotal() { return total; }
-    public void setTotal(double total) { this.total = total; }
+    public List<CartItem> getItems() {
+        return items;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public void setItems(List<CartItem> items) {
+        this.items = items;
+    }
 
-    public String getDeliveryAddress() { return deliveryAddress; }
-    public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
+    public double getSubtotal() {
+        return subtotal;
+    }
 
-    public String getPaymentMethod() { return paymentMethod; }
-    public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
+    }
 
-    public String getVoucherCode() { return voucherCode; }
-    public void setVoucherCode(String voucherCode) { this.voucherCode = voucherCode; }
+    public double getDeliveryFee() {
+        return deliveryFee;
+    }
 
-    public String getNotes() { return notes; }
-    public void setNotes(String notes) { this.notes = notes; }
+    public void setDeliveryFee(double deliveryFee) {
+        this.deliveryFee = deliveryFee;
+    }
 
-    public long getCreatedAt() { return createdAt; }
-    public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
+    public double getDiscount() {
+        return discount;
+    }
 
-    public long getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(long updatedAt) { this.updatedAt = updatedAt; }
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
 
-    public String getEstimatedDelivery() { return estimatedDelivery; }
-    public void setEstimatedDelivery(String estimatedDelivery) { this.estimatedDelivery = estimatedDelivery; }
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getVoucherCode() {
+        return voucherCode;
+    }
+
+    public void setVoucherCode(String voucherCode) {
+        this.voucherCode = voucherCode;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public long getCreatedAt() {
+        return orderDate != null ? orderDate.getTime() : 0;
+    }
+
+    public void setCreatedAt(long createdAt) {
+        this.orderDate = new Date(createdAt);
+    }
+
+    public long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(long updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getEstimatedDelivery() {
+        return estimatedDelivery;
+    }
+
+    public void setEstimatedDelivery(String estimatedDelivery) {
+        this.estimatedDelivery = estimatedDelivery;
+    }
 
     public String getOrderCode() {
         return "#FD" + String.format("%05d", id);
     }
 
     public String getTotalText() {
-        return String.format("$%.2f", total);
+        return AppUtils.formatPrice(total);
     }
 }

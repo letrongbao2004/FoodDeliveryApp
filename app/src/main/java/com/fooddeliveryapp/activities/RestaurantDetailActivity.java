@@ -41,7 +41,7 @@ public class RestaurantDetailActivity extends AppCompatActivity
     private int restaurantId;
 
     private TextView tvName, tvCategory, tvRating, tvDeliveryTime,
-                     tvDeliveryFee, tvDistance, tvStatus;
+            tvDeliveryFee, tvDistance, tvStatus;
     private RecyclerView rvFoods;
     private FoodAdapter foodAdapter;
 
@@ -50,26 +50,29 @@ public class RestaurantDetailActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_detail);
 
-        apiService   = ApiClient.getClient(this).create(ApiService.class);
-        cartManager  = CartManager.getInstance(this);
-        session      = SessionManager.getInstance(this);
+        apiService = ApiClient.getClient(this).create(ApiService.class);
+        cartManager = CartManager.getInstance(this);
+        session = SessionManager.getInstance(this);
 
         restaurantId = getIntent().getIntExtra(EXTRA_RESTAURANT_ID, -1);
-        if (restaurantId == -1) { finish(); return; }
+        if (restaurantId == -1) {
+            finish();
+            return;
+        }
 
         bindViews();
         fetchRestaurantDetails();
     }
 
     private void bindViews() {
-        tvName         = findViewById(R.id.tvRestaurantDetailName);
-        tvCategory     = findViewById(R.id.tvRestaurantDetailCategory);
-        tvRating       = findViewById(R.id.tvRestaurantDetailRating);
+        tvName = findViewById(R.id.tvRestaurantDetailName);
+        tvCategory = findViewById(R.id.tvRestaurantDetailCategory);
+        tvRating = findViewById(R.id.tvRestaurantDetailRating);
         tvDeliveryTime = findViewById(R.id.tvRestaurantDetailDeliveryTime);
-        tvDeliveryFee  = findViewById(R.id.tvRestaurantDetailDeliveryFee);
-        tvDistance     = findViewById(R.id.tvRestaurantDetailDistance);
-        tvStatus       = findViewById(R.id.tvRestaurantDetailStatus);
-        rvFoods        = findViewById(R.id.rvFoods);
+        tvDeliveryFee = findViewById(R.id.tvRestaurantDetailDeliveryFee);
+        tvDistance = findViewById(R.id.tvRestaurantDetailDistance);
+        tvStatus = findViewById(R.id.tvRestaurantDetailStatus);
+        rvFoods = findViewById(R.id.rvFoods);
     }
 
     private void fetchRestaurantDetails() {
@@ -77,7 +80,8 @@ public class RestaurantDetailActivity extends AppCompatActivity
         apiService.getRestaurants().enqueue(new Callback<List<Restaurant>>() {
             @Override
             public void onResponse(Call<List<Restaurant>> call, Response<List<Restaurant>> response) {
-                if (isFinishing() || isDestroyed()) return;
+                if (isFinishing() || isDestroyed())
+                    return;
                 if (response.isSuccessful() && response.body() != null) {
                     for (Restaurant r : response.body()) {
                         if (r.getId() == restaurantId) {
@@ -90,7 +94,8 @@ public class RestaurantDetailActivity extends AppCompatActivity
                         populateHeader();
                         loadFoods();
                     } else {
-                        Toast.makeText(RestaurantDetailActivity.this, "Restaurant not found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RestaurantDetailActivity.this, "Restaurant not found", Toast.LENGTH_SHORT)
+                                .show();
                         finish();
                     }
                 }
@@ -98,7 +103,8 @@ public class RestaurantDetailActivity extends AppCompatActivity
 
             @Override
             public void onFailure(Call<List<Restaurant>> call, Throwable t) {
-                if (isFinishing() || isDestroyed()) return;
+                if (isFinishing() || isDestroyed())
+                    return;
                 Toast.makeText(RestaurantDetailActivity.this, "Network error", Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -119,8 +125,8 @@ public class RestaurantDetailActivity extends AppCompatActivity
         tvCategory.setText(restaurant.getCategory());
         tvRating.setText(restaurant.getRatingText() + " ★");
         tvDeliveryTime.setText(restaurant.getDeliveryTimeText());
-        tvDeliveryFee.setText(restaurant.getDeliveryFee() == 0 ?
-                "Free Delivery" : AppUtils.formatPrice(restaurant.getDeliveryFee()) + " delivery");
+        tvDeliveryFee.setText(restaurant.getDeliveryFee() == 0 ? "Free Delivery"
+                : AppUtils.formatPrice(restaurant.getDeliveryFee()) + " delivery");
         tvDistance.setText(restaurant.getDistanceText());
         tvStatus.setText(restaurant.isOpen() ? "● Open" : "● Closed");
         tvStatus.setTextColor(getColor(restaurant.isOpen() ? R.color.success : R.color.danger));
@@ -136,7 +142,8 @@ public class RestaurantDetailActivity extends AppCompatActivity
         apiService.getFoods(restaurant.getId()).enqueue(new Callback<List<Food>>() {
             @Override
             public void onResponse(Call<List<Food>> call, Response<List<Food>> response) {
-                if (isFinishing() || isDestroyed()) return;
+                if (isFinishing() || isDestroyed())
+                    return;
                 if (response.isSuccessful() && response.body() != null) {
                     List<Food> foods = response.body();
                     // Pass restaurant open status — adapter disables ordering when closed
@@ -144,8 +151,7 @@ public class RestaurantDetailActivity extends AppCompatActivity
                             RestaurantDetailActivity.this,
                             foods,
                             RestaurantDetailActivity.this,
-                            restaurant.isOpen()
-                    );
+                            restaurant.isOpen());
                     rvFoods.setLayoutManager(new LinearLayoutManager(RestaurantDetailActivity.this));
                     rvFoods.setAdapter(foodAdapter);
                 }
@@ -153,7 +159,8 @@ public class RestaurantDetailActivity extends AppCompatActivity
 
             @Override
             public void onFailure(Call<List<Food>> call, Throwable t) {
-                if (isFinishing() || isDestroyed()) return;
+                if (isFinishing() || isDestroyed())
+                    return;
                 Toast.makeText(RestaurantDetailActivity.this, "Failed to load menu", Toast.LENGTH_SHORT).show();
             }
         });
@@ -167,28 +174,26 @@ public class RestaurantDetailActivity extends AppCompatActivity
     @Override
     public void onAddToCartClick(Food food) {
         cartManager.addToCart(session.getUserId(), food, 1, "Regular", "Normal", "", "");
-        
+
         com.google.android.material.snackbar.Snackbar.make(
                 findViewById(android.R.id.content),
                 String.format("Đã thêm 1x %s vào giỏ hàng!", food.getName()),
-                com.google.android.material.snackbar.Snackbar.LENGTH_LONG
-        ).setAction("GIỎ HÀNG", v -> {
-            startActivity(new Intent(RestaurantDetailActivity.this, CartActivity.class));
-        }).show();
+                com.google.android.material.snackbar.Snackbar.LENGTH_LONG).setAction("GIỎ HÀNG", v -> {
+                    startActivity(new Intent(RestaurantDetailActivity.this, CartActivity.class));
+                }).show();
     }
 
     private void showCustomizationDialog(Food food) {
         FoodCustomizationDialog dialog = FoodCustomizationDialog.newInstance(food);
         dialog.setOnAddToCartListener((f, qty, size, spice, addOns, notes) -> {
             cartManager.addToCart(session.getUserId(), f, qty, size, spice, addOns, notes);
-            
+
             com.google.android.material.snackbar.Snackbar.make(
                     findViewById(android.R.id.content),
                     String.format("Đã thêm %dx %s vào giỏ hàng!", qty, f.getName()),
-                    com.google.android.material.snackbar.Snackbar.LENGTH_LONG
-            ).setAction("GIỎ HÀNG", v -> {
-                startActivity(new Intent(RestaurantDetailActivity.this, CartActivity.class));
-            }).show();
+                    com.google.android.material.snackbar.Snackbar.LENGTH_LONG).setAction("GIỎ HÀNG", v -> {
+                        startActivity(new Intent(RestaurantDetailActivity.this, CartActivity.class));
+                    }).show();
         });
         dialog.show(getSupportFragmentManager(), "FoodCustomization");
     }

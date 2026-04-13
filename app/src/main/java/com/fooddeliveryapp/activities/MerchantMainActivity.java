@@ -28,7 +28,7 @@ public class MerchantMainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_merchant_main);
 
-        session   = SessionManager.getInstance(this);
+        session = SessionManager.getInstance(this);
         bottomNav = findViewById(R.id.merchantBottomNav);
         bottomNav.setOnItemSelectedListener(this);
 

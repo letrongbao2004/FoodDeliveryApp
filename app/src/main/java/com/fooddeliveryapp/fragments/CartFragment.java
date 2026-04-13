@@ -36,10 +36,11 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartActionLi
 
     private static final double DELIVERY_FEE = 1.99;
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_cart, container, false);
     }
 
@@ -48,19 +49,18 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartActionLi
         super.onViewCreated(view, savedInstanceState);
 
         cartManager = CartManager.getInstance(requireContext());
-        session     = SessionManager.getInstance(requireContext());
+        session = SessionManager.getInstance(requireContext());
 
-        rvCart          = view.findViewById(R.id.rvFragmentCart);
+        rvCart = view.findViewById(R.id.rvFragmentCart);
         layoutEmptyCart = view.findViewById(R.id.layoutFragmentEmptyCart);
         layoutCartContent = view.findViewById(R.id.layoutFragmentCartContent);
-        tvSubtotal      = view.findViewById(R.id.tvFragSubtotal);
-        tvTotal         = view.findViewById(R.id.tvFragTotal);
-        btnCheckout     = view.findViewById(R.id.btnFragCheckout);
+        tvSubtotal = view.findViewById(R.id.tvFragSubtotal);
+        tvTotal = view.findViewById(R.id.tvFragTotal);
+        btnCheckout = view.findViewById(R.id.btnFragCheckout);
 
         loadCart();
 
-        btnCheckout.setOnClickListener(v ->
-                startActivity(new Intent(requireContext(), CartActivity.class)));
+        btnCheckout.setOnClickListener(v -> startActivity(new Intent(requireContext(), CartActivity.class)));
     }
 
     @Override
@@ -86,14 +86,15 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartActionLi
 
     private void updateSummary() {
         double sub = cartManager.getSubtotal(session.getUserId());
+        double total = sub + DELIVERY_FEE;
         tvSubtotal.setText(AppUtils.formatPrice(sub));
-        tvTotal.setText(AppUtils.formatPrice(sub + DELIVERY_FEE));
+        tvTotal.setText(AppUtils.formatPrice(total));
+        btnCheckout.setText("Proceed to Checkout - " + AppUtils.formatPrice(total));
     }
 
     @Override
     public void onIncrease(CartItem item, int position) {
         cartManager.incrementQuantity(item.getId(), item.getQuantity());
-        item.setQuantity(item.getQuantity() + 1);
         adapter.updateItem(position);
         updateSummary();
     }
@@ -104,10 +105,10 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartActionLi
             cartManager.removeFromCart(item.getId());
             cartItems.remove(position);
             adapter.removeItem(position);
-            if (cartItems.isEmpty()) loadCart();
+            if (cartItems.isEmpty())
+                loadCart();
         } else {
             cartManager.decrementQuantity(item.getId(), item.getQuantity());
-            item.setQuantity(item.getQuantity() - 1);
             adapter.updateItem(position);
         }
         updateSummary();
@@ -118,7 +119,8 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartActionLi
         cartManager.removeFromCart(item.getId());
         cartItems.remove(position);
         adapter.removeItem(position);
-        if (cartItems.isEmpty()) loadCart();
+        if (cartItems.isEmpty())
+            loadCart();
         updateSummary();
     }
 }

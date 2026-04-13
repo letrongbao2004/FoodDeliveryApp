@@ -3,13 +3,15 @@ package com.fooddeliveryapp.managers;
 import android.content.Context;
 import com.fooddeliveryapp.models.CartItem;
 import com.fooddeliveryapp.models.Food;
+import com.fooddeliveryapp.utils.AppUtils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * CartManager – Singleton providing high-level cart operations completely IN-MEMORY.
+ * CartManager – Singleton providing high-level cart operations completely
+ * IN-MEMORY.
  * Backed by an ArrayList to completely bypass the deleted SQLite Database.
  */
 public class CartManager {
@@ -31,8 +33,8 @@ public class CartManager {
 
     /** Add or merge food into cart. */
     public long addToCart(long userId, Food food, int qty,
-                          String size, String spice, String addOns, String notes) {
-        
+            String size, String spice, String addOns, String notes) {
+
         // Merge logic if same food is added
         for (CartItem item : cartList) {
             if (item.getFood() != null && item.getFood().getId() == food.getId() && item.getUserId() == userId) {
@@ -52,7 +54,7 @@ public class CartManager {
         newItem.setSelectedSize(size);
         newItem.setSelectedSpice(spice);
         newItem.setSelectedAddOns(addOns);
-        
+
         cartList.add(newItem);
         return newItem.getId();
     }
@@ -134,6 +136,6 @@ public class CartManager {
 
     /** Formatted subtotal string. */
     public String getSubtotalText(long userId) {
-        return String.format("$%.2f", getSubtotal(userId));
+        return AppUtils.formatPrice(getSubtotal(userId));
     }
 }

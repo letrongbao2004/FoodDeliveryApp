@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Date;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "orders")
@@ -22,7 +22,26 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id")
+    @JsonIgnore
+    private Restaurant restaurant;
+
+    // Expose userId directly for the Android client
+    public Long getUserId() {
+        return user != null ? user.getId() : null;
+    }
+
+    public Long getRestaurantId() {
+        return restaurant != null ? restaurant.getId() : null;
+    }
+
+    public String getRestaurantName() {
+        return restaurant != null ? restaurant.getName() : null;
+    }
 
     @Column(nullable = false)
     private String status; // PENDING, PROCESSING, DELIVERING, COMPLETED, CANCELLED
@@ -30,6 +49,8 @@ public class Order {
     private double subtotal;
     private double deliveryFee;
     private double total;
+
+    private String deliveryAddress;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
@@ -39,5 +60,8 @@ public class Order {
     private Long version;
     
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
     private List<OrderItem> items;
 }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fooddeliveryapp.R;
 import com.fooddeliveryapp.models.Restaurant;
+import com.fooddeliveryapp.utils.AppUtils;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
     private final OnRestaurantClickListener listener;
 
     public RestaurantAdapter(Context context, List<Restaurant> restaurants,
-                             OnRestaurantClickListener listener) {
+            OnRestaurantClickListener listener) {
         this.context = context;
         this.restaurants = restaurants;
         this.listener = listener;
@@ -37,7 +38,8 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
         notifyDataSetChanged();
     }
 
-    @NonNull @Override
+    @NonNull
+    @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context)
                 .inflate(R.layout.item_restaurant, parent, false);
@@ -52,8 +54,8 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
         holder.tvRating.setText(r.getRatingText());
         holder.tvDistance.setText(r.getDistanceText());
         holder.tvDeliveryTime.setText(r.getDeliveryTimeText());
-        holder.tvDeliveryFee.setText(r.getDeliveryFee() == 0 ?
-                "Free Delivery" : String.format("$%.2f delivery", r.getDeliveryFee()));
+        holder.tvDeliveryFee.setText(
+                r.getDeliveryFee() == 0 ? "Free Delivery" : AppUtils.formatPrice(r.getDeliveryFee()) + " delivery");
         holder.tvStatus.setText(r.isOpen() ? "Open" : "Closed");
         holder.tvStatus.setTextColor(context.getColor(
                 r.isOpen() ? R.color.success : R.color.danger));
@@ -67,27 +69,29 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
     }
 
     @Override
-    public int getItemCount() { return restaurants.size(); }
+    public int getItemCount() {
+        return restaurants.size();
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivRestaurant;
         TextView tvName, tvCategory, tvRating, tvDistance,
-                 tvDeliveryTime, tvDeliveryFee, tvStatus,
-                 tvBadgeFree, tvBadgePromo, tvBadgeFeatured;
+                tvDeliveryTime, tvDeliveryFee, tvStatus,
+                tvBadgeFree, tvBadgePromo, tvBadgeFeatured;
 
         ViewHolder(View itemView) {
             super(itemView);
-            ivRestaurant  = itemView.findViewById(R.id.ivRestaurant);
-            tvName        = itemView.findViewById(R.id.tvRestaurantName);
-            tvCategory    = itemView.findViewById(R.id.tvCategory);
-            tvRating      = itemView.findViewById(R.id.tvRating);
-            tvDistance    = itemView.findViewById(R.id.tvDistance);
-            tvDeliveryTime= itemView.findViewById(R.id.tvDeliveryTime);
+            ivRestaurant = itemView.findViewById(R.id.ivRestaurant);
+            tvName = itemView.findViewById(R.id.tvRestaurantName);
+            tvCategory = itemView.findViewById(R.id.tvCategory);
+            tvRating = itemView.findViewById(R.id.tvRating);
+            tvDistance = itemView.findViewById(R.id.tvDistance);
+            tvDeliveryTime = itemView.findViewById(R.id.tvDeliveryTime);
             tvDeliveryFee = itemView.findViewById(R.id.tvDeliveryFee);
-            tvStatus      = itemView.findViewById(R.id.tvStatus);
-            tvBadgeFree   = itemView.findViewById(R.id.tvBadgeFree);
-            tvBadgePromo  = itemView.findViewById(R.id.tvBadgePromo);
-            tvBadgeFeatured= itemView.findViewById(R.id.tvBadgeFeatured);
+            tvStatus = itemView.findViewById(R.id.tvStatus);
+            tvBadgeFree = itemView.findViewById(R.id.tvBadgeFree);
+            tvBadgePromo = itemView.findViewById(R.id.tvBadgePromo);
+            tvBadgeFeatured = itemView.findViewById(R.id.tvBadgeFeatured);
         }
     }
 }

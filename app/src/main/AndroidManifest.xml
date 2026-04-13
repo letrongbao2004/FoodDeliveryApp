@@ -61,6 +61,19 @@
             android:name=".activities.OrderTrackingActivity"
             android:exported="false" />
 
+        <!-- Order Detail -->
+        <activity
+            android:name=".activities.OrderDetailActivity"
+            android:exported="false"
+            android:label="Order Detail"
+            android:parentActivityName=".activities.MainActivity" />
+
+        <!-- MoMo Payment -->
+        <activity
+            android:name=".activities.PaymentActivity"
+            android:exported="false"
+            android:label="MoMo Payment" />
+
         <!-- Merchant Main -->
         <activity
             android:name=".activities.MerchantMainActivity"

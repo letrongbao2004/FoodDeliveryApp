@@ -25,11 +25,12 @@ public class Restaurant {
     private String phone;
     private String openHours;
 
-    public Restaurant() {}
+    public Restaurant() {
+    }
 
     public Restaurant(String name, String description, String address, String imageUrl,
-                      String category, double rating, double deliveryFee,
-                      int deliveryTime, double distance, boolean isOpen) {
+            String category, double rating, double deliveryFee,
+            int deliveryTime, double distance, boolean isOpen) {
         this.name = name;
         this.description = description;
         this.address = address;
@@ -43,62 +44,157 @@ public class Restaurant {
     }
 
     // Getters & Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getName() {
+        return name;
+    }
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public String getDescription() {
+        return description;
+    }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public double getRating() { return rating; }
-    public void setRating(double rating) { this.rating = rating; }
+    public String getAddress() {
+        return address;
+    }
 
-    public int getReviewCount() { return reviewCount; }
-    public void setReviewCount(int reviewCount) { this.reviewCount = reviewCount; }
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-    public double getDeliveryFee() { return deliveryFee; }
-    public void setDeliveryFee(double deliveryFee) { this.deliveryFee = deliveryFee; }
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
-    public int getDeliveryTime() { return deliveryTime; }
-    public void setDeliveryTime(int deliveryTime) { this.deliveryTime = deliveryTime; }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
-    public double getMinOrder() { return minOrder; }
-    public void setMinOrder(double minOrder) { this.minOrder = minOrder; }
+    public String getCategory() {
+        return category;
+    }
 
-    public double getDistance() { return distance; }
-    public void setDistance(double distance) { this.distance = distance; }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-    public boolean isOpen() { return isOpen; }
-    public void setOpen(boolean open) { isOpen = open; }
+    public double getRating() {
+        return rating;
+    }
 
-    public boolean isFeatured() { return isFeatured; }
-    public void setFeatured(boolean featured) { isFeatured = featured; }
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
 
-    public boolean isHasFreeDelivery() { return hasFreeDelivery; }
-    public void setHasFreeDelivery(boolean hasFreeDelivery) { this.hasFreeDelivery = hasFreeDelivery; }
+    public int getReviewCount() {
+        return reviewCount;
+    }
 
-    public boolean isHasPromo() { return hasPromo; }
-    public void setHasPromo(boolean hasPromo) { this.hasPromo = hasPromo; }
+    public void setReviewCount(int reviewCount) {
+        this.reviewCount = reviewCount;
+    }
 
-    public int getOwnerId() { return ownerId; }
-    public void setOwnerId(int ownerId) { this.ownerId = ownerId; }
+    public double getDeliveryFee() {
+        return deliveryFee;
+    }
 
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public void setDeliveryFee(double deliveryFee) {
+        this.deliveryFee = deliveryFee;
+    }
 
-    public String getOpenHours() { return openHours; }
-    public void setOpenHours(String openHours) { this.openHours = openHours; }
+    public int getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public void setDeliveryTime(int deliveryTime) {
+        this.deliveryTime = deliveryTime;
+    }
+
+    public double getMinOrder() {
+        return minOrder;
+    }
+
+    public void setMinOrder(double minOrder) {
+        this.minOrder = minOrder;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
+    }
+
+    public boolean isFeatured() {
+        return isFeatured;
+    }
+
+    public void setFeatured(boolean featured) {
+        isFeatured = featured;
+    }
+
+    public boolean isHasFreeDelivery() {
+        return hasFreeDelivery;
+    }
+
+    public void setHasFreeDelivery(boolean hasFreeDelivery) {
+        this.hasFreeDelivery = hasFreeDelivery;
+    }
+
+    public boolean isHasPromo() {
+        return hasPromo;
+    }
+
+    public void setHasPromo(boolean hasPromo) {
+        this.hasPromo = hasPromo;
+    }
+
+    public int getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getOpenHours() {
+        return openHours;
+    }
+
+    public void setOpenHours(String openHours) {
+        this.openHours = openHours;
+    }
 
     public String getDeliveryTimeText() {
         return deliveryTime + " mins";

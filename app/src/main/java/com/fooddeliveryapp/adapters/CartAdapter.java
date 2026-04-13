@@ -19,7 +19,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     public interface OnCartActionListener {
         void onIncrease(CartItem item, int position);
+
         void onDecrease(CartItem item, int position);
+
         void onRemove(CartItem item, int position);
     }
 
@@ -28,12 +30,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     private final OnCartActionListener listener;
 
     public CartAdapter(Context context, List<CartItem> items, OnCartActionListener listener) {
-        this.context  = context;
-        this.items    = items;
+        this.context = context;
+        this.items = items;
         this.listener = listener;
     }
 
-    @NonNull @Override
+    @NonNull
+    @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context)
                 .inflate(R.layout.item_cart, parent, false);
@@ -61,7 +64,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     }
 
     @Override
-    public int getItemCount() { return items.size(); }
+    public int getItemCount() {
+        return items.size();
+    }
 
     public void removeItem(int position) {
         items.remove(position);
@@ -80,14 +85,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
         ViewHolder(View itemView) {
             super(itemView);
-            ivFood          = itemView.findViewById(R.id.ivCartFood);
-            tvName          = itemView.findViewById(R.id.tvCartFoodName);
-            tvPrice         = itemView.findViewById(R.id.tvCartItemPrice);
-            tvQuantity      = itemView.findViewById(R.id.tvCartQuantity);
+            ivFood = itemView.findViewById(R.id.ivCartFood);
+            tvName = itemView.findViewById(R.id.tvCartFoodName);
+            tvPrice = itemView.findViewById(R.id.tvCartItemPrice);
+            tvQuantity = itemView.findViewById(R.id.tvCartQuantity);
             tvCustomization = itemView.findViewById(R.id.tvCartCustomization);
-            btnIncrease     = itemView.findViewById(R.id.btnCartIncrease);
-            btnDecrease     = itemView.findViewById(R.id.btnCartDecrease);
-            btnRemove       = itemView.findViewById(R.id.btnCartRemove);
+            btnIncrease = itemView.findViewById(R.id.btnCartIncrease);
+            btnDecrease = itemView.findViewById(R.id.btnCartDecrease);
+            btnRemove = itemView.findViewById(R.id.btnCartRemove);
         }
     }
 }

@@ -20,6 +20,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 
     public interface OnFoodClickListener {
         void onFoodClick(Food food);
+
         void onAddToCartClick(Food food);
     }
 
@@ -31,10 +32,10 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
     private boolean isRestaurantOpen;
 
     public FoodAdapter(Context context, List<Food> foods,
-                       OnFoodClickListener listener, boolean isRestaurantOpen) {
-        this.context          = context;
-        this.foods            = foods;
-        this.listener         = listener;
+            OnFoodClickListener listener, boolean isRestaurantOpen) {
+        this.context = context;
+        this.foods = foods;
+        this.listener = listener;
         this.isRestaurantOpen = isRestaurantOpen;
     }
 
@@ -48,7 +49,8 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    @NonNull @Override
+    @NonNull
+    @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context)
                 .inflate(R.layout.item_food, parent, false);
@@ -88,7 +90,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
             holder.itemView.setAlpha(0.5f);
             holder.itemView.setClickable(false);
             holder.itemView.setOnClickListener(null);
-            
+
             holder.btnAddToCart.setEnabled(false);
             holder.btnAddToCart.setText("Unavailable");
             holder.btnAddToCart.setBackgroundResource(R.drawable.bg_rounded_primary);
@@ -99,7 +101,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
             // Bình thường: nhà hàng mở, món có sẵn
             holder.itemView.setAlpha(1f);
             holder.itemView.setClickable(true);
-            
+
             holder.btnAddToCart.setEnabled(true);
             holder.btnAddToCart.setText("+");
             holder.btnAddToCart.setBackgroundResource(R.drawable.bg_rounded_primary);
@@ -111,23 +113,25 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
     }
 
     @Override
-    public int getItemCount() { return foods == null ? 0 : foods.size(); }
+    public int getItemCount() {
+        return foods == null ? 0 : foods.size();
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivFood;
         TextView tvName, tvDescription, tvPrice, tvCategory,
-                 tvBadgeBestSeller, tvBadgeNew, btnAddToCart;
+                tvBadgeBestSeller, tvBadgeNew, btnAddToCart;
 
         ViewHolder(View itemView) {
             super(itemView);
-            ivFood            = itemView.findViewById(R.id.ivFood);
-            tvName            = itemView.findViewById(R.id.tvFoodName);
-            tvDescription     = itemView.findViewById(R.id.tvFoodDescription);
-            tvPrice           = itemView.findViewById(R.id.tvFoodPrice);
-            tvCategory        = itemView.findViewById(R.id.tvFoodCategory);
+            ivFood = itemView.findViewById(R.id.ivFood);
+            tvName = itemView.findViewById(R.id.tvFoodName);
+            tvDescription = itemView.findViewById(R.id.tvFoodDescription);
+            tvPrice = itemView.findViewById(R.id.tvFoodPrice);
+            tvCategory = itemView.findViewById(R.id.tvFoodCategory);
             tvBadgeBestSeller = itemView.findViewById(R.id.tvBadgeBestSeller);
-            tvBadgeNew        = itemView.findViewById(R.id.tvBadgeNew);
-            btnAddToCart      = itemView.findViewById(R.id.btnAddToCart);
+            tvBadgeNew = itemView.findViewById(R.id.tvBadgeNew);
+            btnAddToCart = itemView.findViewById(R.id.btnAddToCart);
         }
     }
 }

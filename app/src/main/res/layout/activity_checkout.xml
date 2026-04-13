@@ -52,6 +52,9 @@
                 <RadioButton android:id="@+id/rbEwallet"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="E-Wallet" />
+                <RadioButton android:id="@+id/rbMoMo"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="MoMo Payment" />
             </RadioGroup>
 
             <!-- Voucher -->

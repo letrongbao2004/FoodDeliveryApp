@@ -19,6 +19,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
     public interface OnOrderClickListener {
         void onOrderClick(Order order);
+
         void onTrackOrder(Order order);
     }
 
@@ -27,12 +28,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
     private final OnOrderClickListener listener;
 
     public OrderAdapter(Context context, List<Order> orders, OnOrderClickListener listener) {
-        this.context  = context;
-        this.orders   = orders;
+        this.context = context;
+        this.orders = orders;
         this.listener = listener;
     }
 
-    @NonNull @Override
+    @NonNull
+    @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context)
                 .inflate(R.layout.item_order, parent, false);
@@ -60,21 +62,23 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
     }
 
     @Override
-    public int getItemCount() { return orders.size(); }
+    public int getItemCount() {
+        return orders.size();
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvOrderCode, tvRestaurantName, tvTotal, tvStatus,
-                 tvDate, tvStatusBadge, btnTrack;
+                tvDate, tvStatusBadge, btnTrack;
 
         ViewHolder(View itemView) {
             super(itemView);
-            tvOrderCode      = itemView.findViewById(R.id.tvOrderCode);
+            tvOrderCode = itemView.findViewById(R.id.tvOrderCode);
             tvRestaurantName = itemView.findViewById(R.id.tvOrderRestaurantName);
-            tvTotal          = itemView.findViewById(R.id.tvOrderTotal);
-            tvStatus         = itemView.findViewById(R.id.tvOrderStatus);
-            tvDate           = itemView.findViewById(R.id.tvOrderDate);
-            tvStatusBadge    = itemView.findViewById(R.id.tvOrderStatusBadge);
-            btnTrack         = itemView.findViewById(R.id.btnTrackOrder);
+            tvTotal = itemView.findViewById(R.id.tvOrderTotal);
+            tvStatus = itemView.findViewById(R.id.tvOrderStatus);
+            tvDate = itemView.findViewById(R.id.tvOrderDate);
+            tvStatusBadge = itemView.findViewById(R.id.tvOrderStatusBadge);
+            btnTrack = itemView.findViewById(R.id.btnTrackOrder);
         }
     }
 }
