@@ -62,23 +62,15 @@ public class AppUtils {
         return sdf.format(new Date(millis));
     }
 
-    /** Returns a color resource int for each order status string. */
-    public static int getStatusColor(String status) {
+    public static int getStatusColor(com.fooddeliveryapp.models.OrderStatus status) {
+        if (status == null) return android.R.color.darker_gray;
         switch (status) {
-            case "Pending":
-                return android.R.color.holo_orange_light;
-            case "Confirmed":
-                return android.R.color.holo_blue_light;
-            case "Preparing":
-                return android.R.color.holo_blue_dark;
-            case "Delivering":
-                return android.R.color.holo_purple;
-            case "Delivered":
-                return android.R.color.holo_green_dark;
-            case "Cancelled":
-                return android.R.color.holo_red_light;
-            default:
-                return android.R.color.darker_gray;
+            case ORDER_PLACED: return android.R.color.holo_orange_light;
+            case ORDER_PACKED: return android.R.color.holo_blue_light;
+            case OUT_FOR_DELIVERY: return android.R.color.holo_purple;
+            case DELIVERED: return android.R.color.holo_green_dark;
+            case CANCELLED: return android.R.color.holo_red_light;
+            default: return android.R.color.darker_gray;
         }
     }
 

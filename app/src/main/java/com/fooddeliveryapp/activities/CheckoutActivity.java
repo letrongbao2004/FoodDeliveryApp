@@ -112,6 +112,9 @@ public class CheckoutActivity extends AppCompatActivity {
                         Toast.makeText(CheckoutActivity.this,
                                 "Order Confirmed: " + order.getOrderCode(),
                                 Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(CheckoutActivity.this, OrderDetailActivity.class);
+                        intent.putExtra(OrderDetailActivity.EXTRA_ORDER_ID, order.getId());
+                        startActivity(intent);
                     }
                     finish();
                 });

@@ -47,14 +47,14 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         holder.tvOrderCode.setText(order.getOrderCode());
         holder.tvRestaurantName.setText(order.getRestaurantName());
         holder.tvTotal.setText(order.getTotalText());
-        holder.tvStatus.setText(order.getStatus());
+        holder.tvStatus.setText(order.getStatus() != null ? order.getStatus().name() : "");
         holder.tvDate.setText(AppUtils.formatDate(order.getCreatedAt()));
-        holder.tvStatusBadge.setText(order.getStatus());
+        holder.tvStatusBadge.setText(order.getStatus() != null ? order.getStatus().name() : "");
         holder.tvStatusBadge.setTextColor(
                 context.getColor(AppUtils.getStatusColor(order.getStatus())));
 
-        boolean isActive = !order.getStatus().equals(Order.STATUS_DELIVERED)
-                && !order.getStatus().equals(Order.STATUS_CANCELLED);
+        boolean isActive = order.getStatus() != com.fooddeliveryapp.models.OrderStatus.DELIVERED
+                && order.getStatus() != com.fooddeliveryapp.models.OrderStatus.CANCELLED;
         holder.btnTrack.setVisibility(isActive ? View.VISIBLE : View.GONE);
 
         holder.itemView.setOnClickListener(v -> listener.onOrderClick(order));

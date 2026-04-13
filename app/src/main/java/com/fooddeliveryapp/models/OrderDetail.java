@@ -6,7 +6,7 @@ import java.util.List;
 public class OrderDetail {
     private long id;
     private String orderCode;
-    private String status;
+    private OrderStatus status;
     private double subtotal;
     private double deliveryFee;
     private double total;
@@ -54,7 +54,7 @@ public class OrderDetail {
         return orderCode;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 

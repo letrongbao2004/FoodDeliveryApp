@@ -6,13 +6,7 @@ import com.fooddeliveryapp.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 public class Order {
-    // Must match backend OrderStatus enum / string values exactly
-    public static final String STATUS_PENDING    = "PENDING";
-    public static final String STATUS_CONFIRMED  = "CONFIRMED";
-    public static final String STATUS_PREPARING  = "PREPARING";
-    public static final String STATUS_DELIVERING = "DELIVERING";
-    public static final String STATUS_DELIVERED  = "DELIVERED";
-    public static final String STATUS_CANCELLED  = "CANCELLED";
+    // Removed static string constants in favor of OrderStatus Enum
 
     private long id;
     private int userId;
@@ -23,7 +17,7 @@ public class Order {
     private double deliveryFee;
     private double discount;
     private double total;
-    private String status;
+    private OrderStatus status;
     private String deliveryAddress;
     private String paymentMethod;
     private String voucherCode;
@@ -111,11 +105,11 @@ public class Order {
         this.total = total;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 

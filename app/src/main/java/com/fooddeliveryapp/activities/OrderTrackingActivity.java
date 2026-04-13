@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.fooddeliveryapp.R;
 import com.fooddeliveryapp.managers.OrderManager;
 import com.fooddeliveryapp.models.Order;
+import com.fooddeliveryapp.models.OrderStatus;
 import com.fooddeliveryapp.utils.AppUtils;
 
 public class OrderTrackingActivity extends AppCompatActivity {
@@ -92,7 +93,7 @@ public class OrderTrackingActivity extends AppCompatActivity {
 
     private void populateOrder() {
         tvOrderCode.setText(order.getOrderCode());
-        tvStatus.setText(order.getStatus());
+        tvStatus.setText(order.getStatus() != null ? order.getStatus().name() : "");
         tvRestaurantName.setText(order.getRestaurantName());
         tvTotal.setText(order.getTotalText());
         tvAddress.setText(order.getDeliveryAddress());
@@ -101,40 +102,40 @@ public class OrderTrackingActivity extends AppCompatActivity {
         updateStepIndicators(order.getStatus());
     }
 
-    private void updateStepIndicators(String status) {
+    private void updateStepIndicators(OrderStatus status) {
+        if (status == null) return;
         int activeColor = getColor(R.color.primary);
         int inactiveColor = getColor(R.color.divider);
 
         stepPending.setBackgroundColor(activeColor);
         stepConfirmed.setBackgroundColor(
-                statusAtLeast(status, Order.STATUS_CONFIRMED) ? activeColor : inactiveColor);
+                statusAtLeast(status, OrderStatus.ORDER_PACKED) ? activeColor : inactiveColor);
         stepPreparing.setBackgroundColor(
-                statusAtLeast(status, Order.STATUS_PREPARING) ? activeColor : inactiveColor);
+                statusAtLeast(status, OrderStatus.ORDER_PACKED) ? activeColor : inactiveColor);
         stepDelivering.setBackgroundColor(
-                statusAtLeast(status, Order.STATUS_DELIVERING) ? activeColor : inactiveColor);
+                statusAtLeast(status, OrderStatus.OUT_FOR_DELIVERY) ? activeColor : inactiveColor);
         stepDelivered.setBackgroundColor(
-                statusAtLeast(status, Order.STATUS_DELIVERED) ? activeColor : inactiveColor);
+                statusAtLeast(status, OrderStatus.DELIVERED) ? activeColor : inactiveColor);
 
         int progress = getProgressForStatus(status);
         progressTracking.setProgress(progress);
         tvStatus.setTextColor(getColor(AppUtils.getStatusColor(status)));
     }
 
-    private boolean statusAtLeast(String current, String target) {
+    private boolean statusAtLeast(OrderStatus current, OrderStatus target) {
         return getProgressForStatus(current) >= getProgressForStatus(target);
     }
 
-    private int getProgressForStatus(String status) {
+    private int getProgressForStatus(OrderStatus status) {
+        if (status == null) return 0;
         switch (status) {
-            case Order.STATUS_PENDING:
+            case ORDER_PLACED:
                 return 10;
-            case Order.STATUS_CONFIRMED:
-                return 30;
-            case Order.STATUS_PREPARING:
-                return 55;
-            case Order.STATUS_DELIVERING:
-                return 80;
-            case Order.STATUS_DELIVERED:
+            case ORDER_PACKED:
+                return 40;
+            case OUT_FOR_DELIVERY:
+                return 75;
+            case DELIVERED:
                 return 100;
             default:
                 return 0;
@@ -142,21 +143,22 @@ public class OrderTrackingActivity extends AppCompatActivity {
     }
 
     private void simulateOrderProgress() {
-        String[] statusFlow = {
-                Order.STATUS_CONFIRMED, Order.STATUS_PREPARING,
-                Order.STATUS_DELIVERING, Order.STATUS_DELIVERED
+        OrderStatus[] statusFlow = {
+                OrderStatus.ORDER_PACKED,
+                OrderStatus.OUT_FOR_DELIVERY, 
+                OrderStatus.DELIVERED
         };
         for (int i = 0; i < statusFlow.length; i++) {
-            final String nextStatus = statusFlow[i];
+            final OrderStatus nextStatus = statusFlow[i];
             final long orderId = order.getId();
             handler.postDelayed(() -> {
-                orderManager.updateOrderStatus(orderId, nextStatus, new OrderManager.OrderCallback() {
+                orderManager.updateOrderStatus(orderId, nextStatus.name(), new OrderManager.OrderCallback() {
                     @Override
                     public void onSuccess(Order updatedOrder) {
                         if (isFinishing() || isDestroyed())
                             return;
                         order.setStatus(updatedOrder.getStatus());
-                        tvStatus.setText(updatedOrder.getStatus());
+                        tvStatus.setText(updatedOrder.getStatus() != null ? updatedOrder.getStatus().name() : "");
                         updateStepIndicators(updatedOrder.getStatus());
                     }
 

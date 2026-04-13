@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Date;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
@@ -43,8 +44,9 @@ public class Order {
         return restaurant != null ? restaurant.getName() : null;
     }
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status; // PENDING, PROCESSING, DELIVERING, COMPLETED, CANCELLED
+    private OrderStatus status;
 
     private double subtotal;
     private double deliveryFee;
@@ -54,6 +56,9 @@ public class Order {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
+
+    // Added for Tracking
+    private LocalDateTime updatedAt;
 
     // Fixes the Optimistic Locking Exception!
     @Version

@@ -16,6 +16,8 @@ import com.fooddeliveryapp.adapters.OrderAdapter;
 import com.fooddeliveryapp.managers.OrderManager;
 import com.fooddeliveryapp.models.Order;
 import com.fooddeliveryapp.utils.AppUtils;
+import android.content.Intent;
+import com.fooddeliveryapp.activities.OrderDetailActivity;
 
 import java.util.List;
 
@@ -54,28 +56,10 @@ public class MerchantOrdersFragment extends Fragment implements OrderAdapter.OnO
 
     @Override
     public void onOrderClick(Order order) {
-        // Show status update dialog
-        String[] statuses = { Order.STATUS_CONFIRMED, Order.STATUS_PREPARING,
-                Order.STATUS_DELIVERING, Order.STATUS_DELIVERED,
-                Order.STATUS_CANCELLED };
-        new android.app.AlertDialog.Builder(requireContext())
-                .setTitle("Update Order " + order.getOrderCode())
-                .setItems(statuses, (dialog, which) -> {
-                    orderManager.updateOrderStatus(order.getId(), statuses[which], new OrderManager.OrderCallback() {
-                        @Override
-                        public void onSuccess(Order updatedOrder) {
-                            AppUtils.showToast(requireContext(), "Status updated to: " + statuses[which]);
-                            // Refresh to fetch new statuses natively
-                            onResume();
-                        }
-
-                        @Override
-                        public void onError(String message) {
-                            AppUtils.showToast(requireContext(), "Fail: " + message);
-                        }
-                    });
-                })
-                .show();
+        // Navigate directly to the STOMP managed Order Detail Activity
+        Intent intent = new Intent(requireContext(), OrderDetailActivity.class);
+        intent.putExtra(OrderDetailActivity.EXTRA_ORDER_ID, order.getId());
+        startActivity(intent);
     }
 
     @Override

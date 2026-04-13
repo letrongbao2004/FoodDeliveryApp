@@ -1,4 +1,4 @@
-package com.fooddeliveryapp.api.models;
+package com.fooddeliveryapp.models;
 
 public enum OrderStatus {
     ORDER_PLACED,

@@ -50,7 +50,7 @@ public class OrderService {
         order.setUser(user);
         order.setRestaurant(restaurant);
         order.setDeliveryAddress(request.getDeliveryAddress());
-        order.setStatus("PENDING");
+        order.setStatus(com.fooddeliveryapp.api.models.OrderStatus.ORDER_PLACED);
         order.setOrderDate(new Date());
         order.setDeliveryFee(request.getDeliveryFee());
 
@@ -92,7 +92,7 @@ public class OrderService {
         OrderDetailDto dto = new OrderDetailDto();
         dto.setId(order.getId());
         dto.setOrderCode("#FD" + String.format("%05d", order.getId()));
-        dto.setStatus(order.getStatus());
+        dto.setStatus(order.getStatus().name());
         dto.setSubtotal(order.getSubtotal());
         dto.setDeliveryFee(order.getDeliveryFee());
         dto.setTotal(order.getTotal());

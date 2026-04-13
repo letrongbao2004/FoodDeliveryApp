@@ -76,6 +76,13 @@
                             android:textColor="#888888"
                             android:gravity="center_vertical"/>
                     </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE" android:layout_marginTop="12dp" android:layout_marginBottom="12dp"/>
+
+                    <com.fooddeliveryapp.views.OrderProgressView
+                        android:id="@+id/orderProgressView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -174,6 +181,26 @@
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
+            <!-- Tracking Actions -->
+            <LinearLayout
+                android:id="@+id/layoutTrackingActions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp">
+
+                <Button
+                    android:id="@+id/btnTrackingActionPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/primary"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:padding="12dp"/>
+                    
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

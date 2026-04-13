@@ -3,6 +3,7 @@ com\fooddeliveryapp\api\models\Role.class
 com\fooddeliveryapp\api\dto\OrderDetailDto.class
 com\fooddeliveryapp\api\models\BusinessHours.class
 com\fooddeliveryapp\api\dto\OrderRequest.class
+com\fooddeliveryapp\api\controllers\OrderTrackingController.class
 com\fooddeliveryapp\api\services\OrderService.class
 com\fooddeliveryapp\api\dto\RegisterRequest.class
 com\fooddeliveryapp\api\exception\GlobalExceptionHandler.class
@@ -23,6 +24,9 @@ com\fooddeliveryapp\api\repositories\RestaurantRepository.class
 com\fooddeliveryapp\api\services\AuthService.class
 com\fooddeliveryapp\api\dto\OrderRequest$OrderItemRequest.class
 com\fooddeliveryapp\api\repositories\UserRepository.class
+com\fooddeliveryapp\api\services\OrderTrackingService.class
 com\fooddeliveryapp\api\dto\OrderDetailDto$OrderDetailItemDto.class
+com\fooddeliveryapp\api\dto\OrderStatusResponse.class
 com\fooddeliveryapp\api\controllers\OrderController.class
 com\fooddeliveryapp\api\controllers\RestaurantController.class
+com\fooddeliveryapp\api\dto\OrderStatusUpdateRequest.class

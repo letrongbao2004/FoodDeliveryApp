@@ -2,6 +2,7 @@ package com.fooddeliveryapp.api.controllers;
 
 import com.fooddeliveryapp.api.dto.OrderRequest;
 import com.fooddeliveryapp.api.models.Order;
+import com.fooddeliveryapp.api.models.OrderStatus;
 import com.fooddeliveryapp.api.repositories.OrderRepository;
 import com.fooddeliveryapp.api.services.OrderService;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<?> updateOrderStatus(@PathVariable Long id, @RequestParam String status) {
+    public ResponseEntity<?> updateOrderStatus(@PathVariable Long id, @RequestParam OrderStatus status) {
         return orderRepository.findById(id).map(order -> {
             order.setStatus(status);
             return ResponseEntity.ok(orderRepository.save(order));

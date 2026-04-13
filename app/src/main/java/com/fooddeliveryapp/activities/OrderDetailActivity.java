@@ -21,6 +21,13 @@ import com.fooddeliveryapp.utils.AppUtils;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import androidx.lifecycle.ViewModelProvider;
+import com.fooddeliveryapp.viewmodels.OrderTrackingViewModel;
+import com.fooddeliveryapp.views.OrderProgressView;
+import com.fooddeliveryapp.models.OrderStatus;
+import android.widget.Button;
+import com.fooddeliveryapp.utils.SessionManager;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,6 +39,12 @@ public class OrderDetailActivity extends AppCompatActivity {
     private TextView tvOrderCode, tvStatus, tvDate, tvSubtotal, tvDeliveryFee, tvTotal;
     private RecyclerView rvItems;
     private ProgressBar progressBar;
+    
+    private OrderProgressView orderProgressView;
+    private Button btnTrackingActionPrimary;
+    private OrderTrackingViewModel trackingViewModel;
+    private SessionManager sessionManager;
+    private long currentOrderId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +75,29 @@ public class OrderDetailActivity extends AppCompatActivity {
                 return;
             }
         }
+        this.currentOrderId = orderId;
+
+        orderProgressView = findViewById(R.id.orderProgressView);
+        btnTrackingActionPrimary = findViewById(R.id.btnTrackingActionPrimary);
+        
+        sessionManager = SessionManager.getInstance(this);
+        trackingViewModel = new ViewModelProvider(this).get(OrderTrackingViewModel.class);
+
+        // Observe WS state changes
+        trackingViewModel.getOrderStatusLiveData().observe(this, this::updateUIForStatus);
+
+        // Initiate connection
+        trackingViewModel.connectAndSubscribe(orderId);
 
         loadOrderDetail(orderId);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (currentOrderId != -1) {
+            loadOrderDetail(currentOrderId); // explicit RESYNC
+        }
     }
 
     private void loadOrderDetail(long orderId) {
@@ -87,11 +121,16 @@ public class OrderDetailActivity extends AppCompatActivity {
 
     private void bindDetail(OrderDetail detail) {
         tvOrderCode.setText(detail.getOrderCode());
-        tvStatus.setText(detail.getStatus());
+        tvStatus.setText(detail.getStatus() != null ? detail.getStatus().name() : "");
 
         // Status background color
         int statusColor = AppUtils.getStatusColor(detail.getStatus());
         tvStatus.setBackgroundColor(getColor(statusColor));
+
+        // Sync ViewModel with fetched state explicitly
+        if (detail.getStatus() != null) {
+            trackingViewModel.setExplicitStatus(detail.getStatus());
+        }
 
         // Date
         if (detail.getOrderDate() != null) {
@@ -120,5 +159,39 @@ public class OrderDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateUIForStatus(OrderStatus status) {
+        if (status == null) return;
+
+        // Visual Slider
+        orderProgressView.updateProgress(status);
+        
+        // Header fallback
+        tvStatus.setText(status.name());
+        tvStatus.setBackgroundColor(getColor(AppUtils.getStatusColor(status)));
+
+        // Action Buttons Setup based on Role
+        btnTrackingActionPrimary.setVisibility(View.GONE);
+        String role = sessionManager.getRole(); // Assuming getRole() exists or we map boolean
+
+        if ("MERCHANT".equalsIgnoreCase(role)) {
+            if (status == OrderStatus.ORDER_PLACED) {
+                btnTrackingActionPrimary.setVisibility(View.VISIBLE);
+                btnTrackingActionPrimary.setText("Confirm & Pack Order");
+                btnTrackingActionPrimary.setOnClickListener(v -> trackingViewModel.sendStatusUpdate(OrderStatus.ORDER_PACKED, "MERCHANT"));
+            } else if (status == OrderStatus.ORDER_PACKED) {
+                btnTrackingActionPrimary.setVisibility(View.VISIBLE);
+                btnTrackingActionPrimary.setText("Mark Out for Delivery");
+                btnTrackingActionPrimary.setOnClickListener(v -> trackingViewModel.sendStatusUpdate(OrderStatus.OUT_FOR_DELIVERY, "MERCHANT"));
+            }
+        } else {
+            // CUSTOMER or fallback
+            if (status == OrderStatus.OUT_FOR_DELIVERY) {
+                btnTrackingActionPrimary.setVisibility(View.VISIBLE);
+                btnTrackingActionPrimary.setText("Confirm Delivery Received");
+                btnTrackingActionPrimary.setOnClickListener(v -> trackingViewModel.sendStatusUpdate(OrderStatus.DELIVERED, "CUSTOMER"));
+            }
+        }
     }
 }

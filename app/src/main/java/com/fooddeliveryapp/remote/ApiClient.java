@@ -7,6 +7,8 @@ import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.util.concurrent.TimeUnit;
 
 public class ApiClient {
@@ -37,11 +39,15 @@ public class ApiClient {
                     })
                     .build();
 
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                    .create();
+
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(client)
                     .addConverterFactory(ScalarsConverterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }
         return retrofit;
