@@ -21,11 +21,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Restaurant Header Image Placeholder -->
-            <View
+            <!-- Restaurant Header Image -->
+            <ImageView
+                android:id="@+id/ivRestaurantHeader"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:background="@color/primary_light" />
+                android:scaleType="centerCrop"
+                android:src="@color/primary_light" />
 
             <!-- Restaurant Info Card -->
             <androidx.cardview.widget.CardView

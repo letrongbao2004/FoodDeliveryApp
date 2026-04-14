@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/etEditRestaurantName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Restaurant name"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etEditRestaurantCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Category"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etEditRestaurantDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Description"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etEditRestaurantAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Address"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etEditRestaurantPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Phone"
+        android:inputType="phone"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp" />
+</LinearLayout>
+

@@ -42,7 +42,7 @@ public class SessionManager {
         editor.putString(KEY_NAME, name);
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_PHONE, phone);
-        editor.putString(KEY_ROLE, role);
+        editor.putString(KEY_ROLE, role == null ? "customer" : role.trim());
         editor.putString(KEY_ADDRESS, address);
         editor.apply();
     }
@@ -68,7 +68,8 @@ public class SessionManager {
     }
 
     public String getRole() {
-        return prefs.getString(KEY_ROLE, "customer");
+        String role = prefs.getString(KEY_ROLE, "customer");
+        return role == null ? "customer" : role.trim();
     }
 
     public String getAddress() {
@@ -76,7 +77,7 @@ public class SessionManager {
     }
 
     public boolean isMerchant() {
-        return "merchant".equals(getRole());
+        return "merchant".equalsIgnoreCase(getRole());
     }
 
     public void updateName(String name) {

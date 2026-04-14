@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.fooddeliveryapp.R;
 import com.fooddeliveryapp.adapters.FoodAdapter;
 import com.fooddeliveryapp.dialogs.FoodCustomizationDialog;
@@ -42,6 +43,7 @@ public class RestaurantDetailActivity extends AppCompatActivity
 
     private TextView tvName, tvCategory, tvRating, tvDeliveryTime,
             tvDeliveryFee, tvDistance, tvStatus;
+    private android.widget.ImageView ivRestaurantHeader;
     private RecyclerView rvFoods;
     private FoodAdapter foodAdapter;
 
@@ -72,6 +74,7 @@ public class RestaurantDetailActivity extends AppCompatActivity
         tvDeliveryFee = findViewById(R.id.tvRestaurantDetailDeliveryFee);
         tvDistance = findViewById(R.id.tvRestaurantDetailDistance);
         tvStatus = findViewById(R.id.tvRestaurantDetailStatus);
+        ivRestaurantHeader = findViewById(R.id.ivRestaurantHeader);
         rvFoods = findViewById(R.id.rvFoods);
     }
 
@@ -130,6 +133,11 @@ public class RestaurantDetailActivity extends AppCompatActivity
         tvDistance.setText(restaurant.getDistanceText());
         tvStatus.setText(restaurant.isOpen() ? "● Open" : "● Closed");
         tvStatus.setTextColor(getColor(restaurant.isOpen() ? R.color.success : R.color.danger));
+        if (restaurant.getImageUrl() != null && !restaurant.getImageUrl().isEmpty()) {
+            Glide.with(this).load(restaurant.getImageUrl()).centerCrop().into(ivRestaurantHeader);
+        } else {
+            ivRestaurantHeader.setImageResource(R.mipmap.ic_launcher);
+        }
     }
 
     private void loadFoods() {

@@ -46,6 +46,7 @@ public class AuthController {
                 response.put("phone", user.getPhone() != null ? user.getPhone() : "");
                 response.put("address", user.getAddress() != null ? user.getAddress() : "");
                 response.put("role", user.getRole() != null ? user.getRole().name() : "CUSTOMER");
+                response.put("profileImage", user.getAvatarUrl() != null ? user.getAvatarUrl() : "");
                 response.put("token", jwtService.issueToken(user.getId(), user.getRole()));
                 return ResponseEntity.ok(response);
             }
@@ -64,6 +65,7 @@ public class AuthController {
             response.put("phone", user.getPhone() != null ? user.getPhone() : "");
             response.put("address", user.getAddress() != null ? user.getAddress() : "");
             response.put("role", user.getRole() != null ? user.getRole().name() : "CUSTOMER");
+            response.put("profileImage", user.getAvatarUrl() != null ? user.getAvatarUrl() : "");
             response.put("token", jwtService.issueToken(user.getId(), user.getRole()));
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {

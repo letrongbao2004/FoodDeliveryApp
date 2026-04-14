@@ -122,6 +122,10 @@ public class AuthActivity extends AppCompatActivity {
                     long id = Long.parseLong(data.getOrDefault("id", "0"));
                     String role = data.getOrDefault("role", "customer");
                     session.createSession(id, data.get("name"), email, data.get("phone"), role, data.get("address"));
+                    String profileImage = data.getOrDefault("profileImage", "");
+                    if (!TextUtils.isEmpty(profileImage)) {
+                        session.setAvatarUrl(profileImage);
+                    }
                     String token = data.getOrDefault("token", "");
                     if (token != null && !token.isEmpty())
                         session.setToken(token);
@@ -189,6 +193,10 @@ public class AuthActivity extends AppCompatActivity {
                     String token = data.getOrDefault("token", "");
                     session.createSession(id, data.get("name"), data.get("email"),
                             data.get("phone"), role, data.getOrDefault("address", ""));
+                    String profileImage = data.getOrDefault("profileImage", "");
+                    if (!TextUtils.isEmpty(profileImage)) {
+                        session.setAvatarUrl(profileImage);
+                    }
                     if (token != null && !token.isEmpty()) {
                         session.setToken(token);
                     }

@@ -13,8 +13,8 @@ public class WebSocketManager {
     private Disposable topicDisposable;
 
     private static final String TAG = "WebSocketManager";
-    // 10.0.2.2 is localhost for Android Emulator
-    private static final String WS_URL = "ws://10.0.2.2:8080/ws/websocket"; 
+    // Use host machine LAN IP for real-device testing.
+    private static final String WS_URL = "ws://10.18.12.206:8080/ws/websocket";
 
     private WebSocketManager() {
     }

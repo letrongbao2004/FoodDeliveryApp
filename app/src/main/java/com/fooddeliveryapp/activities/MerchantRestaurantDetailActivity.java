@@ -1,5 +1,6 @@
 package com.fooddeliveryapp.activities;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.fooddeliveryapp.R;
 import com.fooddeliveryapp.adapters.FoodAdapter;
 import com.fooddeliveryapp.models.Food;
@@ -25,9 +27,11 @@ import com.fooddeliveryapp.remote.ApiClient;
 import com.fooddeliveryapp.remote.ApiService;
 import com.fooddeliveryapp.remote.dto.UploadResponse;
 import com.fooddeliveryapp.remote.dto.FoodUpsertRequest;
+import com.fooddeliveryapp.remote.dto.RestaurantUpsertRequest;
 import com.fooddeliveryapp.utils.AppUtils;
 import com.fooddeliveryapp.utils.FileUtils;
 import com.fooddeliveryapp.utils.NetworkUtils;
+import com.fooddeliveryapp.utils.SessionManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,8 +57,11 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
     private TextView btnDashboard;
     private TextView btnOrders;
     private TextView btnVouchers;
+    private TextView btnEditRestaurant;
+    private TextView btnMerchantLogout;
     private View btnAddFood;
     private RecyclerView rvFoods;
+    private ImageView ivRestaurantHeader;
 
     private FoodAdapter adapter;
     private final List<Food> foods = new ArrayList<>();
@@ -101,8 +108,11 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
         btnDashboard = findViewById(R.id.btnMerchantDashboard);
         btnOrders = findViewById(R.id.btnMerchantOrders);
         btnVouchers = findViewById(R.id.btnVouchers);
+        btnEditRestaurant = findViewById(R.id.btnEditRestaurant);
+        btnMerchantLogout = findViewById(R.id.btnMerchantLogout);
         btnAddFood = findViewById(R.id.btnAddFood);
         rvFoods = findViewById(R.id.rvMerchantMenuFoods);
+        ivRestaurantHeader = findViewById(R.id.ivRestaurantHeader);
 
         adapter = new FoodAdapter(this, foods, this, true, true);
         rvFoods.setLayoutManager(new LinearLayoutManager(this));
@@ -111,10 +121,90 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
         btnAddFood.setOnClickListener(v -> showAddFoodDialog());
         btnDashboard.setOnClickListener(v -> startActivity(MerchantDashboardActivity.newIntent(this, restaurantId)));
         btnOrders.setOnClickListener(v -> startActivity(MerchantOrderHistoryActivity.newIntent(this, restaurantId)));
+        btnEditRestaurant.setOnClickListener(v -> showEditRestaurantDialog());
+        btnMerchantLogout.setOnClickListener(v -> logoutMerchant());
 
         btnVouchers.setOnClickListener(v ->
                 Toast.makeText(this, "Voucher feature is coming soon", Toast.LENGTH_SHORT).show()
         );
+    }
+
+    private void showEditRestaurantDialog() {
+        if (restaurant == null) return;
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_restaurant, null);
+        EditText etName = dialogView.findViewById(R.id.etEditRestaurantName);
+        EditText etCategory = dialogView.findViewById(R.id.etEditRestaurantCategory);
+        EditText etDesc = dialogView.findViewById(R.id.etEditRestaurantDesc);
+        EditText etAddress = dialogView.findViewById(R.id.etEditRestaurantAddress);
+        EditText etPhone = dialogView.findViewById(R.id.etEditRestaurantPhone);
+
+        etName.setText(restaurant.getName());
+        etCategory.setText(restaurant.getCategory());
+        etDesc.setText(restaurant.getDescription());
+        etAddress.setText(restaurant.getAddress());
+        etPhone.setText(restaurant.getPhone());
+
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
+                .setTitle("Edit restaurant")
+                .setView(dialogView)
+                .setPositiveButton("Save", null)
+                .setNegativeButton("Cancel", null)
+                .create();
+
+        dialog.setOnShowListener(d -> dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String name = etName.getText().toString().trim();
+            String category = etCategory.getText().toString().trim();
+            String desc = etDesc.getText().toString().trim();
+            String address = etAddress.getText().toString().trim();
+            String phone = etPhone.getText().toString().trim();
+
+            if (TextUtils.isEmpty(name)) {
+                etName.setError("Required");
+                return;
+            }
+
+            RestaurantUpsertRequest req = new RestaurantUpsertRequest(
+                    restaurant.getOwnerId(),
+                    name,
+                    TextUtils.isEmpty(desc) ? null : desc,
+                    TextUtils.isEmpty(restaurant.getImageUrl()) ? null : restaurant.getImageUrl(),
+                    null,
+                    TextUtils.isEmpty(address) ? null : address,
+                    TextUtils.isEmpty(phone) ? null : phone,
+                    TextUtils.isEmpty(category) ? null : category
+            );
+
+            apiService.updateRestaurant(restaurantId, req).enqueue(new Callback<Restaurant>() {
+                @Override
+                public void onResponse(Call<Restaurant> call, Response<Restaurant> response) {
+                    if (isFinishing() || isDestroyed()) return;
+                    if (response.isSuccessful() && response.body() != null) {
+                        restaurant = response.body();
+                        renderRestaurant();
+                        dialog.dismiss();
+                        AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Restaurant updated");
+                    } else {
+                        String err = NetworkUtils.readError(response);
+                        AppUtils.showToast(MerchantRestaurantDetailActivity.this,
+                                err != null ? err : ("Update failed (" + response.code() + ")"));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Restaurant> call, Throwable t) {
+                    if (isFinishing() || isDestroyed()) return;
+                    AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Network Error");
+                }
+            });
+        }));
+        dialog.show();
+    }
+
+    private void logoutMerchant() {
+        SessionManager.getInstance(this).logout();
+        Intent intent = new Intent(this, AuthActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     private void setupToolbar() {
@@ -171,6 +261,11 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
         if (!TextUtils.isEmpty(restaurant.getPhone())) meta.append("SĐT: ").append(restaurant.getPhone()).append('\n');
         if (!TextUtils.isEmpty(restaurant.getOpenHours())) meta.append("Giờ: ").append(restaurant.getOpenHours()).append('\n');
         tvMeta.setText(meta.toString().trim());
+        if (!TextUtils.isEmpty(restaurant.getImageUrl())) {
+            Glide.with(this).load(restaurant.getImageUrl()).centerCrop().into(ivRestaurantHeader);
+        } else {
+            ivRestaurantHeader.setImageResource(R.mipmap.ic_launcher);
+        }
 
         loadFoods();
     }

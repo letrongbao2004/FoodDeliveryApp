@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.fooddeliveryapp.R;
 import com.fooddeliveryapp.models.Restaurant;
 import com.fooddeliveryapp.utils.AppUtils;
@@ -59,6 +60,12 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
         holder.tvStatus.setText(r.isOpen() ? "Open" : "Closed");
         holder.tvStatus.setTextColor(context.getColor(
                 r.isOpen() ? R.color.success : R.color.danger));
+
+        if (r.getImageUrl() != null && !r.getImageUrl().isEmpty()) {
+            Glide.with(context).load(r.getImageUrl()).centerCrop().into(holder.ivRestaurant);
+        } else {
+            holder.ivRestaurant.setImageResource(R.mipmap.ic_launcher);
+        }
 
         // Badge visibility
         holder.tvBadgeFree.setVisibility(r.isHasFreeDelivery() ? View.VISIBLE : View.GONE);

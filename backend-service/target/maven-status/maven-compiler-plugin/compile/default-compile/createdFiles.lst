@@ -1,3 +1,4 @@
+com\fooddeliveryapp\api\controllers\UserController.class
 com\fooddeliveryapp\api\dto\OrderDetailDto.class
 com\fooddeliveryapp\api\dto\OrderRequest.class
 com\fooddeliveryapp\api\services\OrderService.class

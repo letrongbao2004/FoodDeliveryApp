@@ -20,6 +20,7 @@ import com.fooddeliveryapp.activities.AuthActivity;
 import com.fooddeliveryapp.remote.ApiClient;
 import com.fooddeliveryapp.remote.ApiService;
 import com.fooddeliveryapp.remote.dto.UploadResponse;
+import com.fooddeliveryapp.models.User;
 import com.fooddeliveryapp.utils.AppUtils;
 import com.fooddeliveryapp.utils.FileUtils;
 import com.fooddeliveryapp.utils.NetworkUtils;
@@ -72,6 +73,7 @@ public class ProfileFragment extends Fragment {
         if (avatarUrl != null && !avatarUrl.isEmpty()) {
             Glide.with(this).load(avatarUrl).into(ivAvatar);
         }
+        refreshProfileAvatarFromServer();
 
         pickAvatarLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
             if (uri != null) uploadAvatar(uri);
@@ -121,5 +123,28 @@ public class ProfileFragment extends Fragment {
             if (!isAdded()) return;
             AppUtils.showToast(requireContext(), "Upload error");
         }
+    }
+
+    private void refreshProfileAvatarFromServer() {
+        long uid = session.getUserId();
+        if (uid <= 0) return;
+        apiService.getUserDetails((int) uid).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (!isAdded()) return;
+                if (response.isSuccessful() && response.body() != null) {
+                    String url = response.body().getProfileImage();
+                    if (url != null && !url.isEmpty()) {
+                        session.setAvatarUrl(url);
+                        Glide.with(ProfileFragment.this).load(url).into(ivAvatar);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                // Keep silent: avatar refresh is best-effort.
+            }
+        });
     }
 }

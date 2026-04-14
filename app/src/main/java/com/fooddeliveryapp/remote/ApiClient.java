@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class ApiClient {
     // Emulator uses 10.0.2.2 to reach host machine; real devices must use host's LAN IP.
     private static final String BASE_URL_EMULATOR = "http://10.0.2.2:8080/api/";
-    private static final String BASE_URL_DEVICE = "http://192.168.1.91:8080/api/";
+    private static final String BASE_URL_DEVICE = "http://10.18.12.206:8080/api/";
     private static Retrofit retrofit = null;
 
     /** Call this if you need to reset the singleton (e.g., after logout) */
