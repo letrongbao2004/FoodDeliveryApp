@@ -12,7 +12,6 @@ import com.fooddeliveryapp.api.repositories.OrderRepository;
 import com.fooddeliveryapp.api.repositories.RestaurantRepository;
 import com.fooddeliveryapp.api.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,13 +97,11 @@ public class OrderService {
 
         Order saved = orderRepository.save(order);
 
-        // Send system message to chat after order is saved
-        if (restaurant != null) {
-            try {
-                chatService.sendOrderConfirmation(user.getId(), restaurant.getId(), saved.getId());
-            } catch (Exception e) {
-                log.warn("Could not send order-confirmation chat message: {}", e.getMessage());
-            }
+        // Tự động gửi tin nhắn xác nhận hệ thống vào Chat
+        try {
+            chatService.sendOrderConfirmation(user.getId(), restaurant != null ? restaurant.getId() : 0L, saved.getId());
+        } catch (Exception e) {
+            log.error("Failed to send system chat message for order {}: {}", saved.getId(), e.getMessage());
         }
 
         return saved;

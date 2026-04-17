@@ -35,5 +35,16 @@
         android:textStyle="bold"
         android:background="@drawable/bg_rounded_primary" />
 
+    <TextView
+        android:id="@+id/btnMerchantLogoutNoRestaurant"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginTop="10dp"
+        android:text="Logout"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:background="@drawable/bg_rounded_primary" />
+
 </LinearLayout>
 

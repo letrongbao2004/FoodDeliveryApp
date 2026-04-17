@@ -12,7 +12,7 @@
 
         <TextView
             android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Customize Order"
+            android:text="Order"
             android:textSize="20sp" android:textStyle="bold"
             android:textColor="@color/text_primary"
             android:layout_marginBottom="16dp" />
@@ -35,68 +35,6 @@
                 android:textSize="18sp" android:textStyle="bold"
                 android:textColor="@color/primary" />
         </LinearLayout>
-
-        <!-- Size -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Size" android:textStyle="bold" android:textColor="@color/text_primary"
-            android:layout_marginBottom="8dp" />
-        <RadioGroup android:id="@+id/rgDialogSize"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:layout_marginBottom="16dp">
-            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Regular" android:checked="true" android:layout_marginEnd="16dp" />
-            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Large" android:layout_marginEnd="16dp" />
-            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Extra Large" />
-        </RadioGroup>
-
-        <!-- Spice Level -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Spice Level" android:textStyle="bold" android:textColor="@color/text_primary"
-            android:layout_marginBottom="8dp" />
-        <RadioGroup android:id="@+id/rgDialogSpice"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:layout_marginBottom="16dp">
-            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Mild" android:checked="true" android:layout_marginEnd="16dp" />
-            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Medium" android:layout_marginEnd="16dp" />
-            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Hot" />
-        </RadioGroup>
-
-        <!-- Add Ons -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Add-ons" android:textStyle="bold" android:textColor="@color/text_primary"
-            android:layout_marginBottom="8dp" />
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/cgDialogAddOns"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
-            <com.google.android.material.chip.Chip
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Extra Sauce" style="@style/Widget.MaterialComponents.Chip.Filter" />
-            <com.google.android.material.chip.Chip
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Extra Cheese" style="@style/Widget.MaterialComponents.Chip.Filter" />
-            <com.google.android.material.chip.Chip
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="No Onions" style="@style/Widget.MaterialComponents.Chip.Filter" />
-            <com.google.android.material.chip.Chip
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Well Done" style="@style/Widget.MaterialComponents.Chip.Filter" />
-        </com.google.android.material.chip.ChipGroup>
-
-        <!-- Notes -->
-        <EditText android:id="@+id/etDialogNotes"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:hint="Special notes (optional)"
-            android:inputType="textMultiLine" android:minLines="2"
-            android:background="@drawable/edittext_background"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp" />
 
         <!-- Quantity -->
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"

@@ -11,23 +11,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.fooddeliveryapp.R;
+import com.fooddeliveryapp.adapters.AdCarouselAdapter;
 import com.fooddeliveryapp.adapters.FoodAdapter;
 import com.fooddeliveryapp.dialogs.FoodCustomizationDialog;
 import com.fooddeliveryapp.managers.CartManager;
+import com.fooddeliveryapp.models.Advertisement;
 import com.fooddeliveryapp.models.Food;
 import com.fooddeliveryapp.models.Restaurant;
 import com.fooddeliveryapp.remote.ApiClient;
 import com.fooddeliveryapp.remote.ApiService;
 import com.fooddeliveryapp.utils.AppUtils;
 import com.fooddeliveryapp.utils.SessionManager;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantDetailActivity extends AppCompatActivity
@@ -46,6 +52,10 @@ public class RestaurantDetailActivity extends AppCompatActivity
     private android.widget.ImageView ivRestaurantHeader;
     private RecyclerView rvFoods;
     private FoodAdapter foodAdapter;
+    private ViewPager2 vpAds;
+    private TabLayout tabAds;
+    private AdCarouselAdapter adAdapter;
+    private final List<Food> foodCache = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +73,7 @@ public class RestaurantDetailActivity extends AppCompatActivity
         }
 
         bindViews();
+        setupAdsCarousel();
         fetchRestaurantDetails();
     }
 
@@ -76,6 +87,33 @@ public class RestaurantDetailActivity extends AppCompatActivity
         tvStatus = findViewById(R.id.tvRestaurantDetailStatus);
         ivRestaurantHeader = findViewById(R.id.ivRestaurantHeader);
         rvFoods = findViewById(R.id.rvFoods);
+        vpAds = findViewById(R.id.vpRestaurantAdsInline);
+        tabAds = findViewById(R.id.tabRestaurantAdsInlineIndicator);
+    }
+
+    private void setupAdsCarousel() {
+        adAdapter = new AdCarouselAdapter(this, false, new AdCarouselAdapter.Listener() {
+            @Override
+            public void onBannerClick(Advertisement ad) {
+                openAdFood(ad);
+            }
+
+            @Override
+            public void onPrimaryCtaClick(Advertisement ad) {
+                addAdFoodToCart(ad);
+            }
+
+            @Override
+            public void onSecondaryCtaClick(Advertisement ad) {
+                openAdFood(ad);
+            }
+        });
+        if (vpAds != null) {
+            vpAds.setAdapter(adAdapter);
+            if (tabAds != null) {
+                new TabLayoutMediator(tabAds, vpAds, (tab, position) -> {}).attach();
+            }
+        }
     }
 
     private void fetchRestaurantDetails() {
@@ -95,6 +133,7 @@ public class RestaurantDetailActivity extends AppCompatActivity
                     if (restaurant != null) {
                         setupToolbar();
                         populateHeader();
+                        loadAds();
                         loadFoods();
                     } else {
                         Toast.makeText(RestaurantDetailActivity.this, "Restaurant not found", Toast.LENGTH_SHORT)
@@ -153,11 +192,12 @@ public class RestaurantDetailActivity extends AppCompatActivity
                 if (isFinishing() || isDestroyed())
                     return;
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Food> foods = response.body();
+                    foodCache.clear();
+                    foodCache.addAll(response.body());
                     // Pass restaurant open status — adapter disables ordering when closed
                     foodAdapter = new FoodAdapter(
                             RestaurantDetailActivity.this,
-                            foods,
+                            foodCache,
                             RestaurantDetailActivity.this,
                             restaurant.isOpen());
                     rvFoods.setLayoutManager(new LinearLayoutManager(RestaurantDetailActivity.this));
@@ -172,6 +212,61 @@ public class RestaurantDetailActivity extends AppCompatActivity
                 Toast.makeText(RestaurantDetailActivity.this, "Failed to load menu", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void loadAds() {
+        apiService.getAds(10).enqueue(new Callback<List<Advertisement>>() {
+            @Override
+            public void onResponse(Call<List<Advertisement>> call, Response<List<Advertisement>> response) {
+                if (isFinishing() || isDestroyed()) return;
+                if (!response.isSuccessful() || response.body() == null) return;
+                List<Advertisement> filtered = new ArrayList<>();
+                for (Advertisement ad : response.body()) {
+                    if (ad.getMenuItem() != null && ad.getMenuItem().getRestaurantId() == restaurantId) {
+                        filtered.add(ad);
+                    }
+                }
+                adAdapter.submit(filtered);
+                if (vpAds != null) {
+                    vpAds.setVisibility(filtered.isEmpty() ? View.GONE : View.VISIBLE);
+                }
+                if (tabAds != null) {
+                    tabAds.setVisibility(filtered.size() > 1 ? View.VISIBLE : View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Advertisement>> call, Throwable t) {
+                if (isFinishing() || isDestroyed()) return;
+                if (vpAds != null) vpAds.setVisibility(View.GONE);
+                if (tabAds != null) tabAds.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void openAdFood(Advertisement ad) {
+        Food food = findFoodByAd(ad);
+        if (food != null) {
+            showCustomizationDialog(food);
+        }
+    }
+
+    private void addAdFoodToCart(Advertisement ad) {
+        Food food = findFoodByAd(ad);
+        if (food == null) {
+            Toast.makeText(this, "Menu item not found", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        onAddToCartClick(food);
+    }
+
+    private Food findFoodByAd(Advertisement ad) {
+        if (ad == null || ad.getMenuItem() == null) return null;
+        int targetId = ad.getMenuItem().getId();
+        for (Food f : foodCache) {
+            if (f.getId() == targetId) return f;
+        }
+        return null;
     }
 
     @Override

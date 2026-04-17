@@ -54,18 +54,31 @@ public class MerchantMainActivity extends AppCompatActivity {
                 }
 
                 // 404: no restaurant yet -> show single create screen
-                setContentView(R.layout.activity_merchant_no_restaurant);
-                TextView btn = findViewById(R.id.btnCreateRestaurant);
-                btn.setOnClickListener(v -> startActivity(new Intent(MerchantMainActivity.this, MerchantRestaurantSetupActivity.class)));
+                showNoRestaurantScreen();
             }
 
             @Override
             public void onFailure(Call<Restaurant> call, Throwable t) {
                 if (isFinishing() || isDestroyed()) return;
-                setContentView(R.layout.activity_merchant_no_restaurant);
-                TextView btn = findViewById(R.id.btnCreateRestaurant);
-                btn.setOnClickListener(v -> startActivity(new Intent(MerchantMainActivity.this, MerchantRestaurantSetupActivity.class)));
+                showNoRestaurantScreen();
             }
+        });
+    }
+
+    private void showNoRestaurantScreen() {
+        setContentView(R.layout.activity_merchant_no_restaurant);
+        TextView btnCreate = findViewById(R.id.btnCreateRestaurant);
+        TextView btnLogout = findViewById(R.id.btnMerchantLogoutNoRestaurant);
+
+        btnCreate.setOnClickListener(v ->
+                startActivity(new Intent(MerchantMainActivity.this, MerchantRestaurantSetupActivity.class)));
+
+        btnLogout.setOnClickListener(v -> {
+            session.logout();
+            Intent intent = new Intent(MerchantMainActivity.this, AuthActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         });
     }
 }

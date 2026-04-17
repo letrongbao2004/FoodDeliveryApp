@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/etAdTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ad title"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/etAdDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Description (optional)"
+        android:inputType="textMultiLine" />
+
+    <Spinner
+        android:id="@+id/spAdFood"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp" />
+
+    <ImageView
+        android:id="@+id/ivAdImage"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/edittext_background"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/btnPickAdImage"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_rounded_primary"
+        android:gravity="center"
+        android:text="Pick Ad Image"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+</LinearLayout>

@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,11 +13,6 @@ import com.fooddeliveryapp.R;
 import com.fooddeliveryapp.models.Food;
 import com.fooddeliveryapp.utils.AppUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FoodCustomizationDialog extends BottomSheetDialogFragment {
 
@@ -93,10 +86,6 @@ public class FoodCustomizationDialog extends BottomSheetDialogFragment {
         TextView btnIncrease = view.findViewById(R.id.btnDialogIncrease);
         TextView btnDecrease = view.findViewById(R.id.btnDialogDecrease);
         TextView btnAdd = view.findViewById(R.id.btnDialogAddToCart);
-        RadioGroup rgSize = view.findViewById(R.id.rgDialogSize);
-        RadioGroup rgSpice = view.findViewById(R.id.rgDialogSpice);
-        ChipGroup cgAddOns = view.findViewById(R.id.cgDialogAddOns);
-        android.widget.EditText etNotes = view.findViewById(R.id.etDialogNotes);
 
         tvFoodName.setText(food.getName());
         tvFoodDesc.setText(food.getDescription() != null ? food.getDescription() : "");
@@ -122,34 +111,8 @@ public class FoodCustomizationDialog extends BottomSheetDialogFragment {
                 dismiss();
                 return;
             }
-
-            // Size
-            int sizeId = rgSize.getCheckedRadioButtonId();
-            String size = "";
-            if (sizeId != -1) {
-                RadioButton rb = view.findViewById(sizeId);
-                size = rb != null ? rb.getText().toString() : "";
-            }
-
-            // Spice
-            int spiceId = rgSpice.getCheckedRadioButtonId();
-            String spice = "";
-            if (spiceId != -1) {
-                RadioButton rb = view.findViewById(spiceId);
-                spice = rb != null ? rb.getText().toString() : "";
-            }
-
-            // Add ons
-            List<String> addOnList = new ArrayList<>();
-            for (int i = 0; i < cgAddOns.getChildCount(); i++) {
-                Chip chip = (Chip) cgAddOns.getChildAt(i);
-                if (chip.isChecked())
-                    addOnList.add(chip.getText().toString());
-            }
-            String addOns = String.join(", ", addOnList);
-            String notes = etNotes.getText().toString().trim();
-
-            listener.onAddToCart(food, quantity, size, spice, addOns, notes);
+            // Keep existing callback contract but send default empty customizations.
+            listener.onAddToCart(food, quantity, "", "", "", "");
             dismiss();
         });
     }
