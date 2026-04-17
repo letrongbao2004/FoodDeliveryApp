@@ -32,7 +32,7 @@ public class OrderService {
 
     public OrderService(OrderRepository orderRepository, UserRepository userRepository,
                         FoodRepository foodRepository, RestaurantRepository restaurantRepository,
-                        @Lazy ChatService chatService) {
+                        ChatService chatService) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.foodRepository = foodRepository;

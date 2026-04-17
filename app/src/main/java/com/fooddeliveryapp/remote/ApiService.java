@@ -1,5 +1,7 @@
 package com.fooddeliveryapp.remote;
 
+import com.fooddeliveryapp.models.ChatThread;
+import com.fooddeliveryapp.models.ChatMessage;
 import com.fooddeliveryapp.models.Food;
 import com.fooddeliveryapp.models.Order;
 import com.fooddeliveryapp.models.OrderDetail;
@@ -98,4 +100,14 @@ public interface ApiService {
 
     @PUT("orders/{id}/status")
     Call<Order> updateOrderStatus(@Path("id") long id, @Query("status") String status);
+
+    // ==== CHAT ====
+    @GET("chat/history")
+    Call<List<ChatMessage>> getChatHistory(@Query("userId") long userId, @Query("restaurantId") long restaurantId);
+
+    @GET("chat/threads/user/{userId}")
+    Call<List<ChatThread>> getUserChatThreads(@Path("userId") long userId);
+
+    @GET("chat/threads/restaurant/{restaurantId}")
+    Call<List<ChatThread>> getRestaurantChatThreads(@Path("restaurantId") long restaurantId);
 }

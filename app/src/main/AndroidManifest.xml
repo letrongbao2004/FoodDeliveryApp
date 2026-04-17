@@ -100,7 +100,7 @@
             android:parentActivityName=".activities.MerchantRestaurantDetailActivity" />
 
         <activity
-            android:name=".activities.ChatDetailActivity"
+            android:name=".activities.ChatActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".activities.MainActivity" />

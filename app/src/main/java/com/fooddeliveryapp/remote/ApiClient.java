@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class ApiClient {
     // Emulator uses 10.0.2.2 to reach host machine; real devices must use host's LAN IP.
     private static final String BASE_URL_EMULATOR = "http://10.0.2.2:8080/api/";
-    private static final String BASE_URL_DEVICE = "http://10.0.2.2:8080/api/";
+    private static final String BASE_URL_DEVICE = "http://192.168.1.8:8080/api/";
     private static Retrofit retrofit = null;
 
     /** Call this if you need to reset the singleton (e.g., after logout) */
@@ -40,6 +40,12 @@ public class ApiClient {
 
     private static String getBaseUrl() {
         return isEmulator() ? BASE_URL_EMULATOR : BASE_URL_DEVICE;
+    }
+
+    public static String getWebSocketUrl() {
+        // Strip out "api/" and replace "http" with "ws"
+        String rawBase = isEmulator() ? BASE_URL_EMULATOR : BASE_URL_DEVICE;
+        return rawBase.replace("http://", "ws://").replace("/api/", "/ws/websocket");
     }
 
     public static Retrofit getClient(Context context) {
