@@ -40,4 +40,15 @@ public class ChatMessage {
             timestamp = new Date();
         }
     }
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+    public Long getRestaurantId() { return restaurantId; }
+    public void setRestaurantId(Long restaurantId) { this.restaurantId = restaurantId; }
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
+    public String getSenderRole() { return senderRole; }
+    public void setSenderRole(String senderRole) { this.senderRole = senderRole; }
+    public Date getTimestamp() { return timestamp; }
+    public void setTimestamp(Date timestamp) { this.timestamp = timestamp; }
 }

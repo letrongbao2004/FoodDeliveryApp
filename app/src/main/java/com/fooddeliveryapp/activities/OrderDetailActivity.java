@@ -39,6 +39,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     private TextView tvOrderCode, tvStatus, tvDate, tvSubtotal, tvDeliveryFee, tvTotal;
     private RecyclerView rvItems;
     private ProgressBar progressBar;
+    private View scrollView;
     
     private OrderProgressView orderProgressView;
     private Button btnTrackingActionPrimary;
@@ -65,7 +66,8 @@ public class OrderDetailActivity extends AppCompatActivity {
         tvDeliveryFee = findViewById(R.id.tvDetailDeliveryFee);
         tvTotal = findViewById(R.id.tvDetailTotal);
         rvItems = findViewById(R.id.rvOrderDetailItems);
-        progressBar = new ProgressBar(this); // fallback — not in this layout
+        progressBar = findViewById(R.id.progressBarOrderDetail);
+        scrollView = findViewById(R.id.scrollViewOrderDetail);
 
         long orderId = getIntent().getLongExtra(EXTRA_ORDER_ID, -1L);
         if (orderId == -1L) {
@@ -101,10 +103,16 @@ public class OrderDetailActivity extends AppCompatActivity {
     }
 
     private void loadOrderDetail(long orderId) {
+        if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        if (scrollView != null) scrollView.setVisibility(View.GONE);
+
         ApiService api = ApiClient.getClient(this).create(ApiService.class);
         api.getOrderDetail(orderId).enqueue(new Callback<OrderDetail>() {
             @Override
             public void onResponse(Call<OrderDetail> call, Response<OrderDetail> response) {
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
+                if (scrollView != null) scrollView.setVisibility(View.VISIBLE);
+
                 if (response.isSuccessful() && response.body() != null) {
                     bindDetail(response.body());
                 } else {
@@ -114,6 +122,8 @@ public class OrderDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<OrderDetail> call, Throwable t) {
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
+                if (scrollView != null) scrollView.setVisibility(View.VISIBLE);
                 AppUtils.showToast(OrderDetailActivity.this, "Network error: " + t.getMessage());
             }
         });
@@ -178,19 +188,30 @@ public class OrderDetailActivity extends AppCompatActivity {
         if ("MERCHANT".equalsIgnoreCase(role)) {
             if (status == OrderStatus.ORDER_PLACED) {
                 btnTrackingActionPrimary.setVisibility(View.VISIBLE);
-                btnTrackingActionPrimary.setText("Confirm & Pack Order");
+                btnTrackingActionPrimary.setText("Xác nhận & Đóng gói");
                 btnTrackingActionPrimary.setOnClickListener(v -> trackingViewModel.sendStatusUpdate(OrderStatus.ORDER_PACKED, "MERCHANT"));
             } else if (status == OrderStatus.ORDER_PACKED) {
                 btnTrackingActionPrimary.setVisibility(View.VISIBLE);
-                btnTrackingActionPrimary.setText("Mark Out for Delivery");
+                btnTrackingActionPrimary.setText("Giao hàng cho Shipper");
                 btnTrackingActionPrimary.setOnClickListener(v -> trackingViewModel.sendStatusUpdate(OrderStatus.OUT_FOR_DELIVERY, "MERCHANT"));
+            } else if (status == OrderStatus.OUT_FOR_DELIVERY) {
+                btnTrackingActionPrimary.setVisibility(View.VISIBLE);
+                btnTrackingActionPrimary.setEnabled(false);
+                btnTrackingActionPrimary.setText("Đang giao hàng...");
             }
         } else {
-            // CUSTOMER or fallback
+            // CUSTOMER
             if (status == OrderStatus.OUT_FOR_DELIVERY) {
                 btnTrackingActionPrimary.setVisibility(View.VISIBLE);
-                btnTrackingActionPrimary.setText("Confirm Delivery Received");
+                btnTrackingActionPrimary.setText("Đã nhận được hàng");
                 btnTrackingActionPrimary.setOnClickListener(v -> trackingViewModel.sendStatusUpdate(OrderStatus.DELIVERED, "CUSTOMER"));
+            } else if (status == OrderStatus.ORDER_PLACED) {
+                btnTrackingActionPrimary.setVisibility(View.VISIBLE);
+                btnTrackingActionPrimary.setText("Hủy đơn hàng");
+                btnTrackingActionPrimary.setOnClickListener(v -> {
+                    // Logic hủy đơn có thể thêm sau
+                    AppUtils.showToast(this, "Chức năng hủy đang được phát triển");
+                });
             }
         }
     }

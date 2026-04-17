@@ -69,4 +69,27 @@ public class Order {
     @lombok.ToString.Exclude
     @lombok.EqualsAndHashCode.Exclude
     private List<OrderItem> items;
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public OrderStatus getStatus() { return status; }
+    public void setStatus(OrderStatus status) { this.status = status; }
+    public double getSubtotal() { return subtotal; }
+    public void setSubtotal(double subtotal) { this.subtotal = subtotal; }
+    public double getDeliveryFee() { return deliveryFee; }
+    public void setDeliveryFee(double deliveryFee) { this.deliveryFee = deliveryFee; }
+    public double getTotal() { return total; }
+    public void setTotal(double total) { this.total = total; }
+    public String getDeliveryAddress() { return deliveryAddress; }
+    public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
+    public Date getOrderDate() { return orderDate; }
+    public void setOrderDate(Date orderDate) { this.orderDate = orderDate; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public List<OrderItem> getItems() { return items; }
+    public void setItems(List<OrderItem> items) { this.items = items; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+    public Restaurant getRestaurant() { return restaurant; }
+    public void setRestaurant(Restaurant restaurant) { this.restaurant = restaurant; }
 }

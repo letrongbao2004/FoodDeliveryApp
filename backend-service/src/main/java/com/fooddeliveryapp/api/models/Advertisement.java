@@ -53,4 +53,17 @@ public class Advertisement {
             createdAt = LocalDateTime.now();
         }
     }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public Food getMenuItem() { return menuItem; }
+    public void setMenuItem(Food menuItem) { this.menuItem = menuItem; }
+    public boolean isActive() { return isActive; }
+    public void setActive(boolean active) { isActive = active; }
+    public Long getMerchantId() { return merchantId; }
+    public void setMerchantId(Long merchantId) { this.merchantId = merchantId; }
 }

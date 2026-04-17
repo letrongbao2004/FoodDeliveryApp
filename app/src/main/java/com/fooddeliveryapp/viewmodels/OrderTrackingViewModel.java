@@ -7,18 +7,26 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.fooddeliveryapp.models.OrderStatus;
+import com.fooddeliveryapp.remote.ApiClient;
+import com.fooddeliveryapp.remote.ApiService;
 import com.fooddeliveryapp.remote.WebSocketManager;
 import org.json.JSONObject;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class OrderTrackingViewModel extends AndroidViewModel {
 
     private final MutableLiveData<OrderStatus> orderStatusLiveData = new MutableLiveData<>();
     private final WebSocketManager wsManager;
+    private final ApiService apiService;
     private long currentOrderId = -1;
 
     public OrderTrackingViewModel(@NonNull Application application) {
         super(application);
         wsManager = WebSocketManager.getInstance();
+        apiService = ApiClient.getClient(application).create(ApiService.class);
     }
 
     public LiveData<OrderStatus> getOrderStatusLiveData() {
@@ -35,8 +43,12 @@ public class OrderTrackingViewModel extends AndroidViewModel {
                 JSONObject json = new JSONObject(payload);
                 String statusStr = json.optString("status");
                 if (!statusStr.isEmpty()) {
-                    OrderStatus status = OrderStatus.valueOf(statusStr);
-                    orderStatusLiveData.postValue(status);
+                    try {
+                        OrderStatus status = OrderStatus.valueOf(statusStr.toUpperCase());
+                        orderStatusLiveData.postValue(status);
+                    } catch (IllegalArgumentException e) {
+                        Log.e("OrderTrackingVM", "Unknown status received: " + statusStr);
+                    }
                 }
             } catch (Exception e) {
                 Log.e("OrderTrackingVM", "Error parsing incoming WS message", e);
@@ -51,7 +63,28 @@ public class OrderTrackingViewModel extends AndroidViewModel {
 
     public void sendStatusUpdate(OrderStatus nextStatus, String role) {
         if (currentOrderId != -1) {
-            wsManager.sendOrderStatusUpdate(currentOrderId, nextStatus.name(), role);
+            // Priority 1: REST call for Source of Truth
+            apiService.updateOrderStatus(currentOrderId, nextStatus.name()).enqueue(new Callback<com.fooddeliveryapp.models.Order>() {
+                @Override
+                public void onResponse(Call<com.fooddeliveryapp.models.Order> call, Response<com.fooddeliveryapp.models.Order> response) {
+                    if (response.isSuccessful()) {
+                        // Success - Optionally post UI update immediately or wait for WS confirmation
+                        orderStatusLiveData.postValue(nextStatus);
+                    } else {
+                        Log.e("OrderTrackingVM", "Failed to update status over REST");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<com.fooddeliveryapp.models.Order> call, Throwable t) {
+                    Log.e("OrderTrackingVM", "Network error updating status", t);
+                }
+            });
+
+            // Priority 2: WS for live broadcast (if connected)
+            if (wsManager != null) {
+                wsManager.sendOrderStatusUpdate(currentOrderId, nextStatus.name(), role);
+            }
         }
     }
 

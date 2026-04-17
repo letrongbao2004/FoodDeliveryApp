@@ -39,4 +39,31 @@ public class Food {
 
     @Version
     private Long version;
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public Restaurant getRestaurant() { return restaurant; }
+    public void setRestaurant(Restaurant restaurant) { this.restaurant = restaurant; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public String getImagePublicId() { return imagePublicId; }
+    public void setImagePublicId(String imagePublicId) { this.imagePublicId = imagePublicId; }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+    public int getOrderCount() { return orderCount; }
+    public void setOrderCount(int orderCount) { this.orderCount = orderCount; }
+    public boolean isAvailable() { return isAvailable; }
+    public void setAvailable(boolean available) { isAvailable = available; }
+    public boolean isBestSeller() { return isBestSeller; }
+    public void setBestSeller(boolean bestSeller) { isBestSeller = bestSeller; }
+    public boolean isNew() { return isNew; }
+    public void setNew(boolean aNew) { isNew = aNew; }
+    public double getRating() { return rating; }
+    public void setRating(double rating) { this.rating = rating; }
 }

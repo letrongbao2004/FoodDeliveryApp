@@ -51,10 +51,37 @@ public class Restaurant {
     @Version
     private Long version;
 
-    /** Lịch mở cửa theo từng ngày trong tuần */
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties("restaurant")
     private List<BusinessHours> businessHours;
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public Long getOwnerId() { return ownerId; }
+    public void setOwnerId(Long ownerId) { this.ownerId = ownerId; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public String getImagePublicId() { return imagePublicId; }
+    public void setImagePublicId(String imagePublicId) { this.imagePublicId = imagePublicId; }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+    public double getRating() { return rating; }
+    public void setRating(double rating) { this.rating = rating; }
+    public List<BusinessHours> getBusinessHours() { return businessHours; }
+    public void setBusinessHours(List<BusinessHours> businessHours) { this.businessHours = businessHours; }
+
+    public double getDeliveryFee() { return deliveryFee; }
+    public void setDeliveryFee(double deliveryFee) { this.deliveryFee = deliveryFee; }
+    public int getDeliveryTime() { return deliveryTime; }
+    public void setDeliveryTime(int deliveryTime) { this.deliveryTime = deliveryTime; }
 
     /**
      * Tính toán trạng thái mở cửa dựa theo múi giờ Việt Nam.

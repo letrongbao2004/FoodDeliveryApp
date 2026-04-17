@@ -4,11 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -24,634 +22,237 @@ import com.bumptech.glide.Glide;
 import com.fooddeliveryapp.R;
 import com.fooddeliveryapp.adapters.AdCarouselAdapter;
 import com.fooddeliveryapp.adapters.FoodAdapter;
+import com.fooddeliveryapp.dialogs.MerchantDialogHelper;
 import com.fooddeliveryapp.models.Advertisement;
 import com.fooddeliveryapp.models.Food;
 import com.fooddeliveryapp.models.Restaurant;
 import com.fooddeliveryapp.remote.ApiClient;
 import com.fooddeliveryapp.remote.ApiService;
 import com.fooddeliveryapp.remote.dto.AdUpsertRequest;
-import com.fooddeliveryapp.remote.dto.UploadResponse;
 import com.fooddeliveryapp.remote.dto.FoodUpsertRequest;
 import com.fooddeliveryapp.remote.dto.RestaurantUpsertRequest;
+import com.fooddeliveryapp.remote.dto.UploadResponse;
 import com.fooddeliveryapp.utils.AppUtils;
 import com.fooddeliveryapp.utils.FileUtils;
 import com.fooddeliveryapp.utils.NetworkUtils;
 import com.fooddeliveryapp.utils.SessionManager;
+import com.fooddeliveryapp.viewmodels.MerchantRestaurantViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MerchantRestaurantDetailActivity extends AppCompatActivity implements FoodAdapter.OnFoodClickListener {
 
     public static final String EXTRA_RESTAURANT_ID = "restaurant_id";
 
+    private MerchantRestaurantViewModel viewModel;
     private ApiService apiService;
     private int restaurantId;
 
-    private TextView tvName;
-    private TextView tvCategory;
-    private TextView tvMeta;
-    private TextView btnDashboard;
-    private TextView btnOrders;
-    private TextView btnChat;
-    private TextView btnEditRestaurant;
-    private TextView btnMerchantLogout;
-    private View btnAddAd;
-    private View btnAddFood;
-    private RecyclerView rvFoods;
-    private ImageView ivRestaurantHeader;
+    private TextView tvName, tvCategory, tvMeta;
+    private ImageView ivHeader;
+    private FoodAdapter foodAdapter;
+    private AdCarouselAdapter adAdapter;
     private ViewPager2 vpAds;
     private TabLayout tabAds;
 
-    private FoodAdapter adapter;
-    private AdCarouselAdapter adAdapter;
-    private final List<Food> foods = new ArrayList<>();
-
-    private Restaurant restaurant;
-
-    private ActivityResultLauncher<String> pickFoodImageLauncher;
-    private Uri selectedFoodImageUri = null;
-    private ImageView currentFoodImagePreview = null;
+    private ActivityResultLauncher<String> imagePicker;
+    private Uri selectedUri;
+    private ImageView currentPreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_merchant_restaurant_detail);
 
-        apiService = ApiClient.getClient(this).create(ApiService.class);
         restaurantId = getIntent().getIntExtra(EXTRA_RESTAURANT_ID, -1);
-        if (restaurantId <= 0) {
-            finish();
-            return;
-        }
+        if (restaurantId <= 0) { finish(); return; }
 
-        bindViews();
-        setupToolbar();
-        initPickers();
-        fetchRestaurantDetails();
-    }
+        apiService = ApiClient.getClient(this).create(ApiService.class);
+        viewModel = new ViewModelProvider(this).get(MerchantRestaurantViewModel.class);
 
-    private void initPickers() {
-        pickFoodImageLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+        setupUI();
+        observeViewModel();
+        
+        imagePicker = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
             if (uri != null) {
-                selectedFoodImageUri = uri;
-                if (currentFoodImagePreview != null) {
-                    currentFoodImagePreview.setImageURI(uri);
-                }
+                selectedUri = uri;
+                if (currentPreview != null) currentPreview.setImageURI(uri);
             }
         });
+
+        viewModel.fetchRestaurantDetails(apiService, restaurantId);
     }
 
-    private void bindViews() {
-        tvName = findViewById(R.id.tvRestaurantDetailName);
-        tvCategory = findViewById(R.id.tvRestaurantDetailCategory);
-        tvMeta = findViewById(R.id.tvMerchantMeta);
-        btnDashboard = findViewById(R.id.btnMerchantDashboard);
-        btnOrders = findViewById(R.id.btnMerchantOrders);
-        btnChat = findViewById(R.id.btnMerchantChat);
-        btnEditRestaurant = findViewById(R.id.btnEditRestaurant);
-        btnMerchantLogout = findViewById(R.id.btnMerchantLogout);
-        btnAddAd = findViewById(R.id.btnAddAd);
-        btnAddFood = findViewById(R.id.btnAddFood);
-        rvFoods = findViewById(R.id.rvMerchantMenuFoods);
-        ivRestaurantHeader = findViewById(R.id.ivRestaurantHeader);
-        vpAds = findViewById(R.id.vpMerchantAdsInline);
-        tabAds = findViewById(R.id.tabMerchantAdsInlineIndicator);
-
-        adapter = new FoodAdapter(this, foods, this, true, true);
-        rvFoods.setLayoutManager(new LinearLayoutManager(this));
-        rvFoods.setAdapter(adapter);
-        adAdapter = new AdCarouselAdapter(this, true, new AdCarouselAdapter.Listener() {
-            @Override
-            public void onBannerClick(Advertisement ad) {
-                // Merchant view-only.
-            }
-
-            @Override
-            public void onPrimaryCtaClick(Advertisement ad) {
-                // Merchant view-only.
-            }
-
-            @Override
-            public void onSecondaryCtaClick(Advertisement ad) {
-                // Merchant view-only.
-            }
-        });
-        if (vpAds != null) {
-            vpAds.setAdapter(adAdapter);
-            if (tabAds != null) {
-                new TabLayoutMediator(tabAds, vpAds, (tab, position) -> {}).attach();
-            }
-        }
-
-        if (btnAddAd != null) {
-            btnAddAd.setOnClickListener(v -> showAddAdDialog());
-        }
-        btnAddFood.setOnClickListener(v -> showAddFoodDialog());
-        btnDashboard.setOnClickListener(v -> startActivity(MerchantDashboardActivity.newIntent(this, restaurantId)));
-        btnOrders.setOnClickListener(v -> startActivity(MerchantOrderHistoryActivity.newIntent(this, restaurantId)));
-        btnEditRestaurant.setOnClickListener(v -> showEditRestaurantDialog());
-        btnMerchantLogout.setOnClickListener(v -> logoutMerchant());
-
-        btnChat.setOnClickListener(v -> startActivity(new Intent(this, MerchantChatListActivity.class)));
-    }
-
-    private void showEditRestaurantDialog() {
-        if (restaurant == null) return;
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_restaurant, null);
-        EditText etName = dialogView.findViewById(R.id.etEditRestaurantName);
-        EditText etCategory = dialogView.findViewById(R.id.etEditRestaurantCategory);
-        EditText etDesc = dialogView.findViewById(R.id.etEditRestaurantDesc);
-        EditText etAddress = dialogView.findViewById(R.id.etEditRestaurantAddress);
-        EditText etPhone = dialogView.findViewById(R.id.etEditRestaurantPhone);
-
-        etName.setText(restaurant.getName());
-        etCategory.setText(restaurant.getCategory());
-        etDesc.setText(restaurant.getDescription());
-        etAddress.setText(restaurant.getAddress());
-        etPhone.setText(restaurant.getPhone());
-
-        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
-                .setTitle("Edit restaurant")
-                .setView(dialogView)
-                .setPositiveButton("Save", null)
-                .setNegativeButton("Cancel", null)
-                .create();
-
-        dialog.setOnShowListener(d -> dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-            String name = etName.getText().toString().trim();
-            String category = etCategory.getText().toString().trim();
-            String desc = etDesc.getText().toString().trim();
-            String address = etAddress.getText().toString().trim();
-            String phone = etPhone.getText().toString().trim();
-
-            if (TextUtils.isEmpty(name)) {
-                etName.setError("Required");
-                return;
-            }
-
-            RestaurantUpsertRequest req = new RestaurantUpsertRequest(
-                    restaurant.getOwnerId(),
-                    name,
-                    TextUtils.isEmpty(desc) ? null : desc,
-                    TextUtils.isEmpty(restaurant.getImageUrl()) ? null : restaurant.getImageUrl(),
-                    null,
-                    TextUtils.isEmpty(address) ? null : address,
-                    TextUtils.isEmpty(phone) ? null : phone,
-                    TextUtils.isEmpty(category) ? null : category
-            );
-
-            apiService.updateRestaurant(restaurantId, req).enqueue(new Callback<Restaurant>() {
-                @Override
-                public void onResponse(Call<Restaurant> call, Response<Restaurant> response) {
-                    if (isFinishing() || isDestroyed()) return;
-                    if (response.isSuccessful() && response.body() != null) {
-                        restaurant = response.body();
-                        renderRestaurant();
-                        dialog.dismiss();
-                        AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Restaurant updated");
-                    } else {
-                        String err = NetworkUtils.readError(response);
-                        AppUtils.showToast(MerchantRestaurantDetailActivity.this,
-                                err != null ? err : ("Update failed (" + response.code() + ")"));
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Restaurant> call, Throwable t) {
-                    if (isFinishing() || isDestroyed()) return;
-                    AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Network Error");
-                }
-            });
-        }));
-        dialog.show();
-    }
-
-    private void logoutMerchant() {
-        SessionManager.getInstance(this).logout();
-        Intent intent = new Intent(this, AuthActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-    }
-
-    private void setupToolbar() {
+    private void setupUI() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Restaurant detail");
+            getSupportActionBar().setTitle("Restaurant Manager");
         }
-    }
 
-    private void fetchRestaurantDetails() {
-        apiService.getRestaurants().enqueue(new Callback<List<Restaurant>>() {
-            @Override
-            public void onResponse(Call<List<Restaurant>> call, Response<List<Restaurant>> response) {
-                if (isFinishing() || isDestroyed())
-                    return;
-                if (response.isSuccessful() && response.body() != null) {
-                    for (Restaurant r : response.body()) {
-                        if (r.getId() == restaurantId) {
-                            restaurant = r;
-                            break;
-                        }
-                    }
-                    if (restaurant == null) {
-                        Toast.makeText(MerchantRestaurantDetailActivity.this, "Restaurant not found", Toast.LENGTH_SHORT).show();
-                        finish();
-                        return;
-                    }
-                    renderRestaurant();
-                } else {
-                    Toast.makeText(MerchantRestaurantDetailActivity.this, "Failed to load restaurant", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            }
+        tvName = findViewById(R.id.tvRestaurantDetailName);
+        tvCategory = findViewById(R.id.tvRestaurantDetailCategory);
+        tvMeta = findViewById(R.id.tvMerchantMeta);
+        ivHeader = findViewById(R.id.ivRestaurantHeader);
+        vpAds = findViewById(R.id.vpMerchantAdsInline);
+        tabAds = findViewById(R.id.tabMerchantAdsInlineIndicator);
 
-            @Override
-            public void onFailure(Call<List<Restaurant>> call, Throwable t) {
-                if (isFinishing() || isDestroyed())
-                    return;
-                Toast.makeText(MerchantRestaurantDetailActivity.this, "Network error", Toast.LENGTH_SHORT).show();
-                finish();
+        RecyclerView rv = findViewById(R.id.rvMerchantMenuFoods);
+        foodAdapter = new FoodAdapter(this, new ArrayList<>(), this, true, true);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setAdapter(foodAdapter);
+
+        adAdapter = new AdCarouselAdapter(this, true, null);
+        if (vpAds != null) {
+            vpAds.setAdapter(adAdapter);
+            new TabLayoutMediator(tabAds, vpAds, (tab, pos) -> {}).attach();
+        }
+
+        findViewById(R.id.btnMerchantDashboard).setOnClickListener(v -> startActivity(MerchantDashboardActivity.newIntent(this, restaurantId)));
+        findViewById(R.id.btnMerchantOrders).setOnClickListener(v -> startActivity(MerchantOrderHistoryActivity.newIntent(this, restaurantId)));
+        findViewById(R.id.btnMerchantChat).setOnClickListener(v -> startActivity(new Intent(this, MerchantChatListActivity.class)));
+        findViewById(R.id.btnMerchantLogout).setOnClickListener(v -> logout());
+        
+        findViewById(R.id.btnEditRestaurant).setOnClickListener(v -> {
+            Restaurant r = viewModel.getRestaurant().getValue();
+            if (r != null) MerchantDialogHelper.showEditRestaurantDialog(this, r, this::updateRestaurant);
+        });
+
+        findViewById(R.id.btnAddFood).setOnClickListener(v -> MerchantDialogHelper.showAddFoodDialog(this, 
+            view -> { currentPreview = (ImageView) view.getTag(); imagePicker.launch("image/*"); }, 
+            this::handleAddFood));
+
+        findViewById(R.id.btnAddAd).setOnClickListener(v -> {
+            List<Food> foods = viewModel.getFoods().getValue();
+            if (foods != null && !foods.isEmpty()) {
+                MerchantDialogHelper.showAddAdDialog(this, foods,
+                    view -> { currentPreview = (ImageView) view.getTag(); imagePicker.launch("image/*"); },
+                    this::handleAddAd);
+            } else {
+                Toast.makeText(this, "Add food first", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void renderRestaurant() {
-        tvName.setText(restaurant.getName());
-        tvCategory.setText(TextUtils.isEmpty(restaurant.getCategory()) ? "" : restaurant.getCategory());
+    private void observeViewModel() {
+        viewModel.getRestaurant().observe(this, r -> {
+            tvName.setText(r.getName());
+            tvCategory.setText(r.getCategory());
+            String meta = (r.getDescription() != null ? r.getDescription() + "\n" : "") +
+                         (r.getAddress() != null ? "Địa chỉ: " + r.getAddress() + "\n" : "") +
+                         (r.getPhone() != null ? "SĐT: " + r.getPhone() : "");
+            tvMeta.setText(meta.trim());
+            if (r.getImageUrl() != null) Glide.with(this).load(r.getImageUrl()).centerCrop().into(ivHeader);
+        });
 
-        StringBuilder meta = new StringBuilder();
-        if (!TextUtils.isEmpty(restaurant.getDescription())) meta.append(restaurant.getDescription()).append('\n');
-        if (!TextUtils.isEmpty(restaurant.getAddress())) meta.append("Địa chỉ: ").append(restaurant.getAddress()).append('\n');
-        if (!TextUtils.isEmpty(restaurant.getPhone())) meta.append("SĐT: ").append(restaurant.getPhone()).append('\n');
-        if (!TextUtils.isEmpty(restaurant.getOpenHours())) meta.append("Giờ: ").append(restaurant.getOpenHours()).append('\n');
-        tvMeta.setText(meta.toString().trim());
-        if (!TextUtils.isEmpty(restaurant.getImageUrl())) {
-            Glide.with(this).load(restaurant.getImageUrl()).centerCrop().into(ivRestaurantHeader);
+        viewModel.getFoods().observe(this, list -> {
+            foodAdapter.setFoods(list);
+            foodAdapter.notifyDataSetChanged();
+        });
+
+        viewModel.getAds().observe(this, list -> {
+            adAdapter.submit(list);
+            vpAds.setVisibility(list.isEmpty() ? View.GONE : View.VISIBLE);
+            tabAds.setVisibility(list.size() > 1 ? View.VISIBLE : View.GONE);
+        });
+
+        viewModel.getErrorMessage().observe(this, msg -> {
+            if (msg != null) Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void updateRestaurant(Restaurant r) {
+        RestaurantUpsertRequest req = new RestaurantUpsertRequest(r.getOwnerId(), r.getName(), r.getDescription(), r.getImageUrl(), null, r.getAddress(), r.getPhone(), r.getCategory());
+        apiService.updateRestaurant(restaurantId, req).enqueue(new Callback<Restaurant>() {
+            @Override public void onResponse(Call<Restaurant> call, Response<Restaurant> response) {
+                if (response.isSuccessful()) viewModel.refresh(apiService, restaurantId);
+            }
+            @Override public void onFailure(Call<Restaurant> call, Throwable t) { Toast.makeText(MerchantRestaurantDetailActivity.this, "Update failed", Toast.LENGTH_SHORT).show(); }
+        });
+    }
+
+    private void handleAddFood(MerchantDialogHelper.FoodData data) {
+        if (selectedUri != null) {
+            uploadImage(selectedUri, url -> createFood(data, url));
         } else {
-            ivRestaurantHeader.setImageResource(R.mipmap.ic_launcher);
-        }
-
-        loadFoods();
-        loadAds();
-    }
-
-    private void loadFoods() {
-        apiService.getFoods(restaurantId).enqueue(new Callback<List<Food>>() {
-            @Override
-            public void onResponse(Call<List<Food>> call, Response<List<Food>> response) {
-                if (isFinishing() || isDestroyed()) return;
-                if (response.isSuccessful() && response.body() != null) {
-                    foods.clear();
-                    foods.addAll(response.body());
-                    adapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Food>> call, Throwable t) {
-                if (isFinishing() || isDestroyed()) return;
-                Toast.makeText(MerchantRestaurantDetailActivity.this, "Network error", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void loadAds() {
-        apiService.getAds(10).enqueue(new Callback<List<Advertisement>>() {
-            @Override
-            public void onResponse(Call<List<Advertisement>> call, Response<List<Advertisement>> response) {
-                if (isFinishing() || isDestroyed()) return;
-                if (!response.isSuccessful() || response.body() == null) return;
-                List<Advertisement> filtered = new ArrayList<>();
-                for (Advertisement ad : response.body()) {
-                    if (ad.getMenuItem() != null && ad.getMenuItem().getRestaurantId() == restaurantId) {
-                        filtered.add(ad);
-                    }
-                }
-                adAdapter.submit(filtered);
-                if (vpAds != null) {
-                    vpAds.setVisibility(filtered.isEmpty() ? View.GONE : View.VISIBLE);
-                }
-                if (tabAds != null) {
-                    tabAds.setVisibility(filtered.size() > 1 ? View.VISIBLE : View.GONE);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Advertisement>> call, Throwable t) {
-                if (isFinishing() || isDestroyed()) return;
-                if (vpAds != null) vpAds.setVisibility(View.GONE);
-                if (tabAds != null) tabAds.setVisibility(View.GONE);
-            }
-        });
-    }
-
-    private void showAddAdDialog() {
-        if (foods.isEmpty()) {
-            Toast.makeText(this, "Please add at least one food first", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_ad, null);
-        EditText etTitle = dialogView.findViewById(R.id.etAdTitle);
-        EditText etDesc = dialogView.findViewById(R.id.etAdDescription);
-        ImageView ivAdImage = dialogView.findViewById(R.id.ivAdImage);
-        TextView btnPickAdImage = dialogView.findViewById(R.id.btnPickAdImage);
-        Spinner spFood = dialogView.findViewById(R.id.spAdFood);
-
-        List<String> foodNames = new ArrayList<>();
-        for (Food f : foods) foodNames.add(f.getName());
-        spFood.setAdapter(new android.widget.ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, foodNames));
-
-        selectedFoodImageUri = null;
-        currentFoodImagePreview = ivAdImage;
-        btnPickAdImage.setOnClickListener(v -> pickFoodImageLauncher.launch("image/*"));
-
-        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
-                .setTitle("Create Advertisement")
-                .setView(dialogView)
-                .setPositiveButton("Create", null)
-                .setNegativeButton("Cancel", null)
-                .create();
-
-        dialog.setOnShowListener(d -> dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-            String title = etTitle.getText().toString().trim();
-            String description = etDesc.getText().toString().trim();
-            Food selectedFood = foods.get(spFood.getSelectedItemPosition());
-            if (TextUtils.isEmpty(title)) {
-                etTitle.setError("Required");
-                return;
-            }
-            if (selectedFoodImageUri != null) {
-                uploadAdImageThenCreate(dialog, title, description, selectedFood);
-            } else {
-                createAd(dialog, title, description, selectedFood.getImageUrl(), selectedFood);
-            }
-        }));
-        dialog.show();
-    }
-
-    private void uploadAdImageThenCreate(android.app.AlertDialog dialog, String title, String description, Food selectedFood) {
-        try {
-            java.io.File file = FileUtils.copyUriToCacheFile(this, selectedFoodImageUri, "ad.jpg");
-            RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), file);
-            MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
-            RequestBody ctx = RequestBody.create(MediaType.parse("text/plain"), "menu_item");
-
-            apiService.uploadImage(part, ctx).enqueue(new Callback<UploadResponse>() {
-                @Override
-                public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
-                    if (isFinishing() || isDestroyed()) return;
-                    if (response.isSuccessful() && response.body() != null && !TextUtils.isEmpty(response.body().getUrl())) {
-                        createAd(dialog, title, description, response.body().getUrl(), selectedFood);
-                    } else {
-                        String err = NetworkUtils.readError(response);
-                        AppUtils.showToast(MerchantRestaurantDetailActivity.this,
-                                err != null ? err : ("Ad image upload failed (" + response.code() + ")"));
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<UploadResponse> call, Throwable t) {
-                    if (isFinishing() || isDestroyed()) return;
-                    AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Ad image upload failed");
-                }
-            });
-        } catch (Exception e) {
-            AppUtils.showToast(this, "Ad image upload error");
+            createFood(data, null);
         }
     }
 
-    private void createAd(android.app.AlertDialog dialog, String title, String description, String imageUrl, Food selectedFood) {
-        String safeImage = TextUtils.isEmpty(imageUrl) ? "https://res.cloudinary.com/demo/image/upload/sample.jpg" : imageUrl;
-        // Start a bit earlier to avoid client/server time skew making ad "not active yet".
-        LocalDateTime start = LocalDateTime.now().minusMinutes(1).withNano(0);
-        LocalDateTime end = start.plusDays(7);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        AdUpsertRequest req = new AdUpsertRequest(
-                safeImage,
-                title,
-                TextUtils.isEmpty(description) ? null : description,
-                selectedFood.getId(),
-                start.format(formatter),
-                end.format(formatter)
-        );
-        apiService.createAd(req).enqueue(new Callback<Advertisement>() {
-            @Override
-            public void onResponse(Call<Advertisement> call, Response<Advertisement> response) {
-                if (isFinishing() || isDestroyed()) return;
-                if (response.isSuccessful()) {
-                    dialog.dismiss();
-                    AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Ad created");
-                    Advertisement created = response.body();
-                    if (created != null && created.getMenuItem() != null
-                            && created.getMenuItem().getRestaurantId() == restaurantId) {
-                        adAdapter.prepend(created);
-                        if (vpAds != null) vpAds.setVisibility(View.VISIBLE);
-                        if (tabAds != null) {
-                            tabAds.setVisibility(adAdapter.getItemCount() > 1 ? View.VISIBLE : View.GONE);
-                        }
-                        if (vpAds != null) vpAds.setCurrentItem(0, false);
-                    } else {
-                        loadAds();
-                    }
-                } else {
-                    String err = NetworkUtils.readError(response);
-                    AppUtils.showToast(MerchantRestaurantDetailActivity.this, err != null ? err : "Create ad failed");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Advertisement> call, Throwable t) {
-                if (isFinishing() || isDestroyed()) return;
-                AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Network Error");
-            }
-        });
-    }
-
-    private void showAddFoodDialog() {
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_food, null);
-        EditText etName = dialogView.findViewById(R.id.etAddFoodName);
-        ImageView ivFoodImage = dialogView.findViewById(R.id.ivAddFoodImage);
-        TextView btnPickFoodImage = dialogView.findViewById(R.id.btnPickFoodImage);
-        EditText etDesc = dialogView.findViewById(R.id.etAddFoodDesc);
-        EditText etPrice = dialogView.findViewById(R.id.etAddFoodPrice);
-        EditText etCat = dialogView.findViewById(R.id.etAddFoodCategory);
-
-        selectedFoodImageUri = null;
-        currentFoodImagePreview = ivFoodImage;
-        btnPickFoodImage.setOnClickListener(v -> pickFoodImageLauncher.launch("image/*"));
-
-        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
-                .setTitle("Add New Food")
-                .setView(dialogView)
-                .setPositiveButton("Add", null)
-                .setNegativeButton("Cancel", null)
-                .create();
-
-        dialog.setOnShowListener(d -> dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-            String name = etName.getText().toString().trim();
-            String desc = etDesc.getText().toString().trim();
-            String priceStr = etPrice.getText().toString().trim();
-            String cat = etCat.getText().toString().trim();
-
-            if (TextUtils.isEmpty(name)) {
-                etName.setError("Required");
-                return;
-            }
-            if (TextUtils.isEmpty(priceStr)) {
-                etPrice.setError("Required");
-                return;
-            }
-            double price;
-            try {
-                price = Double.parseDouble(priceStr);
-            } catch (NumberFormatException e) {
-                etPrice.setError("Invalid number");
-                return;
-            }
-            if (price <= 0) {
-                etPrice.setError("Must be > 0");
-                return;
-            }
-
-            if (selectedFoodImageUri != null) {
-                uploadFoodImageThenCreate(dialog, restaurantId, name, desc, price, cat);
-            } else {
-                createFood(dialog, restaurantId, name, desc, price, null, null, cat);
-            }
-        }));
-
-        dialog.show();
-    }
-
-    private void uploadFoodImageThenCreate(android.app.AlertDialog dialog, int restaurantId,
-                                          String name, String desc, double price, String cat) {
-        try {
-            java.io.File file = FileUtils.copyUriToCacheFile(this, selectedFoodImageUri, "food.jpg");
-            RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), file);
-            MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
-            RequestBody ctx = RequestBody.create(MediaType.parse("text/plain"), "menu_item");
-
-            apiService.uploadImage(part, ctx).enqueue(new Callback<UploadResponse>() {
-                @Override
-                public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
-                    if (isFinishing() || isDestroyed()) return;
-                    if (response.isSuccessful() && response.body() != null && !TextUtils.isEmpty(response.body().getUrl())) {
-                        createFood(dialog, restaurantId, name, desc, price,
-                                response.body().getUrl(), response.body().getPublicId(), cat);
-                    } else {
-                        String err = NetworkUtils.readError(response);
-                        AppUtils.showToast(MerchantRestaurantDetailActivity.this,
-                                err != null ? err : ("Image upload failed (" + response.code() + ")"));
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<UploadResponse> call, Throwable t) {
-                    if (isFinishing() || isDestroyed()) return;
-                    AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Image upload failed");
-                }
-            });
-        } catch (Exception e) {
-            AppUtils.showToast(this, "Image upload error");
-        }
-    }
-
-    private void createFood(android.app.AlertDialog dialog, int restaurantId, String name, String desc,
-                            double price, String imageUrl, String imagePublicId, String cat) {
-        FoodUpsertRequest req = new FoodUpsertRequest(
-                restaurantId,
-                name,
-                TextUtils.isEmpty(desc) ? null : desc,
-                price,
-                TextUtils.isEmpty(imageUrl) ? null : imageUrl,
-                TextUtils.isEmpty(imagePublicId) ? null : imagePublicId,
-                TextUtils.isEmpty(cat) ? null : cat
-        );
-
+    private void createFood(MerchantDialogHelper.FoodData d, String url) {
+        FoodUpsertRequest req = new FoodUpsertRequest(restaurantId, d.name, d.desc, d.price, url, null, d.cat);
         apiService.addFood(req).enqueue(new Callback<Food>() {
-            @Override
-            public void onResponse(Call<Food> call, Response<Food> response) {
-                if (isFinishing() || isDestroyed()) return;
-                if (response.isSuccessful() && response.body() != null) {
-                    foods.add(0, response.body());
-                    adapter.notifyItemInserted(0);
-                    dialog.dismiss();
-                    AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Added");
-                } else {
-                    AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Add failed (" + response.code() + ")");
-                }
+            @Override public void onResponse(Call<Food> call, Response<Food> response) {
+                if (response.isSuccessful()) viewModel.refresh(apiService, restaurantId);
             }
-
-            @Override
-            public void onFailure(Call<Food> call, Throwable t) {
-                if (isFinishing() || isDestroyed()) return;
-                AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Network Error");
-            }
+            @Override public void onFailure(Call<Food> call, Throwable t) {}
         });
     }
 
-    @Override
-    public void onFoodClick(Food food) {
-        new android.app.AlertDialog.Builder(this)
-                .setTitle(food.getName())
-                .setMessage("Delete this food?")
-                .setPositiveButton("Delete", (d, w) -> deleteFood(food))
-                .setNegativeButton("Cancel", null)
-                .show();
+    private void handleAddAd(MerchantDialogHelper.AdData data) {
+        if (selectedUri != null) {
+            uploadImage(selectedUri, url -> createAd(data, url));
+        } else {
+            createAd(data, data.food.getImageUrl());
+        }
     }
 
-    @Override
-    public void onAddToCartClick(Food food) {
-        // Not used in merchant mode
-    }
-
-    private void deleteFood(Food food) {
-        long id = food.getId();
-        apiService.deleteFood(id).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (isFinishing() || isDestroyed()) return;
-                if (response.isSuccessful()) {
-                    int idx = foods.indexOf(food);
-                    if (idx >= 0) {
-                        foods.remove(idx);
-                        adapter.notifyItemRemoved(idx);
-                    } else {
-                        loadFoods();
-                    }
-                    AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Deleted");
-                } else {
-                    AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Delete failed (" + response.code() + ")");
-                }
+    private void createAd(MerchantDialogHelper.AdData d, String url) {
+        LocalDateTime start = LocalDateTime.now().minusMinutes(1);
+        String startStr = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        String endStr = start.plusDays(7).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        AdUpsertRequest req = new AdUpsertRequest(url, d.title, d.desc, d.food.getId(), startStr, endStr);
+        apiService.createAd(req).enqueue(new Callback<Advertisement>() {
+            @Override public void onResponse(Call<Advertisement> call, Response<Advertisement> response) {
+                if (response.isSuccessful()) viewModel.refresh(apiService, restaurantId);
             }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                if (isFinishing() || isDestroyed()) return;
-                AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Network Error");
-            }
+            @Override public void onFailure(Call<Advertisement> call, Throwable t) {}
         });
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
+    private void uploadImage(Uri uri, OnImageUploadedListener listener) {
+        try {
+            java.io.File file = FileUtils.copyUriToCacheFile(this, uri, "upload.jpg");
+            RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
+            MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), body);
+            apiService.uploadImage(part, RequestBody.create(MediaType.parse("text/plain"), "merchant")).enqueue(new Callback<UploadResponse>() {
+                @Override public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) listener.onUploaded(response.body().getUrl());
+                }
+                @Override public void onFailure(Call<UploadResponse> call, Throwable t) {}
+            });
+        } catch (Exception e) { e.printStackTrace(); }
     }
+
+    private void logout() {
+        SessionManager.getInstance(this).logout();
+        startActivity(new Intent(this, AuthActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+    }
+
+    @Override public void onFoodClick(Food food) {
+        new android.app.AlertDialog.Builder(this).setTitle("Delete food?").setPositiveButton("Delete", (d, w) -> {
+            apiService.deleteFood(food.getId()).enqueue(new Callback<Void>() {
+                @Override public void onResponse(Call<Void> call, Response<Void> response) { viewModel.refresh(apiService, restaurantId); }
+                @Override public void onFailure(Call<Void> call, Throwable t) {}
+            });
+        }).setNegativeButton("Cancel", null).show();
+    }
+
+    @Override public void onAddToCartClick(Food food) {}
+    @Override public boolean onSupportNavigateUp() { finish(); return true; }
+
+    interface OnImageUploadedListener { void onUploaded(String url); }
 }
-

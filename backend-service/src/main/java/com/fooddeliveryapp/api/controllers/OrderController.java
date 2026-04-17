@@ -55,10 +55,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<?> updateOrderStatus(@PathVariable Long id, @RequestParam OrderStatus status) {
-        return orderRepository.findById(id).map(order -> {
-            order.setStatus(status);
-            return ResponseEntity.ok(orderRepository.save(order));
-        }).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable Long id, @RequestParam OrderStatus status) {
+        return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
     }
 }

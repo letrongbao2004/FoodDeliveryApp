@@ -16,5 +16,17 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("error", "missing multipart field: " + e.getRequestPartName()));
     }
+
+    @ExceptionHandler(com.fooddeliveryapp.api.exceptions.ResourceNotFoundException.class)
+    public ResponseEntity<?> resourceNotFound(com.fooddeliveryapp.api.exceptions.ResourceNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", e.getMessage()));
+    }
+
+    @ExceptionHandler(com.fooddeliveryapp.api.exceptions.BadRequestException.class)
+    public ResponseEntity<?> badRequest(com.fooddeliveryapp.api.exceptions.BadRequestException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", e.getMessage()));
+    }
 }
 

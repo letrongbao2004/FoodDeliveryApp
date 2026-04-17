@@ -39,4 +39,15 @@ public class BusinessHours {
 
     /** true = nghỉ cả ngày hôm đó */
     private boolean closed;
+
+    public boolean isClosed() { return closed; }
+    public void setClosed(boolean closed) { this.closed = closed; }
+    public DayOfWeek getDayOfWeek() { return dayOfWeek; }
+    public void setDayOfWeek(DayOfWeek dayOfWeek) { this.dayOfWeek = dayOfWeek; }
+    public Restaurant getRestaurant() { return restaurant; }
+    public void setRestaurant(Restaurant restaurant) { this.restaurant = restaurant; }
+    public LocalTime getOpenTime() { return openTime; }
+    public void setOpenTime(LocalTime openTime) { this.openTime = openTime; }
+    public LocalTime getCloseTime() { return closeTime; }
+    public void setCloseTime(LocalTime closeTime) { this.closeTime = closeTime; }
 }

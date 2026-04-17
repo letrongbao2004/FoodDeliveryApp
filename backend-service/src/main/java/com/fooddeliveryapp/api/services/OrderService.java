@@ -1,45 +1,45 @@
 package com.fooddeliveryapp.api.services;
 
-import com.fooddeliveryapp.api.dto.OrderDetailDto;
-import com.fooddeliveryapp.api.dto.OrderRequest;
-import com.fooddeliveryapp.api.models.Food;
-import com.fooddeliveryapp.api.models.Order;
-import com.fooddeliveryapp.api.models.OrderItem;
-import com.fooddeliveryapp.api.models.User;
-import com.fooddeliveryapp.api.models.Restaurant;
-import com.fooddeliveryapp.api.repositories.FoodRepository;
-import com.fooddeliveryapp.api.repositories.OrderRepository;
-import com.fooddeliveryapp.api.repositories.RestaurantRepository;
-import com.fooddeliveryapp.api.repositories.UserRepository;
-import lombok.extern.slf4j.Slf4j;
+import com.fooddeliveryapp.api.dto.*;
+import com.fooddeliveryapp.api.models.*;
+import com.fooddeliveryapp.api.repositories.*;
+import com.fooddeliveryapp.api.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 public class OrderService {
+    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final FoodRepository foodRepository;
     private final RestaurantRepository restaurantRepository;
     private final ChatService chatService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public OrderService(OrderRepository orderRepository, UserRepository userRepository,
                         FoodRepository foodRepository, RestaurantRepository restaurantRepository,
-                        ChatService chatService) {
+                        ChatService chatService, SimpMessagingTemplate messagingTemplate) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.foodRepository = foodRepository;
         this.restaurantRepository = restaurantRepository;
         this.chatService = chatService;
+        this.messagingTemplate = messagingTemplate;
     }
 
-    // @Transactional fixes partial updates and dangling logic
     @Transactional
     public Order placeOrder(OrderRequest request) {
         User user = userRepository.findById(request.getUserId())
@@ -51,7 +51,6 @@ public class OrderService {
                 .orElse(null);
         }
 
-        // --- BUG FIX CHÍNH: Nếu Android gửi thiếu/sai restaurantId (=0), ta tự tìm lại thông qua Món ăn đầu tiên
         if (restaurant == null && request.getItems() != null && !request.getItems().isEmpty()) {
             Long firstFoodId = request.getItems().get(0).getFoodId();
             Food firstFood = foodRepository.findById(firstFoodId).orElse(null);
@@ -64,40 +63,44 @@ public class OrderService {
         order.setUser(user);
         order.setRestaurant(restaurant);
         order.setDeliveryAddress(request.getDeliveryAddress());
-        order.setStatus(com.fooddeliveryapp.api.models.OrderStatus.ORDER_PLACED);
+        order.setStatus(OrderStatus.ORDER_PLACED);
         order.setOrderDate(new Date());
         order.setDeliveryFee(request.getDeliveryFee());
 
         double subtotal = 0;
+        List<OrderItem> items = new ArrayList<>();
 
-        List<OrderItem> items = request.getItems().stream().map(itemReq -> {
-            Food food = foodRepository.findById(itemReq.getFoodId())
-                .orElseThrow(() -> new RuntimeException("Food not found"));
-            
+        Set<Long> foodIds = request.getItems().stream()
+                .map(OrderRequest.OrderItemRequest::getFoodId)
+                .collect(Collectors.toSet());
+        
+        Map<Long, Food> foodMap = foodRepository.findAllById(foodIds).stream()
+                .collect(Collectors.toMap(Food::getId, Function.identity()));
+
+        for (OrderRequest.OrderItemRequest itemReq : request.getItems()) {
+            Food food = foodMap.get(itemReq.getFoodId());
+            if (food == null) {
+                throw new ResourceNotFoundException("Food not found: " + itemReq.getFoodId());
+            }
+
             OrderItem item = new OrderItem();
             item.setOrder(order);
             item.setFood(food);
             item.setQuantity(itemReq.getQuantity());
             item.setPrice(food.getPrice());
+            items.add(item);
 
-            return item;
-        }).collect(Collectors.toList());
-
-        for (OrderItem item : items) {
             subtotal += item.getPrice() * item.getQuantity();
-            // increment order count on the food item
-            Food food = item.getFood();
             food.setOrderCount(food.getOrderCount() + item.getQuantity());
-            foodRepository.save(food);
         }
-
+        
+        foodRepository.saveAll(foodMap.values());
         order.setItems(items);
         order.setSubtotal(subtotal);
         order.setTotal(subtotal + order.getDeliveryFee());
 
         Order saved = orderRepository.save(order);
 
-        // Tự động gửi tin nhắn xác nhận hệ thống vào Chat
         try {
             chatService.sendOrderConfirmation(user.getId(), restaurant != null ? restaurant.getId() : 0L, saved.getId());
         } catch (Exception e) {
@@ -134,5 +137,29 @@ public class OrderService {
 
         dto.setItems(itemDtos);
         return dto;
+    }
+
+    @Transactional
+    public Order updateOrderStatus(Long id, OrderStatus status) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id));
+        
+        order.setStatus(status);
+        order.setUpdatedAt(java.time.LocalDateTime.now());
+        Order saved = orderRepository.save(order);
+
+        // Broadcast update via WebSocket
+        try {
+            Map<String, Object> payload = Map.of(
+                "orderId", saved.getId(),
+                "status", status.name(),
+                "updatedAt", saved.getUpdatedAt().toString()
+            );
+            messagingTemplate.convertAndSend("/topic/order/" + saved.getId(), payload);
+        } catch (Exception e) {
+            log.error("Failed to broadcast order update over WS for order {}: {}", saved.getId(), e.getMessage());
+        }
+
+        return saved;
     }
 }

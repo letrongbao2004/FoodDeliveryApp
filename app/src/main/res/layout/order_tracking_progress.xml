@@ -3,13 +3,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="8dp">
 
-    <!-- Dividers (Lines) -->
+    <!-- Horizontal chain for dots -->
+    <View
+        android:id="@+id/dotPlaced"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:background="@drawable/circle_gray"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/dotPacked"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/dotPacked"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:background="@drawable/circle_gray"
+        app:layout_constraintStart_toEndOf="@+id/dotPlaced"
+        app:layout_constraintEnd_toStartOf="@+id/dotDelivering"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/dotDelivering"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:background="@drawable/circle_gray"
+        app:layout_constraintStart_toEndOf="@+id/dotPacked"
+        app:layout_constraintEnd_toStartOf="@+id/dotDelivered"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/dotDelivered"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:background="@drawable/circle_gray"
+        app:layout_constraintStart_toEndOf="@+id/dotDelivering"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Progress Lines -->
     <View
         android:id="@+id/line1"
         android:layout_width="0dp"
-        android:layout_height="4dp"
+        android:layout_height="3dp"
         android:background="#E0E0E0"
         app:layout_constraintTop_toTopOf="@id/dotPlaced"
         app:layout_constraintBottom_toBottomOf="@id/dotPlaced"
@@ -19,7 +57,7 @@
     <View
         android:id="@+id/line2"
         android:layout_width="0dp"
-        android:layout_height="4dp"
+        android:layout_height="3dp"
         android:background="#E0E0E0"
         app:layout_constraintTop_toTopOf="@id/dotPacked"
         app:layout_constraintBottom_toBottomOf="@id/dotPacked"
@@ -29,61 +67,22 @@
     <View
         android:id="@+id/line3"
         android:layout_width="0dp"
-        android:layout_height="4dp"
+        android:layout_height="3dp"
         android:background="#E0E0E0"
         app:layout_constraintTop_toTopOf="@id/dotDelivering"
         app:layout_constraintBottom_toBottomOf="@id/dotDelivering"
         app:layout_constraintStart_toEndOf="@id/dotDelivering"
         app:layout_constraintEnd_toStartOf="@id/dotDelivered" />
 
-    <!-- Dots -->
-    <View
-        android:id="@+id/dotPlaced"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:background="@drawable/circle_gray"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/dotPacked"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/dotPacked"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:background="@drawable/circle_gray"
-        app:layout_constraintStart_toEndOf="@+id/dotPlaced"
-        app:layout_constraintEnd_toStartOf="@+id/dotDelivering"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/dotDelivering"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:background="@drawable/circle_gray"
-        app:layout_constraintStart_toEndOf="@+id/dotPacked"
-        app:layout_constraintEnd_toStartOf="@+id/dotDelivered"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/dotDelivered"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:background="@drawable/circle_gray"
-        app:layout_constraintStart_toEndOf="@+id/dotDelivering"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Labels -->
+    <!-- Labels with better spacing -->
     <TextView
         android:id="@+id/tvPlaced"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Placed"
-        android:textSize="12sp"
+        android:textSize="10sp"
         android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         app:layout_constraintTop_toBottomOf="@id/dotPlaced"
         app:layout_constraintStart_toStartOf="@id/dotPlaced"
         app:layout_constraintEnd_toEndOf="@id/dotPlaced"/>
@@ -93,10 +92,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Packed"
-        android:textSize="12sp"
+        android:textSize="10sp"
         android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         app:layout_constraintTop_toBottomOf="@id/dotPacked"
         app:layout_constraintStart_toStartOf="@id/dotPacked"
         app:layout_constraintEnd_toEndOf="@id/dotPacked"/>
@@ -106,10 +104,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Delivering"
-        android:textSize="12sp"
+        android:textSize="10sp"
         android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         app:layout_constraintTop_toBottomOf="@id/dotDelivering"
         app:layout_constraintStart_toStartOf="@id/dotDelivering"
         app:layout_constraintEnd_toEndOf="@id/dotDelivering"/>
@@ -119,10 +116,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Delivered"
-        android:textSize="12sp"
+        android:textSize="10sp"
         android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         app:layout_constraintTop_toBottomOf="@id/dotDelivered"
         app:layout_constraintStart_toStartOf="@id/dotDelivered"
         app:layout_constraintEnd_toEndOf="@id/dotDelivered"/>

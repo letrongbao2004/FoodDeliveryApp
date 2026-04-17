@@ -44,8 +44,7 @@ public class AppUtils {
     }
 
     public static String formatPrice(double price) {
-        double priceInVnd = price * EXCHANGE_RATE_VND;
-        return formatVnd(priceInVnd);
+        return formatVnd(price);
     }
 
     public static String formatVnd(double priceInVnd) {

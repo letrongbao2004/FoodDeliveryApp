@@ -16,9 +16,15 @@
         app:navigationIconTint="@android:color/white"
         app:title="Order Detail"/>
 
-    <ScrollView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <ScrollView
+            android:id="@+id/scrollViewOrderDetail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -203,6 +209,14 @@
             </LinearLayout>
 
         </LinearLayout>
-    </ScrollView>
+        </ScrollView>
 
+        <ProgressBar
+            android:id="@+id/progressBarOrderDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="visible" />
+
+    </FrameLayout>
 </LinearLayout>

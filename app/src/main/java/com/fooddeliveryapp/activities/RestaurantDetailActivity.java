@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import com.bumptech.glide.Glide;
 import com.fooddeliveryapp.R;
@@ -54,6 +55,7 @@ public class RestaurantDetailActivity extends AppCompatActivity
     private FoodAdapter foodAdapter;
     private ViewPager2 vpAds;
     private TabLayout tabAds;
+    private CollapsingToolbarLayout collapsingToolbar;
     private AdCarouselAdapter adAdapter;
     private final List<Food> foodCache = new ArrayList<>();
 
@@ -89,6 +91,7 @@ public class RestaurantDetailActivity extends AppCompatActivity
         rvFoods = findViewById(R.id.rvFoods);
         vpAds = findViewById(R.id.vpRestaurantAdsInline);
         tabAds = findViewById(R.id.tabRestaurantAdsInlineIndicator);
+        collapsingToolbar = findViewById(R.id.collapsingToolbar);
     }
 
     private void setupAdsCarousel() {
@@ -158,7 +161,9 @@ public class RestaurantDetailActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(restaurant.getName());
+        }
+        if (collapsingToolbar != null) {
+            collapsingToolbar.setTitle(restaurant.getName());
         }
     }
 

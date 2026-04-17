@@ -53,6 +53,11 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void setFoods(List<Food> foods) {
+        this.foods = foods;
+        notifyDataSetChanged();
+    }
+
     public void setRestaurantOpen(boolean open) {
         this.isRestaurantOpen = open;
         notifyDataSetChanged();

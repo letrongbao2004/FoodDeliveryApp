@@ -36,10 +36,10 @@ public class WebSocketManager {
                         Log.i(TAG, "Stomp connection opened");
                         break;
                     case ERROR:
-                        Log.e(TAG, "Error", lifecycleEvent.getException());
+                        Log.e(TAG, "Stomp connection error! Check if server is running at: " + WS_URL, lifecycleEvent.getException());
                         break;
                     case CLOSED:
-                        Log.w(TAG, "Stomp connection closed");
+                        Log.w(TAG, "Stomp connection closed. Retrying on next action.");
                         break;
                 }
             });
