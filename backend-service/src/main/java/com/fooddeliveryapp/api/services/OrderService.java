@@ -1,7 +1,6 @@
 package com.fooddeliveryapp.api.services;
 
 import com.fooddeliveryapp.api.dto.OrderDetailDto;
-
 import com.fooddeliveryapp.api.dto.OrderRequest;
 import com.fooddeliveryapp.api.models.Food;
 import com.fooddeliveryapp.api.models.Order;
@@ -12,6 +11,8 @@ import com.fooddeliveryapp.api.repositories.FoodRepository;
 import com.fooddeliveryapp.api.repositories.OrderRepository;
 import com.fooddeliveryapp.api.repositories.RestaurantRepository;
 import com.fooddeliveryapp.api.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,18 +21,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class OrderService {
-    
+
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final FoodRepository foodRepository;
     private final RestaurantRepository restaurantRepository;
+    private final ChatService chatService;
 
-    public OrderService(OrderRepository orderRepository, UserRepository userRepository, FoodRepository foodRepository, RestaurantRepository restaurantRepository) {
+    public OrderService(OrderRepository orderRepository, UserRepository userRepository,
+                        FoodRepository foodRepository, RestaurantRepository restaurantRepository,
+                        @Lazy ChatService chatService) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.foodRepository = foodRepository;
         this.restaurantRepository = restaurantRepository;
+        this.chatService = chatService;
     }
 
     // @Transactional fixes partial updates and dangling logic
@@ -41,9 +47,18 @@ public class OrderService {
             .orElseThrow(() -> new RuntimeException("User not found"));
 
         Restaurant restaurant = null;
-        if (request.getRestaurantId() != null) {
+        if (request.getRestaurantId() != null && request.getRestaurantId() > 0) {
             restaurant = restaurantRepository.findById(request.getRestaurantId())
                 .orElse(null);
+        }
+
+        // --- BUG FIX CHÍNH: Nếu Android gửi thiếu/sai restaurantId (=0), ta tự tìm lại thông qua Món ăn đầu tiên
+        if (restaurant == null && request.getItems() != null && !request.getItems().isEmpty()) {
+            Long firstFoodId = request.getItems().get(0).getFoodId();
+            Food firstFood = foodRepository.findById(firstFoodId).orElse(null);
+            if (firstFood != null) {
+                restaurant = firstFood.getRestaurant();
+            }
         }
 
         Order order = new Order();
@@ -81,7 +96,18 @@ public class OrderService {
         order.setSubtotal(subtotal);
         order.setTotal(subtotal + order.getDeliveryFee());
 
-        return orderRepository.save(order);
+        Order saved = orderRepository.save(order);
+
+        // Send system message to chat after order is saved
+        if (restaurant != null) {
+            try {
+                chatService.sendOrderConfirmation(user.getId(), restaurant.getId(), saved.getId());
+            } catch (Exception e) {
+                log.warn("Could not send order-confirmation chat message: {}", e.getMessage());
+            }
+        }
+
+        return saved;
     }
 
     @Transactional(readOnly = true)

@@ -177,26 +177,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a3ef64de-7da1-4752-99b8-beb48d3ca1a7" name="Changes" comment="updated">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/AuthActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/AuthActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/MainActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/MerchantRestaurantDetailActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/MerchantRestaurantDetailActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/RestaurantDetailActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/activities/RestaurantDetailActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/adapters/RestaurantAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/adapters/RestaurantAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/fragments/ProfileFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/fragments/ProfileFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/models/Food.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/models/Food.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/remote/ApiClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/remote/ApiClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/remote/WebSocketManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/remote/WebSocketManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/utils/SessionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/fooddeliveryapp/utils/SessionManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_merchant_restaurant_detail.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_merchant_restaurant_detail.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_restaurant_detail.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_restaurant_detail.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/controllers/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/controllers/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/menu/bottom_nav_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/menu/bottom_nav_menu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/services/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/src/main/java/com/fooddeliveryapp/api/services/OrderService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend-service/target/backend-service-1.0.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/backend-service-1.0.0.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend-service/target/backend-service-1.0.0.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/backend-service-1.0.0.jar.original" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/controllers/AuthController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/services/OrderService$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/services/OrderService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/classes/com/fooddeliveryapp/api/services/OrderService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/backend-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,7 +206,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PhysicalDevice::serial=jn8twow4kjnrbuus]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[LocalEmulator::path=C:\Users\ADMIN\.android\avd\Medium_Phone.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -273,10 +273,13 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/letrongbao2004/FoodDeliveryApp.git&quot;,
-    &quot;accountId&quot;: &quot;c1e41c29-1d59-4d9c-a48d-66651eefe23d&quot;
+    &quot;accountId&quot;: &quot;51d8190e-d528-43df-9432-a5c6ceb48b98&quot;
   }
 }</component>
-  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="D:\AndroidStudioPackage\wrapper\dists\gradle-9.3.1-bin\23ovyewtku6u96viwx3xl3oks\gradle-9.3.1" javaHome="D:\AndroidStudio\jbr" gradleVersion="9.3.1" />
+  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="C:\Users\ADMIN\.gradle\wrapper\dists\gradle-9.3.1-bin\23ovyewtku6u96viwx3xl3oks\gradle-9.3.1" javaHome="C:\Program Files\Android\Android Studio\jbr" gradleVersion="9.3.1" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 2
@@ -332,8 +335,6 @@
       <option name="CLEAR_LOGCAT" value="false" />
       <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
       <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
-      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
-      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
       <option name="DEBUGGER_TYPE" value="Auto" />
       <Auto>
         <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />

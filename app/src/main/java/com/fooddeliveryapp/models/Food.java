@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class Food {
     private int id;
     private int restaurantId;
+    private Restaurant restaurant;
     private String name;
     private String description;
     private double price;
@@ -49,11 +50,19 @@ public class Food {
     }
 
     public int getRestaurantId() {
-        return restaurantId;
+        return restaurant != null ? restaurant.getId() : restaurantId;
     }
 
     public void setRestaurantId(int restaurantId) {
         this.restaurantId = restaurantId;
+    }
+    
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+    
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 
     public String getName() {

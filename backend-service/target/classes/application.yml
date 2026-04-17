@@ -22,10 +22,10 @@ server:
 app:
   jwt:
     # In production, set via env var: APP_JWT_SECRET
-    secret: Qm4T7vN2Kp9Xr5Ls8Hd1Zc3Ya6Wf0JjE2uB7iS9gV4tN1xC5oR8pL6kD3hZ0aF2q
-    issuer: 645545824261147
+    secret: ${APP_JWT_SECRET:dev-secret-change-me}
+    issuer: ${APP_JWT_ISSUER:food-delivery-api}
     expiresMinutes: 43200 # 30 days
 
 cloudinary:
-  url: cloudinary://645545824261147:Ag-iwCsQrpD_zMLR2oXShHp4dnY@dwowqg06t
-  folder: food-delivery
+  url: ${CLOUDINARY_URL:}
+  folder: ${CLOUDINARY_FOLDER:food-delivery}

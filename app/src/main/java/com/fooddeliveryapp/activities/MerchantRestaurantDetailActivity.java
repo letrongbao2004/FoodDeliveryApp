@@ -56,7 +56,7 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
     private TextView tvMeta;
     private TextView btnDashboard;
     private TextView btnOrders;
-    private TextView btnVouchers;
+    private TextView btnChat;
     private TextView btnEditRestaurant;
     private TextView btnMerchantLogout;
     private View btnAddFood;
@@ -107,7 +107,7 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
         tvMeta = findViewById(R.id.tvMerchantMeta);
         btnDashboard = findViewById(R.id.btnMerchantDashboard);
         btnOrders = findViewById(R.id.btnMerchantOrders);
-        btnVouchers = findViewById(R.id.btnVouchers);
+        btnChat = findViewById(R.id.btnMerchantChat);
         btnEditRestaurant = findViewById(R.id.btnEditRestaurant);
         btnMerchantLogout = findViewById(R.id.btnMerchantLogout);
         btnAddFood = findViewById(R.id.btnAddFood);
@@ -124,9 +124,7 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
         btnEditRestaurant.setOnClickListener(v -> showEditRestaurantDialog());
         btnMerchantLogout.setOnClickListener(v -> logoutMerchant());
 
-        btnVouchers.setOnClickListener(v ->
-                Toast.makeText(this, "Voucher feature is coming soon", Toast.LENGTH_SHORT).show()
-        );
+        btnChat.setOnClickListener(v -> startActivity(new Intent(this, MerchantChatListActivity.class)));
     }
 
     private void showEditRestaurantDialog() {

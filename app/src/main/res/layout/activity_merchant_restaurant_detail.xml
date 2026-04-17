@@ -96,10 +96,10 @@
                     </LinearLayout>
 
                     <TextView
-                        android:id="@+id/btnVouchers"
+                        android:id="@+id/btnMerchantChat"
                         android:layout_width="match_parent"
                         android:layout_height="44dp"
-                        android:text="Voucher (coming soon)"
+                        android:text="Chat với khách hàng"
                         android:gravity="center"
                         android:textColor="@color/white"
                         android:textStyle="bold"

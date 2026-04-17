@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import com.fooddeliveryapp.R;
 import com.fooddeliveryapp.fragments.CartFragment;
+import com.fooddeliveryapp.fragments.ChatListFragment;
 import com.fooddeliveryapp.fragments.HomeFragment;
 import com.fooddeliveryapp.fragments.OrdersFragment;
 import com.fooddeliveryapp.fragments.ProfileFragment;
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity
             fragment = new CartFragment();
         } else if (id == R.id.nav_orders) {
             fragment = new OrdersFragment();
+        } else if (id == R.id.nav_chat) {
+            fragment = new ChatListFragment();
         } else if (id == R.id.nav_profile) {
             fragment = new ProfileFragment();
         }

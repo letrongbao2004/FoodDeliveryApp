@@ -99,6 +99,17 @@
             android:exported="false"
             android:parentActivityName=".activities.MerchantRestaurantDetailActivity" />
 
+        <activity
+            android:name=".activities.ChatDetailActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:parentActivityName=".activities.MainActivity" />
+
+        <activity
+            android:name=".activities.MerchantChatListActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.MerchantRestaurantDetailActivity" />
+
     </application>
 
 </manifest>
