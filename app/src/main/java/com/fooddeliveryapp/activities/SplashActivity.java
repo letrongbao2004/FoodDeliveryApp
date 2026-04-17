@@ -8,10 +8,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.fooddeliveryapp.R;
+import com.fooddeliveryapp.utils.CrashReporter;
 import com.fooddeliveryapp.utils.SessionManager;
 
 public class SplashActivity extends AppCompatActivity {
@@ -32,6 +34,16 @@ public class SplashActivity extends AppCompatActivity {
         ivLogo.startAnimation(fadeIn);
         tvAppName.startAnimation(fadeIn);
         tvTagline.startAnimation(fadeIn);
+
+        String lastCrash = CrashReporter.consumeLastCrash(this);
+        if (lastCrash != null && !lastCrash.trim().isEmpty()) {
+            String preview = lastCrash.length() > 900 ? lastCrash.substring(0, 900) + "\n..." : lastCrash;
+            new AlertDialog.Builder(this)
+                    .setTitle("App vừa bị crash")
+                    .setMessage(preview)
+                    .setPositiveButton("Tiếp tục", null)
+                    .show();
+        }
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             SessionManager session = SessionManager.getInstance(this);

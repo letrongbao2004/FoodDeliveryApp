@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 @EnableWebSecurity
@@ -32,6 +33,10 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/upload/**", "/api/uploads/**").authenticated()
+                .requestMatchers("/api/ads/mine", "/api/ads/*/disable").authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/ads").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/ads/*").authenticated()
+                .requestMatchers(HttpMethod.PATCH, "/api/ads/*").authenticated()
                 .anyRequest().permitAll()
             )
             .exceptionHandling(ex -> ex

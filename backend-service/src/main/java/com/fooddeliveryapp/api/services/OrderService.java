@@ -12,7 +12,6 @@ import com.fooddeliveryapp.api.repositories.OrderRepository;
 import com.fooddeliveryapp.api.repositories.RestaurantRepository;
 import com.fooddeliveryapp.api.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,16 +27,13 @@ public class OrderService {
     private final UserRepository userRepository;
     private final FoodRepository foodRepository;
     private final RestaurantRepository restaurantRepository;
-    private final ChatService chatService;
 
     public OrderService(OrderRepository orderRepository, UserRepository userRepository,
-                        FoodRepository foodRepository, RestaurantRepository restaurantRepository,
-                        @Lazy ChatService chatService) {
+                        FoodRepository foodRepository, RestaurantRepository restaurantRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.foodRepository = foodRepository;
         this.restaurantRepository = restaurantRepository;
-        this.chatService = chatService;
     }
 
     // @Transactional fixes partial updates and dangling logic
@@ -97,15 +93,6 @@ public class OrderService {
         order.setTotal(subtotal + order.getDeliveryFee());
 
         Order saved = orderRepository.save(order);
-
-        // Send system message to chat after order is saved
-        if (restaurant != null) {
-            try {
-                chatService.sendOrderConfirmation(user.getId(), restaurant.getId(), saved.getId());
-            } catch (Exception e) {
-                log.warn("Could not send order-confirmation chat message: {}", e.getMessage());
-            }
-        }
 
         return saved;
     }

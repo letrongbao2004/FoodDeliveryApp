@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,14 +18,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.fooddeliveryapp.R;
+import com.fooddeliveryapp.adapters.AdCarouselAdapter;
 import com.fooddeliveryapp.adapters.FoodAdapter;
+import com.fooddeliveryapp.models.Advertisement;
 import com.fooddeliveryapp.models.Food;
 import com.fooddeliveryapp.models.Restaurant;
 import com.fooddeliveryapp.remote.ApiClient;
 import com.fooddeliveryapp.remote.ApiService;
+import com.fooddeliveryapp.remote.dto.AdUpsertRequest;
 import com.fooddeliveryapp.remote.dto.UploadResponse;
 import com.fooddeliveryapp.remote.dto.FoodUpsertRequest;
 import com.fooddeliveryapp.remote.dto.RestaurantUpsertRequest;
@@ -32,6 +37,8 @@ import com.fooddeliveryapp.utils.AppUtils;
 import com.fooddeliveryapp.utils.FileUtils;
 import com.fooddeliveryapp.utils.NetworkUtils;
 import com.fooddeliveryapp.utils.SessionManager;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,6 +46,8 @@ import retrofit2.Response;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -59,11 +68,15 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
     private TextView btnChat;
     private TextView btnEditRestaurant;
     private TextView btnMerchantLogout;
+    private View btnAddAd;
     private View btnAddFood;
     private RecyclerView rvFoods;
     private ImageView ivRestaurantHeader;
+    private ViewPager2 vpAds;
+    private TabLayout tabAds;
 
     private FoodAdapter adapter;
+    private AdCarouselAdapter adAdapter;
     private final List<Food> foods = new ArrayList<>();
 
     private Restaurant restaurant;
@@ -110,14 +123,42 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
         btnChat = findViewById(R.id.btnMerchantChat);
         btnEditRestaurant = findViewById(R.id.btnEditRestaurant);
         btnMerchantLogout = findViewById(R.id.btnMerchantLogout);
+        btnAddAd = findViewById(R.id.btnAddAd);
         btnAddFood = findViewById(R.id.btnAddFood);
         rvFoods = findViewById(R.id.rvMerchantMenuFoods);
         ivRestaurantHeader = findViewById(R.id.ivRestaurantHeader);
+        vpAds = findViewById(R.id.vpMerchantAdsInline);
+        tabAds = findViewById(R.id.tabMerchantAdsInlineIndicator);
 
         adapter = new FoodAdapter(this, foods, this, true, true);
         rvFoods.setLayoutManager(new LinearLayoutManager(this));
         rvFoods.setAdapter(adapter);
+        adAdapter = new AdCarouselAdapter(this, true, new AdCarouselAdapter.Listener() {
+            @Override
+            public void onBannerClick(Advertisement ad) {
+                // Merchant view-only.
+            }
 
+            @Override
+            public void onPrimaryCtaClick(Advertisement ad) {
+                // Merchant view-only.
+            }
+
+            @Override
+            public void onSecondaryCtaClick(Advertisement ad) {
+                // Merchant view-only.
+            }
+        });
+        if (vpAds != null) {
+            vpAds.setAdapter(adAdapter);
+            if (tabAds != null) {
+                new TabLayoutMediator(tabAds, vpAds, (tab, position) -> {}).attach();
+            }
+        }
+
+        if (btnAddAd != null) {
+            btnAddAd.setOnClickListener(v -> showAddAdDialog());
+        }
         btnAddFood.setOnClickListener(v -> showAddFoodDialog());
         btnDashboard.setOnClickListener(v -> startActivity(MerchantDashboardActivity.newIntent(this, restaurantId)));
         btnOrders.setOnClickListener(v -> startActivity(MerchantOrderHistoryActivity.newIntent(this, restaurantId)));
@@ -266,6 +307,7 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
         }
 
         loadFoods();
+        loadAds();
     }
 
     private void loadFoods() {
@@ -284,6 +326,158 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
             public void onFailure(Call<List<Food>> call, Throwable t) {
                 if (isFinishing() || isDestroyed()) return;
                 Toast.makeText(MerchantRestaurantDetailActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadAds() {
+        apiService.getAds(10).enqueue(new Callback<List<Advertisement>>() {
+            @Override
+            public void onResponse(Call<List<Advertisement>> call, Response<List<Advertisement>> response) {
+                if (isFinishing() || isDestroyed()) return;
+                if (!response.isSuccessful() || response.body() == null) return;
+                List<Advertisement> filtered = new ArrayList<>();
+                for (Advertisement ad : response.body()) {
+                    if (ad.getMenuItem() != null && ad.getMenuItem().getRestaurantId() == restaurantId) {
+                        filtered.add(ad);
+                    }
+                }
+                adAdapter.submit(filtered);
+                if (vpAds != null) {
+                    vpAds.setVisibility(filtered.isEmpty() ? View.GONE : View.VISIBLE);
+                }
+                if (tabAds != null) {
+                    tabAds.setVisibility(filtered.size() > 1 ? View.VISIBLE : View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Advertisement>> call, Throwable t) {
+                if (isFinishing() || isDestroyed()) return;
+                if (vpAds != null) vpAds.setVisibility(View.GONE);
+                if (tabAds != null) tabAds.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void showAddAdDialog() {
+        if (foods.isEmpty()) {
+            Toast.makeText(this, "Please add at least one food first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_ad, null);
+        EditText etTitle = dialogView.findViewById(R.id.etAdTitle);
+        EditText etDesc = dialogView.findViewById(R.id.etAdDescription);
+        ImageView ivAdImage = dialogView.findViewById(R.id.ivAdImage);
+        TextView btnPickAdImage = dialogView.findViewById(R.id.btnPickAdImage);
+        Spinner spFood = dialogView.findViewById(R.id.spAdFood);
+
+        List<String> foodNames = new ArrayList<>();
+        for (Food f : foods) foodNames.add(f.getName());
+        spFood.setAdapter(new android.widget.ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, foodNames));
+
+        selectedFoodImageUri = null;
+        currentFoodImagePreview = ivAdImage;
+        btnPickAdImage.setOnClickListener(v -> pickFoodImageLauncher.launch("image/*"));
+
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
+                .setTitle("Create Advertisement")
+                .setView(dialogView)
+                .setPositiveButton("Create", null)
+                .setNegativeButton("Cancel", null)
+                .create();
+
+        dialog.setOnShowListener(d -> dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String title = etTitle.getText().toString().trim();
+            String description = etDesc.getText().toString().trim();
+            Food selectedFood = foods.get(spFood.getSelectedItemPosition());
+            if (TextUtils.isEmpty(title)) {
+                etTitle.setError("Required");
+                return;
+            }
+            if (selectedFoodImageUri != null) {
+                uploadAdImageThenCreate(dialog, title, description, selectedFood);
+            } else {
+                createAd(dialog, title, description, selectedFood.getImageUrl(), selectedFood);
+            }
+        }));
+        dialog.show();
+    }
+
+    private void uploadAdImageThenCreate(android.app.AlertDialog dialog, String title, String description, Food selectedFood) {
+        try {
+            java.io.File file = FileUtils.copyUriToCacheFile(this, selectedFoodImageUri, "ad.jpg");
+            RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), file);
+            MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
+            RequestBody ctx = RequestBody.create(MediaType.parse("text/plain"), "menu_item");
+
+            apiService.uploadImage(part, ctx).enqueue(new Callback<UploadResponse>() {
+                @Override
+                public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
+                    if (isFinishing() || isDestroyed()) return;
+                    if (response.isSuccessful() && response.body() != null && !TextUtils.isEmpty(response.body().getUrl())) {
+                        createAd(dialog, title, description, response.body().getUrl(), selectedFood);
+                    } else {
+                        String err = NetworkUtils.readError(response);
+                        AppUtils.showToast(MerchantRestaurantDetailActivity.this,
+                                err != null ? err : ("Ad image upload failed (" + response.code() + ")"));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UploadResponse> call, Throwable t) {
+                    if (isFinishing() || isDestroyed()) return;
+                    AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Ad image upload failed");
+                }
+            });
+        } catch (Exception e) {
+            AppUtils.showToast(this, "Ad image upload error");
+        }
+    }
+
+    private void createAd(android.app.AlertDialog dialog, String title, String description, String imageUrl, Food selectedFood) {
+        String safeImage = TextUtils.isEmpty(imageUrl) ? "https://res.cloudinary.com/demo/image/upload/sample.jpg" : imageUrl;
+        // Start a bit earlier to avoid client/server time skew making ad "not active yet".
+        LocalDateTime start = LocalDateTime.now().minusMinutes(1).withNano(0);
+        LocalDateTime end = start.plusDays(7);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        AdUpsertRequest req = new AdUpsertRequest(
+                safeImage,
+                title,
+                TextUtils.isEmpty(description) ? null : description,
+                selectedFood.getId(),
+                start.format(formatter),
+                end.format(formatter)
+        );
+        apiService.createAd(req).enqueue(new Callback<Advertisement>() {
+            @Override
+            public void onResponse(Call<Advertisement> call, Response<Advertisement> response) {
+                if (isFinishing() || isDestroyed()) return;
+                if (response.isSuccessful()) {
+                    dialog.dismiss();
+                    AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Ad created");
+                    Advertisement created = response.body();
+                    if (created != null && created.getMenuItem() != null
+                            && created.getMenuItem().getRestaurantId() == restaurantId) {
+                        adAdapter.prepend(created);
+                        if (vpAds != null) vpAds.setVisibility(View.VISIBLE);
+                        if (tabAds != null) {
+                            tabAds.setVisibility(adAdapter.getItemCount() > 1 ? View.VISIBLE : View.GONE);
+                        }
+                        if (vpAds != null) vpAds.setCurrentItem(0, false);
+                    } else {
+                        loadAds();
+                    }
+                } else {
+                    String err = NetworkUtils.readError(response);
+                    AppUtils.showToast(MerchantRestaurantDetailActivity.this, err != null ? err : "Create ad failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Advertisement> call, Throwable t) {
+                if (isFinishing() || isDestroyed()) return;
+                AppUtils.showToast(MerchantRestaurantDetailActivity.this, "Network Error");
             }
         });
     }

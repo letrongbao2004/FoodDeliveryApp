@@ -1,11 +1,13 @@
 package com.fooddeliveryapp.remote;
 
 import com.fooddeliveryapp.models.Food;
+import com.fooddeliveryapp.models.Advertisement;
 import com.fooddeliveryapp.models.Order;
 import com.fooddeliveryapp.models.OrderDetail;
 import com.fooddeliveryapp.models.OrderRequest;
 import com.fooddeliveryapp.models.Restaurant;
 import com.fooddeliveryapp.models.User;
+import com.fooddeliveryapp.remote.dto.AdUpsertRequest;
 import com.fooddeliveryapp.remote.dto.FoodUpsertRequest;
 import com.fooddeliveryapp.remote.dto.RegisterRequest;
 import com.fooddeliveryapp.remote.dto.RestaurantUpsertRequest;
@@ -98,4 +100,20 @@ public interface ApiService {
 
     @PUT("orders/{id}/status")
     Call<Order> updateOrderStatus(@Path("id") long id, @Query("status") String status);
+
+    // ==== ADS ====
+    @GET("ads")
+    Call<List<Advertisement>> getAds(@Query("limit") int limit);
+
+    @GET("ads/mine")
+    Call<List<Advertisement>> getMyAds();
+
+    @POST("ads")
+    Call<Advertisement> createAd(@Body AdUpsertRequest request);
+
+    @PUT("ads/{id}")
+    Call<Advertisement> updateAd(@Path("id") long id, @Body AdUpsertRequest request);
+
+    @PATCH("ads/{id}/disable")
+    Call<Advertisement> disableAd(@Path("id") long id);
 }
