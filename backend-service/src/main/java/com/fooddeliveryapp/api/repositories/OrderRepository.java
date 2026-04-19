@@ -5,8 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findByUser_Id(Long userId);
+    List<Order> findByUser_IdOrderByOrderDateDesc(Long userId);
 
-    @org.springframework.data.jpa.repository.Query("SELECT DISTINCT o FROM Order o JOIN o.items i WHERE i.food.restaurant.id = :restaurantId")
-    List<Order> findByRestaurantId(@org.springframework.data.repository.query.Param("restaurantId") Long restaurantId);
+    List<Order> findByRestaurant_IdOrderByOrderDateDesc(Long restaurantId);
 }

@@ -178,15 +178,23 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
         RestaurantUpsertRequest req = new RestaurantUpsertRequest(r.getOwnerId(), r.getName(), r.getDescription(), r.getImageUrl(), null, r.getAddress(), r.getPhone(), r.getCategory());
         apiService.updateRestaurant(restaurantId, req).enqueue(new Callback<Restaurant>() {
             @Override public void onResponse(Call<Restaurant> call, Response<Restaurant> response) {
-                if (response.isSuccessful()) viewModel.refresh(apiService, restaurantId);
+                if (response.isSuccessful()) {
+                    Toast.makeText(MerchantRestaurantDetailActivity.this, "Cập nhật nhà hàng thành công", Toast.LENGTH_SHORT).show();
+                    viewModel.refresh(apiService, restaurantId);
+                } else {
+                    String error = AppUtils.parseErrorBody(response);
+                    Toast.makeText(MerchantRestaurantDetailActivity.this, "Update failed: " + error, Toast.LENGTH_SHORT).show();
+                }
             }
-            @Override public void onFailure(Call<Restaurant> call, Throwable t) { Toast.makeText(MerchantRestaurantDetailActivity.this, "Update failed", Toast.LENGTH_SHORT).show(); }
+            @Override public void onFailure(Call<Restaurant> call, Throwable t) { 
+                Toast.makeText(MerchantRestaurantDetailActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show(); 
+            }
         });
     }
 
     private void handleAddFood(MerchantDialogHelper.FoodData data) {
         if (selectedUri != null) {
-            uploadImage(selectedUri, url -> createFood(data, url));
+            uploadImage(selectedUri, "menu_item", url -> createFood(data, url));
         } else {
             createFood(data, null);
         }
@@ -196,15 +204,23 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
         FoodUpsertRequest req = new FoodUpsertRequest(restaurantId, d.name, d.desc, d.price, url, null, d.cat);
         apiService.addFood(req).enqueue(new Callback<Food>() {
             @Override public void onResponse(Call<Food> call, Response<Food> response) {
-                if (response.isSuccessful()) viewModel.refresh(apiService, restaurantId);
+                if (response.isSuccessful()) {
+                    Toast.makeText(MerchantRestaurantDetailActivity.this, "Thêm món thành công", Toast.LENGTH_SHORT).show();
+                    viewModel.refresh(apiService, restaurantId);
+                } else {
+                    String error = AppUtils.parseErrorBody(response);
+                    Toast.makeText(MerchantRestaurantDetailActivity.this, "Error: " + error, Toast.LENGTH_LONG).show();
+                }
             }
-            @Override public void onFailure(Call<Food> call, Throwable t) {}
+            @Override public void onFailure(Call<Food> call, Throwable t) {
+                Toast.makeText(MerchantRestaurantDetailActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
     private void handleAddAd(MerchantDialogHelper.AdData data) {
         if (selectedUri != null) {
-            uploadImage(selectedUri, url -> createAd(data, url));
+            uploadImage(selectedUri, "menu_item", url -> createAd(data, url));
         } else {
             createAd(data, data.food.getImageUrl());
         }
@@ -217,22 +233,37 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
         AdUpsertRequest req = new AdUpsertRequest(url, d.title, d.desc, d.food.getId(), startStr, endStr);
         apiService.createAd(req).enqueue(new Callback<Advertisement>() {
             @Override public void onResponse(Call<Advertisement> call, Response<Advertisement> response) {
-                if (response.isSuccessful()) viewModel.refresh(apiService, restaurantId);
+                if (response.isSuccessful()) {
+                    Toast.makeText(MerchantRestaurantDetailActivity.this, "Tạo quảng cáo thành công", Toast.LENGTH_SHORT).show();
+                    viewModel.refresh(apiService, restaurantId);
+                } else {
+                    String error = AppUtils.parseErrorBody(response);
+                    Toast.makeText(MerchantRestaurantDetailActivity.this, "Ad creation failed: " + error, Toast.LENGTH_SHORT).show();
+                }
             }
-            @Override public void onFailure(Call<Advertisement> call, Throwable t) {}
+            @Override public void onFailure(Call<Advertisement> call, Throwable t) {
+                Toast.makeText(MerchantRestaurantDetailActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-    private void uploadImage(Uri uri, OnImageUploadedListener listener) {
+    private void uploadImage(Uri uri, String context, OnImageUploadedListener listener) {
         try {
             java.io.File file = FileUtils.copyUriToCacheFile(this, uri, "upload.jpg");
             RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
             MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), body);
-            apiService.uploadImage(part, RequestBody.create(MediaType.parse("text/plain"), "merchant")).enqueue(new Callback<UploadResponse>() {
+            apiService.uploadImage(part, RequestBody.create(MediaType.parse("text/plain"), context)).enqueue(new Callback<UploadResponse>() {
                 @Override public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) listener.onUploaded(response.body().getUrl());
+                    if (response.isSuccessful() && response.body() != null) {
+                        listener.onUploaded(response.body().getUrl());
+                    } else {
+                        String error = AppUtils.parseErrorBody(response);
+                        Toast.makeText(MerchantRestaurantDetailActivity.this, "Upload failed: " + error, Toast.LENGTH_SHORT).show();
+                    }
                 }
-                @Override public void onFailure(Call<UploadResponse> call, Throwable t) {}
+                @Override public void onFailure(Call<UploadResponse> call, Throwable t) {
+                    Toast.makeText(MerchantRestaurantDetailActivity.this, "Upload network error", Toast.LENGTH_SHORT).show();
+                }
             });
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -245,8 +276,18 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
     @Override public void onFoodClick(Food food) {
         new android.app.AlertDialog.Builder(this).setTitle("Delete food?").setPositiveButton("Delete", (d, w) -> {
             apiService.deleteFood(food.getId()).enqueue(new Callback<Void>() {
-                @Override public void onResponse(Call<Void> call, Response<Void> response) { viewModel.refresh(apiService, restaurantId); }
-                @Override public void onFailure(Call<Void> call, Throwable t) {}
+                @Override public void onResponse(Call<Void> call, Response<Void> response) { 
+                    if (response.isSuccessful()) {
+                        Toast.makeText(MerchantRestaurantDetailActivity.this, "Xóa món thành công", Toast.LENGTH_SHORT).show();
+                        viewModel.refresh(apiService, restaurantId);
+                    } else {
+                        String error = AppUtils.parseErrorBody(response);
+                        Toast.makeText(MerchantRestaurantDetailActivity.this, "Error: " + error, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override public void onFailure(Call<Void> call, Throwable t) {
+                    Toast.makeText(MerchantRestaurantDetailActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+                }
             });
         }).setNegativeButton("Cancel", null).show();
     }

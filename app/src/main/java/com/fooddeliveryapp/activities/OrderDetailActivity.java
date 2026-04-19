@@ -205,12 +205,19 @@ public class OrderDetailActivity extends AppCompatActivity {
                 btnTrackingActionPrimary.setVisibility(View.VISIBLE);
                 btnTrackingActionPrimary.setText("Đã nhận được hàng");
                 btnTrackingActionPrimary.setOnClickListener(v -> trackingViewModel.sendStatusUpdate(OrderStatus.DELIVERED, "CUSTOMER"));
-            } else if (status == OrderStatus.ORDER_PLACED) {
+            } else if (status == OrderStatus.ORDER_PLACED || status == OrderStatus.ORDER_PACKED) {
                 btnTrackingActionPrimary.setVisibility(View.VISIBLE);
                 btnTrackingActionPrimary.setText("Hủy đơn hàng");
                 btnTrackingActionPrimary.setOnClickListener(v -> {
-                    // Logic hủy đơn có thể thêm sau
-                    AppUtils.showToast(this, "Chức năng hủy đang được phát triển");
+                    new androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setTitle("Hủy đơn hàng")
+                        .setMessage("Bạn có chắc chắn muốn hủy đơn hàng này không?")
+                        .setPositiveButton("Hủy đơn", (dialog, which) -> {
+                            trackingViewModel.sendStatusUpdate(OrderStatus.CANCELLED, "CUSTOMER");
+                            AppUtils.showToast(this, "Đang xử lý hủy đơn...");
+                        })
+                        .setNegativeButton("Quay lại", null)
+                        .show();
                 });
             }
         }

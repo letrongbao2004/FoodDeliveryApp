@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -22,10 +24,12 @@ public class Food {
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 
+    @NotBlank(message = "Tên món ăn không được để trống")
     @Column(nullable = false)
     private String name;
 
     private String description;
+    @Positive(message = "Giá món ăn phải lớn hơn 0")
     private double price;
     private String imageUrl;
     private String imagePublicId;

@@ -23,6 +23,14 @@ public class ApiExceptionHandler {
                 .body(Map.of("error", e.getMessage()));
     }
 
+    @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
+    public ResponseEntity<?> validationError(org.springframework.web.bind.MethodArgumentNotValidException e) {
+        String msg = e.getBindingResult().getFieldErrors().stream()
+                .map(org.springframework.validation.FieldError::getDefaultMessage)
+                .findFirst().orElse("Dữ liệu không hợp lệ");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", msg));
+    }
+
     @ExceptionHandler(com.fooddeliveryapp.api.exceptions.BadRequestException.class)
     public ResponseEntity<?> badRequest(com.fooddeliveryapp.api.exceptions.BadRequestException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

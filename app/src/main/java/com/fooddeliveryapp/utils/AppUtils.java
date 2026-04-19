@@ -92,4 +92,18 @@ public class AppUtils {
                 return "https://via.placeholder.com/300x200/95A5A6/FFFFFF?text=Food";
         }
     }
+
+    public static String parseErrorBody(retrofit2.Response<?> response) {
+        try {
+            if (response.errorBody() != null) {
+                String errorStr = response.errorBody().string();
+                com.google.gson.JsonObject obj = new com.google.gson.JsonParser().parse(errorStr).getAsJsonObject();
+                if (obj.has("error")) return obj.get("error").getAsString();
+                return errorStr;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "Unknown error occurred";
+    }
 }

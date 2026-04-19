@@ -30,7 +30,7 @@ public class OrderController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(orderRepository.findByUser_Id(userId));
+        return ResponseEntity.ok(orderRepository.findByUser_IdOrderByOrderDateDesc(userId));
     }
     
     @GetMapping("/{id}")
@@ -51,7 +51,7 @@ public class OrderController {
 
     @GetMapping("/restaurant/{id}")
     public ResponseEntity<List<Order>> getRestaurantOrders(@PathVariable Long id) {
-        return ResponseEntity.ok(orderRepository.findByRestaurantId(id));
+        return ResponseEntity.ok(orderRepository.findByRestaurant_IdOrderByOrderDateDesc(id));
     }
 
     @PutMapping("/{id}/status")

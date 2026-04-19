@@ -18,6 +18,7 @@ public class RegisterRequest {
     private String password;
     
     private String phone;
+    @NotBlank(message = "Địa chỉ không được để trống")
     private String address;
     private Role role;
 

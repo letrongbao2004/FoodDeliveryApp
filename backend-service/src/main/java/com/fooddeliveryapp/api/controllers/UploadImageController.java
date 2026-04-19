@@ -25,7 +25,7 @@ import java.util.Optional;
 @RequestMapping("/api/upload")
 public class UploadImageController {
 
-    private static final long MAX_BYTES = 5L * 1024 * 1024; // 5MB
+    private static final long MAX_BYTES = 15L * 1024 * 1024; // 15MB
 
     private final CloudinaryService cloudinaryService;
     private final UserRepository userRepository;
@@ -60,7 +60,7 @@ public class UploadImageController {
             return ResponseEntity.badRequest().body(java.util.Map.of("error", "file is required"));
         }
         if (file.getSize() > MAX_BYTES) {
-            return ResponseEntity.badRequest().body(java.util.Map.of("error", "file too large (max 5MB)"));
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", "file too large (max 15MB)"));
         }
         String contentType = file.getContentType();
         if (contentType == null) contentType = "";

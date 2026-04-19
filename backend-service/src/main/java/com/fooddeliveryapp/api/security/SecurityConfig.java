@@ -37,6 +37,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/ads").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/api/ads/*").authenticated()
                 .requestMatchers(HttpMethod.PATCH, "/api/ads/*").authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/foods/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/foods/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/api/foods/**").authenticated()
                 .anyRequest().permitAll()
             )
             .exceptionHandling(ex -> ex

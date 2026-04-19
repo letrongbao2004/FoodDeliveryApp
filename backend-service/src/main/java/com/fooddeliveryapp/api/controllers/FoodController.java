@@ -1,12 +1,19 @@
 package com.fooddeliveryapp.api.controllers;
 
 import com.fooddeliveryapp.api.models.Food;
+import com.fooddeliveryapp.api.models.Restaurant;
+import com.fooddeliveryapp.api.models.Role;
 import com.fooddeliveryapp.api.repositories.FoodRepository;
 import com.fooddeliveryapp.api.repositories.RestaurantRepository;
+import com.fooddeliveryapp.api.security.JwtPrincipal;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/foods")
@@ -36,18 +43,37 @@ public class FoodController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addFood(@RequestBody Food food) {
+    public ResponseEntity<?> addFood(Authentication authentication, @Valid @RequestBody Food food) {
+        JwtPrincipal principal = getPrincipal(authentication);
+        
         if (food.getRestaurant() == null || food.getRestaurant().getId() == null) {
-            return ResponseEntity.badRequest().body("restaurant.id is required");
+            return ResponseEntity.badRequest().body(Map.of("error", "restaurant.id is required"));
         }
-        // Attach managed Restaurant entity to avoid Detached entity error
-        food.setRestaurant(restaurantRepository.getReferenceById(food.getRestaurant().getId()));
+
+        Optional<Restaurant> restaurantOpt = restaurantRepository.findById(food.getRestaurant().getId());
+        if (restaurantOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Nhà hàng không tồn tại"));
+        }
+
+        Restaurant restaurant = restaurantOpt.get();
+        if (principal.role() != Role.ADMIN && !principal.userId().equals(restaurant.getOwnerId())) {
+            return ResponseEntity.status(403).body(Map.of("error", "Bạn không có quyền thêm món cho nhà hàng này"));
+        }
+
+        food.setRestaurant(restaurant);
         return ResponseEntity.ok(foodRepository.save(food));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateFood(@PathVariable Long id, @RequestBody Food updated) {
+    public ResponseEntity<?> updateFood(Authentication authentication, @PathVariable Long id, @Valid @RequestBody Food updated) {
+        JwtPrincipal principal = getPrincipal(authentication);
+        
         return foodRepository.findById(id).map(food -> {
+            Restaurant restaurant = food.getRestaurant();
+            if (principal.role() != Role.ADMIN && (restaurant == null || !principal.userId().equals(restaurant.getOwnerId()))) {
+                return ResponseEntity.status(403).body(Map.of("error", "Bạn không có quyền chỉnh sửa món ăn này"));
+            }
+
             food.setName(updated.getName());
             food.setDescription(updated.getDescription());
             food.setPrice(updated.getPrice());
@@ -58,14 +84,36 @@ public class FoodController {
             food.setBestSeller(updated.isBestSeller());
             food.setNew(updated.isNew());
             food.setRating(updated.getRating());
+            
             return ResponseEntity.ok(foodRepository.save(food));
         }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteFood(@PathVariable Long id) {
-        if (!foodRepository.existsById(id)) return ResponseEntity.notFound().build();
+    public ResponseEntity<?> deleteFood(Authentication authentication, @PathVariable Long id) {
+        JwtPrincipal principal = getPrincipal(authentication);
+        
+        Optional<Food> foodOpt = foodRepository.findById(id);
+        if (foodOpt.isEmpty()) {
+            return ResponseEntity.status(404).body(Map.of("error", "Không tìm thấy món ăn"));
+        }
+
+        Food food = foodOpt.get();
+        Restaurant restaurant = food.getRestaurant();
+        if (principal.role() != Role.ADMIN && (restaurant == null || !principal.userId().equals(restaurant.getOwnerId()))) {
+            return ResponseEntity.status(403).body(Map.of("error", "Bạn không có quyền xóa món ăn này"));
+        }
+
         foodRepository.deleteById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
+    }
+
+    private JwtPrincipal getPrincipal(Authentication auth) {
+        if (auth != null && auth.getPrincipal() instanceof JwtPrincipal p) {
+            return p;
+        }
+        throw new org.springframework.web.server.ResponseStatusException(
+            org.springframework.http.HttpStatus.UNAUTHORIZED, "Unauthorized"
+        );
     }
 }

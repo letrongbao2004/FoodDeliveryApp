@@ -14,7 +14,7 @@ public class WebSocketManager {
 
     private static final String TAG = "WebSocketManager";
     // Use host machine LAN IP for real-device testing.
-    private static final String WS_URL = "ws://192.168.1.8/ws/websocket";
+    private static final String WS_URL = "ws://192.168.1.7/ws/websocket";
 
     private WebSocketManager() {
     }

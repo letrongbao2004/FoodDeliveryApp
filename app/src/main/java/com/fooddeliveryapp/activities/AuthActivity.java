@@ -34,7 +34,7 @@ public class AuthActivity extends AppCompatActivity {
     private TextView tvGoRegister, tvMerchantLogin;
 
     // Views – Register
-    private EditText etRegName, etRegEmail, etRegPhone, etRegPassword, etRegConfirmPassword;
+    private EditText etRegName, etRegEmail, etRegPhone, etRegAddress, etRegPassword, etRegConfirmPassword;
     private android.widget.RadioGroup rgRole;
     private Button btnRegister;
     private TextView tvGoLogin;
@@ -72,6 +72,7 @@ public class AuthActivity extends AppCompatActivity {
         etRegName = findViewById(R.id.etRegName);
         etRegEmail = findViewById(R.id.etRegEmail);
         etRegPhone = findViewById(R.id.etRegPhone);
+        etRegAddress = findViewById(R.id.etRegAddress);
         etRegPassword = findViewById(R.id.etRegPassword);
         etRegConfirmPassword = findViewById(R.id.etRegConfirmPassword);
         rgRole = findViewById(R.id.rgRole);
@@ -148,12 +149,13 @@ public class AuthActivity extends AppCompatActivity {
         String name = etRegName.getText().toString().trim();
         String email = etRegEmail.getText().toString().trim();
         String phone = etRegPhone.getText().toString().trim();
+        String address = etRegAddress.getText().toString().trim();
         String pass = etRegPassword.getText().toString().trim();
         String confirm = etRegConfirmPassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) ||
-                TextUtils.isEmpty(phone) || TextUtils.isEmpty(pass)) {
-            AppUtils.showToast(this, "Please fill in all fields");
+                TextUtils.isEmpty(phone) || TextUtils.isEmpty(address) || TextUtils.isEmpty(pass)) {
+            AppUtils.showToast(this, "Please fill in all fields (Address is required)");
             return;
         }
         if (!AppUtils.isValidEmail(email)) {
@@ -178,7 +180,7 @@ public class AuthActivity extends AppCompatActivity {
                 email,
                 pass,
                 phone,
-                "", // address (optional in UI for now)
+                address,
                 role
         );
         apiService.register(request).enqueue(new Callback<Map<String, String>>() {

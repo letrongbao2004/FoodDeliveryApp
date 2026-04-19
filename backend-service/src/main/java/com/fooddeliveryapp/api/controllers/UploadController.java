@@ -15,7 +15,7 @@ import java.util.UUID;
 @RequestMapping("/api/uploads")
 public class UploadController {
 
-    private static final long MAX_BYTES = 5L * 1024 * 1024; // 5MB
+    private static final long MAX_BYTES = 15L * 1024 * 1024; // 15MB
 
     private final CloudinaryService cloudinaryService;
 
@@ -29,7 +29,7 @@ public class UploadController {
             return ResponseEntity.badRequest().body(Map.of("error", "file is required"));
         }
         if (file.getSize() > MAX_BYTES) {
-            return ResponseEntity.badRequest().body(Map.of("error", "file too large (max 5MB)"));
+            return ResponseEntity.badRequest().body(Map.of("error", "file too large (max 15MB)"));
         }
 
         String contentType = file.getContentType();

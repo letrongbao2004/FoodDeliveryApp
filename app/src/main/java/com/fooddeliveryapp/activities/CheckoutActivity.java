@@ -24,6 +24,7 @@ import android.widget.RadioGroup;
 public class CheckoutActivity extends AppCompatActivity {
 
     private TextView tvSubtotal, tvDelivery, tvTotal, btnPlaceOrder;
+    private android.widget.EditText etDeliveryAddress;
     private OrderManager orderManager;
     private SessionManager sessionManager;
     private CartManager cartManager;
@@ -38,6 +39,13 @@ public class CheckoutActivity extends AppCompatActivity {
         tvSubtotal    = findViewById(R.id.tvCheckoutSubtotal);
         tvDelivery    = findViewById(R.id.tvCheckoutDelivery);
         tvTotal       = findViewById(R.id.tvCheckoutTotal);
+        etDeliveryAddress = findViewById(R.id.etDeliveryAddress);
+
+        // Pre-fill address from session
+        String savedAddress = SessionManager.getInstance(this).getAddress();
+        if (savedAddress != null && !savedAddress.isEmpty()) {
+            etDeliveryAddress.setText(savedAddress);
+        }
 
         // Core Managers
         orderManager  = OrderManager.getInstance(this);
@@ -78,6 +86,13 @@ public class CheckoutActivity extends AppCompatActivity {
         List<CartItem> cartItems = cartManager.getCartItems(userId);
         if (cartItems == null || cartItems.isEmpty()) {
             Toast.makeText(this, "Your cart is empty!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 2.5 Delivery Address guard
+        String address = etDeliveryAddress.getText().toString().trim();
+        if (address.isEmpty()) {
+            Toast.makeText(this, "Please enter a delivery address", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -153,11 +168,8 @@ public class CheckoutActivity extends AppCompatActivity {
             }
         }
 
-        // Delivery address from user profile (fallback to default)
-        String address = sessionManager.getAddress();
-        if (address == null || address.isEmpty()) {
-            address = "Địa chỉ chưa được cài đặt";
-        }
+        // Delivery address from EditText
+        String address = etDeliveryAddress.getText().toString().trim();
 
         OrderRequest request = new OrderRequest();
         request.setUserId(userId);

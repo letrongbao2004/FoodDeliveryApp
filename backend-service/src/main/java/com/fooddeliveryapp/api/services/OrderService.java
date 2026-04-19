@@ -144,6 +144,13 @@ public class OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id));
         
+        // Cancellation logic
+        if (status == OrderStatus.CANCELLED) {
+            if (order.getStatus() != OrderStatus.ORDER_PLACED && order.getStatus() != OrderStatus.ORDER_PACKED) {
+                throw new RuntimeException("Cannot cancel order in status: " + order.getStatus());
+            }
+        }
+
         order.setStatus(status);
         order.setUpdatedAt(java.time.LocalDateTime.now());
         Order saved = orderRepository.save(order);
