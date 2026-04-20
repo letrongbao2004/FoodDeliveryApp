@@ -61,6 +61,12 @@
       <artifactId>cloudinary-http44</artifactId>
       <version>1.39.0</version>
     </dependency>
+    <!-- Redisson for Distributed Lock -->
+    <dependency>
+      <groupId>org.redisson</groupId>
+      <artifactId>redisson-spring-boot-starter</artifactId>
+      <version>3.25.2</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

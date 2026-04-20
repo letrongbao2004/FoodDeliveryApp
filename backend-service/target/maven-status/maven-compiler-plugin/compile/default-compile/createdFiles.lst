@@ -25,6 +25,7 @@ com\fooddeliveryapp\api\models\Food.class
 com\fooddeliveryapp\api\dto\ChatThreadDto.class
 com\fooddeliveryapp\api\services\ChatService.class
 com\fooddeliveryapp\api\security\JwtPrincipal.class
+com\fooddeliveryapp\api\services\DistributedLockService.class
 com\fooddeliveryapp\api\dto\OrderRequest$OrderItemRequest.class
 com\fooddeliveryapp\api\dto\OrderStatusResponse.class
 com\fooddeliveryapp\api\controllers\OrderController.class
