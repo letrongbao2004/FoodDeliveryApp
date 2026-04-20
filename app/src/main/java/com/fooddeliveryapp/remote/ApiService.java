@@ -80,6 +80,9 @@ public interface ApiService {
     @POST("foods")
     Call<Food> addFood(@Body FoodUpsertRequest request);
 
+    @PUT("foods/{id}/restock")
+    Call<Food> restockFood(@Path("id") long id, @Query("amount") int amount);
+
     @DELETE("foods/{id}")
     Call<Void> deleteFood(@Path("id") long id);
 

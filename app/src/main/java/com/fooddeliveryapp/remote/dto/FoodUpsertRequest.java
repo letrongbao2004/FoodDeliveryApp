@@ -22,6 +22,7 @@ public class FoodUpsertRequest {
 
     public double rating = 0.0;
     public int orderCount = 0;
+    public int stockQuantity = 0;
 
     public FoodUpsertRequest(long restaurantId, String name, String description, double price, String imageUrl, String imagePublicId, String category) {
         this.restaurant = new RestaurantRef(restaurantId);

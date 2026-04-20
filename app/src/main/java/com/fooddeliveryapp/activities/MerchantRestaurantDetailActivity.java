@@ -202,6 +202,7 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
 
     private void createFood(MerchantDialogHelper.FoodData d, String url) {
         FoodUpsertRequest req = new FoodUpsertRequest(restaurantId, d.name, d.desc, d.price, url, null, d.cat);
+        req.stockQuantity = d.stockQuantity;
         apiService.addFood(req).enqueue(new Callback<Food>() {
             @Override public void onResponse(Call<Food> call, Response<Food> response) {
                 if (response.isSuccessful()) {
@@ -274,22 +275,43 @@ public class MerchantRestaurantDetailActivity extends AppCompatActivity implemen
     }
 
     @Override public void onFoodClick(Food food) {
-        new android.app.AlertDialog.Builder(this).setTitle("Delete food?").setPositiveButton("Delete", (d, w) -> {
-            apiService.deleteFood(food.getId()).enqueue(new Callback<Void>() {
-                @Override public void onResponse(Call<Void> call, Response<Void> response) { 
-                    if (response.isSuccessful()) {
-                        Toast.makeText(MerchantRestaurantDetailActivity.this, "Xóa món thành công", Toast.LENGTH_SHORT).show();
-                        viewModel.refresh(apiService, restaurantId);
-                    } else {
-                        String error = AppUtils.parseErrorBody(response);
-                        Toast.makeText(MerchantRestaurantDetailActivity.this, "Error: " + error, Toast.LENGTH_SHORT).show();
-                    }
+        new android.app.AlertDialog.Builder(this)
+            .setTitle(food.getName())
+            .setItems(new String[]{"Thêm vào kho (Restock)", "Xóa món (Delete)"}, (dialog, which) -> {
+                if (which == 0) {
+                    MerchantDialogHelper.showRestockDialog(this, food, amount -> {
+                        apiService.restockFood(food.getId(), amount).enqueue(new Callback<Food>() {
+                            @Override public void onResponse(Call<Food> call, Response<Food> response) {
+                                if (response.isSuccessful()) {
+                                    Toast.makeText(MerchantRestaurantDetailActivity.this, "Cập nhật kho thành công", Toast.LENGTH_SHORT).show();
+                                    viewModel.refresh(apiService, restaurantId);
+                                } else {
+                                    Toast.makeText(MerchantRestaurantDetailActivity.this, "Lỗi: " + AppUtils.parseErrorBody(response), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            @Override public void onFailure(Call<Food> call, Throwable t) {
+                                Toast.makeText(MerchantRestaurantDetailActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    });
+                } else if (which == 1) {
+                    new android.app.AlertDialog.Builder(this).setTitle("Delete food?").setPositiveButton("Delete", (d, w) -> {
+                        apiService.deleteFood(food.getId()).enqueue(new Callback<Void>() {
+                            @Override public void onResponse(Call<Void> call, Response<Void> response) { 
+                                if (response.isSuccessful()) {
+                                    Toast.makeText(MerchantRestaurantDetailActivity.this, "Xóa món thành công", Toast.LENGTH_SHORT).show();
+                                    viewModel.refresh(apiService, restaurantId);
+                                } else {
+                                    Toast.makeText(MerchantRestaurantDetailActivity.this, "Error: " + AppUtils.parseErrorBody(response), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            @Override public void onFailure(Call<Void> call, Throwable t) {
+                                Toast.makeText(MerchantRestaurantDetailActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }).setNegativeButton("Cancel", null).show();
                 }
-                @Override public void onFailure(Call<Void> call, Throwable t) {
-                    Toast.makeText(MerchantRestaurantDetailActivity.this, "Network error", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }).setNegativeButton("Cancel", null).show();
+            }).show();
     }
 
     @Override public void onAddToCartClick(Food food) {}

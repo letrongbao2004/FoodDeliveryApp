@@ -84,6 +84,7 @@ public class FoodController {
             food.setBestSeller(updated.isBestSeller());
             food.setNew(updated.isNew());
             food.setRating(updated.getRating());
+            food.setStockQuantity(updated.getStockQuantity());
             
             return ResponseEntity.ok(foodRepository.save(food));
         }).orElse(ResponseEntity.notFound().build());
@@ -106,6 +107,21 @@ public class FoodController {
 
         foodRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/restock")
+    public ResponseEntity<?> restockFood(Authentication authentication, @PathVariable Long id, @RequestParam int amount) {
+        JwtPrincipal principal = getPrincipal(authentication);
+        
+        return foodRepository.findById(id).map(food -> {
+            Restaurant restaurant = food.getRestaurant();
+            if (principal.role() != Role.ADMIN && (restaurant == null || !principal.userId().equals(restaurant.getOwnerId()))) {
+                return ResponseEntity.status(403).body(Map.of("error", "Bạn không có quyền cập nhật món ăn này"));
+            }
+
+            food.setStockQuantity(food.getStockQuantity() + amount);
+            return ResponseEntity.ok(foodRepository.save(food));
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     private JwtPrincipal getPrincipal(Authentication auth) {

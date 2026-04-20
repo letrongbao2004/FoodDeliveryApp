@@ -139,7 +139,7 @@ public class ChatActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void subscribeToTopic() {
         String topic = "/topic/chat/" + userId + "_" + restaurantId;
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+        Gson gson = new GsonBuilder().create();
         
         compositeDisposable.add(stompClient.topic(topic).subscribe(topicMessage -> {
             ChatMessage msg = gson.fromJson(topicMessage.getPayload(), ChatMessage.class);

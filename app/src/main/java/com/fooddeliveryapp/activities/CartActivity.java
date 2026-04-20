@@ -92,7 +92,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnCar
 
     private void updateSummary() {
         double subtotal = cartManager.getSubtotal(session.getUserId());
-        double deliveryFee = 1.99;
+        double deliveryFee = 15000.0;
         double total = subtotal + deliveryFee;
         tvSubtotal.setText(AppUtils.formatPrice(subtotal));
         tvDeliveryFee.setText(AppUtils.formatPrice(deliveryFee));

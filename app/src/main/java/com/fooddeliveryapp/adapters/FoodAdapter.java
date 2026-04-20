@@ -79,6 +79,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         holder.tvDescription.setText(food.getDescription());
         holder.tvPrice.setText(food.getPriceText());
         holder.tvCategory.setText(food.getCategory());
+        holder.tvStock.setText("Kho: " + food.getStockQuantity());
 
         if (food.getImageUrl() != null && !food.getImageUrl().isEmpty()) {
             Glide.with(context).load(food.getImageUrl()).centerCrop().into(holder.ivFood);
@@ -98,6 +99,19 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
             holder.btnAddToCart.setVisibility(View.GONE);
             holder.btnAddToCart.setOnClickListener(null);
             holder.btnAddToCart.setEnabled(false);
+            return;
+        }
+
+        if (food.getStockQuantity() <= 0) {
+            holder.itemView.setAlpha(0.5f);
+            holder.itemView.setClickable(false);
+            holder.itemView.setOnClickListener(null);
+
+            holder.btnAddToCart.setEnabled(false);
+            holder.btnAddToCart.setText("Hết hàng");
+            holder.btnAddToCart.setBackgroundResource(R.drawable.bg_rounded_primary);
+            holder.btnAddToCart.getBackground().mutate().setTint(Color.parseColor("#AAAAAA"));
+            holder.btnAddToCart.setOnClickListener(null);
             return;
         }
 
@@ -149,7 +163,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivFood;
-        TextView tvName, tvDescription, tvPrice, tvCategory,
+        TextView tvName, tvDescription, tvPrice, tvCategory, tvStock,
                 tvBadgeBestSeller, tvBadgeNew, btnAddToCart;
 
         ViewHolder(View itemView) {
@@ -159,6 +173,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
             tvDescription = itemView.findViewById(R.id.tvFoodDescription);
             tvPrice = itemView.findViewById(R.id.tvFoodPrice);
             tvCategory = itemView.findViewById(R.id.tvFoodCategory);
+            tvStock = itemView.findViewById(R.id.tvFoodStock);
             tvBadgeBestSeller = itemView.findViewById(R.id.tvBadgeBestSeller);
             tvBadgeNew = itemView.findViewById(R.id.tvBadgeNew);
             btnAddToCart = itemView.findViewById(R.id.btnAddToCart);

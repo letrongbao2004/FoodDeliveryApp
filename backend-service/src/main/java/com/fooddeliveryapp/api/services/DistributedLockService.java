@@ -1,5 +1,6 @@
 package com.fooddeliveryapp.api.services;
 
+import com.fooddeliveryapp.api.exceptions.LockBusyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -19,37 +20,43 @@ public class DistributedLockService {
     /**
      * Executes the given supplier logic within a distributed lock.
      *
-     * @param lockKey    the unique key for the lock (e.g., "order:123")
-     * @param waitTime   the maximum time to acquire the lock
-     * @param leaseTime  lock lease time (automatically unlocked after this time)
-     * @param timeUnit   time unit for waitTime and leaseTime
-     * @param action     the logic to execute
-     * @param <T>        return type of the action
+     * @param lockKey   the unique key for the lock (e.g., "order:restaurant:123")
+     * @param waitTime  the maximum time to wait for acquiring the lock
+     * @param leaseTime lock lease time (auto-released after this time as a safety net)
+     * @param timeUnit  time unit for waitTime and leaseTime
+     * @param action    the logic to execute while holding the lock
+     * @param <T>       return type of the action
      * @return the result of the action
-     * @throws RuntimeException if the lock cannot be acquired or Thread is interrupted
+     * @throws LockBusyException if the lock cannot be acquired within waitTime
+     * @throws LockBusyException if the thread is interrupted while waiting
      */
-    public <T> T executeWithLock(String lockKey, long waitTime, long leaseTime, TimeUnit timeUnit, Supplier<T> action) {
+    public <T> T executeWithLock(String lockKey, long waitTime, long leaseTime,
+                                 TimeUnit timeUnit, Supplier<T> action) {
         RLock lock = redissonClient.getLock("lock:" + lockKey);
         boolean isLocked = false;
         try {
-            log.info("Attempting to acquire lock for key: {}", lockKey);
+            log.info("[DistributedLock] Acquiring lock for key: {}", lockKey);
             isLocked = lock.tryLock(waitTime, leaseTime, timeUnit);
-            
+
             if (isLocked) {
-                log.info("Successfully acquired lock for key: {}", lockKey);
+                log.info("[DistributedLock] Lock acquired for key: {}", lockKey);
                 return action.get();
             } else {
-                log.warn("Failed to acquire lock for key: {}", lockKey);
-                throw new RuntimeException("Resource is currently busy. Please try again later.");
+                log.warn("[DistributedLock] Could not acquire lock for key: {} after waiting {} {}",
+                        lockKey, waitTime, timeUnit.name().toLowerCase());
+                throw new LockBusyException(
+                        "Hệ thống đang xử lý yêu cầu tương tự. Vui lòng thử lại sau vài giây.");
             }
+        } catch (LockBusyException e) {
+            throw e; // re-throw dedicated exception as-is
         } catch (InterruptedException e) {
-            log.error("Thread was interrupted while waiting for lock: {}", lockKey, e);
+            log.error("[DistributedLock] Thread interrupted while waiting for lock: {}", lockKey, e);
             Thread.currentThread().interrupt();
-            throw new RuntimeException("Thread interrupted while waiting for lock", e);
+            throw new LockBusyException("Yêu cầu bị gián đoạn khi chờ xử lý. Vui lòng thử lại.", e);
         } finally {
             if (isLocked && lock.isHeldByCurrentThread()) {
                 lock.unlock();
-                log.info("Successfully released lock for key: {}", lockKey);
+                log.info("[DistributedLock] Lock released for key: {}", lockKey);
             }
         }
     }

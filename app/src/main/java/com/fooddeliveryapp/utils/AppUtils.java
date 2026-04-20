@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  */
 public class AppUtils {
 
-    public static final double EXCHANGE_RATE_VND = 25000.0;
+    public static final double EXCHANGE_RATE_VND = 1.0;
 
     private AppUtils() {
     }
@@ -43,8 +43,8 @@ public class AppUtils {
         return phone != null && phone.matches("\\+?[0-9]{9,13}");
     }
 
-    public static String formatPrice(double price) {
-        return formatVnd(price);
+    public static String formatPrice(double priceInUsd) {
+        return formatVnd(priceInUsd * EXCHANGE_RATE_VND);
     }
 
     public static String formatVnd(double priceInVnd) {

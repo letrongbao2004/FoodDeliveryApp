@@ -37,11 +37,16 @@
         android:background="@drawable/edittext_background" android:padding="12dp" />
     <EditText android:id="@+id/etAddFoodPrice"
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="Price (e.g. 9.99)" android:inputType="numberDecimal"
+        android:hint="Giá tiền (VNĐ) (VD: 50000)" android:inputType="number"
         android:layout_marginBottom="8dp"
         android:background="@drawable/edittext_background" android:padding="12dp" />
     <EditText android:id="@+id/etAddFoodCategory"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:hint="Category (e.g. Main)"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/edittext_background" android:padding="12dp" />
+    <EditText android:id="@+id/etAddFoodStock"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:hint="Initial Stock (e.g. 50)" android:inputType="number"
         android:background="@drawable/edittext_background" android:padding="12dp" />
 </LinearLayout>

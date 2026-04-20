@@ -40,6 +40,7 @@ public class Food {
     private boolean isNew;
     private double rating;
     private int orderCount;
+    private int stockQuantity;
 
     @Version
     private Long version;
@@ -62,6 +63,8 @@ public class Food {
     public void setCategory(String category) { this.category = category; }
     public int getOrderCount() { return orderCount; }
     public void setOrderCount(int orderCount) { this.orderCount = orderCount; }
+    public int getStockQuantity() { return stockQuantity; }
+    public void setStockQuantity(int stockQuantity) { this.stockQuantity = stockQuantity; }
     public boolean isAvailable() { return isAvailable; }
     public void setAvailable(boolean available) { isAvailable = available; }
     public boolean isBestSeller() { return isBestSeller; }
