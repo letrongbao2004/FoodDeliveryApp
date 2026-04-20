@@ -63,7 +63,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private void displayOrderSummary() {
         long userId = sessionManager.getUserId();
         double subtotal    = cartManager.getSubtotal(userId);
-        double deliveryFee = 1.99;
+        double deliveryFee = 15000.0;
         double total       = subtotal + deliveryFee;
 
         tvSubtotal.setText(AppUtils.formatPrice(subtotal));
@@ -136,14 +136,44 @@ public class CheckoutActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(String message) {
+            public void onError(String message, int httpCode) {
                 runOnUiThread(() -> {
                     if (isFinishing() || isDestroyed()) return;
                     setLoadingState(false);
-                    Toast.makeText(CheckoutActivity.this,
-                            "Transaction Failed: " + message,
-                            Toast.LENGTH_LONG).show();
+
+                    if (httpCode == 409) {
+                        // Distributed lock busy — offer retry
+                        new androidx.appcompat.app.AlertDialog.Builder(CheckoutActivity.this)
+                            .setTitle("⏳ Hệ thống đang bận")
+                            .setMessage(message)
+                            .setPositiveButton("Thử lại", (dialog, which) -> handlePlaceOrder())
+                            .setNegativeButton("Hủy", null)
+                            .show();
+
+                    } else if (httpCode == 400 && isOutOfStockError(message)) {
+                        // Out-of-stock — show dialog and return to cart
+                        new androidx.appcompat.app.AlertDialog.Builder(CheckoutActivity.this)
+                            .setTitle("😔 Hết hàng")
+                            .setMessage(message + "\n\nVui lòng quay lại giỏ hàng và điều chỉnh số lượng.")
+                            .setPositiveButton("Về giỏ hàng", (dialog, which) -> finish())
+                            .setNegativeButton("Đóng", null)
+                            .setCancelable(false)
+                            .show();
+
+                    } else {
+                        // Generic error
+                        Toast.makeText(CheckoutActivity.this,
+                                "Đặt hàng thất bại: " + message,
+                                Toast.LENGTH_LONG).show();
+                    }
                 });
+            }
+
+            /** Returns true if the server message indicates an out-of-stock condition. */
+            private boolean isOutOfStockError(String message) {
+                if (message == null) return false;
+                String lower = message.toLowerCase();
+                return lower.contains("hết") || lower.contains("không đủ") || lower.contains("out of stock");
             }
         });
     }
@@ -175,7 +205,7 @@ public class CheckoutActivity extends AppCompatActivity {
         request.setUserId(userId);
         request.setRestaurantId(restaurantId);
         request.setItems(itemRequests);
-        request.setDeliveryFee(1.99);
+        request.setDeliveryFee(15000.0);
         request.setDeliveryAddress(address);
         return request;
     }

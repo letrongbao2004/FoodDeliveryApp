@@ -5,6 +5,9 @@ import com.fooddeliveryapp.models.Order;
 import com.fooddeliveryapp.models.OrderRequest;
 import com.fooddeliveryapp.remote.ApiClient;
 import com.fooddeliveryapp.remote.ApiService;
+
+import org.json.JSONObject;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -12,8 +15,7 @@ import retrofit2.Response;
 import java.util.List;
 
 /**
- * OrderManager – handles creating and tracking orders purely through the
- * Network API.
+ * OrderManager – handles creating and tracking orders through the Network API.
  */
 public class OrderManager {
 
@@ -33,18 +35,19 @@ public class OrderManager {
 
     public interface OrderCallback {
         void onSuccess(Order order);
-
-        void onError(String message);
+        /** @param message  human-readable error from server
+         *  @param httpCode HTTP status code (400, 409, etc.) */
+        void onError(String message, int httpCode);
     }
 
     public interface OrderListCallback {
         void onSuccess(List<Order> orders);
-
         void onError(String message);
     }
 
     /**
      * Places an order completely via server.
+     * On failure, parses the JSON error body so callers receive the real message.
      */
     public void placeOrder(OrderRequest request, OrderCallback callback) {
         apiService.placeOrder(request).enqueue(new Callback<Order>() {
@@ -53,15 +56,29 @@ public class OrderManager {
                 if (response.isSuccessful() && response.body() != null) {
                     callback.onSuccess(response.body());
                 } else {
-                    callback.onError("Order Failed: Server returned " + response.code());
+                    // Parse error body from server (e.g. {"error":"..."})
+                    String serverMsg = parseErrorBody(response);
+                    callback.onError(serverMsg, response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<Order> call, Throwable t) {
-                callback.onError("Network Error: " + t.getMessage());
+                callback.onError("Lỗi kết nối: " + t.getMessage(), 0);
             }
         });
+    }
+
+    /** Reads the "error" field from the JSON error body, with safe fallback. */
+    private String parseErrorBody(Response<?> response) {
+        try {
+            if (response.errorBody() != null) {
+                String raw = response.errorBody().string();
+                JSONObject json = new JSONObject(raw);
+                if (json.has("error")) return json.getString("error");
+            }
+        } catch (Exception ignored) { }
+        return "Đặt hàng thất bại (HTTP " + response.code() + ")";
     }
 
     /**
@@ -92,12 +109,12 @@ public class OrderManager {
                 if (response.isSuccessful() && response.body() != null)
                     callback.onSuccess(response.body());
                 else
-                    callback.onError("Fail: " + response.code());
+                    callback.onError(parseErrorBody(response), response.code());
             }
 
             @Override
             public void onFailure(Call<Order> call, Throwable t) {
-                callback.onError("Network: " + t.getMessage());
+                callback.onError("Lỗi kết nối: " + t.getMessage(), 0);
             }
         });
     }
@@ -126,12 +143,12 @@ public class OrderManager {
                 if (response.isSuccessful() && response.body() != null)
                     callback.onSuccess(response.body());
                 else
-                    callback.onError("Fail: " + response.code());
+                    callback.onError(parseErrorBody(response), response.code());
             }
 
             @Override
             public void onFailure(Call<Order> call, Throwable t) {
-                callback.onError("Network: " + t.getMessage());
+                callback.onError("Lỗi kết nối: " + t.getMessage(), 0);
             }
         });
     }

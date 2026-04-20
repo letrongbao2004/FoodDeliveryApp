@@ -34,7 +34,7 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartActionLi
     private View layoutEmptyCart, layoutCartContent;
     private TextView tvSubtotal, tvTotal, btnCheckout;
 
-    private static final double DELIVERY_FEE = 1.99;
+    private static final double DELIVERY_FEE = 15000.0;
 
     @Nullable
     @Override

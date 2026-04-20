@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class ApiClient {
     // Emulator uses 10.0.2.2 to reach host machine; real devices must use host's LAN IP.
     private static final String BASE_URL_EMULATOR = "http://10.0.2.2:8080/api/";
-    private static final String BASE_URL_DEVICE = "http://192.168.0.108:8080/api/";
+    private static final String BASE_URL_DEVICE = "http://192.168.1.105:8080/api/";
     // private static final String BASE_URL_DEVICE = "http://192.168.1.7:8080/api/";
     private static Retrofit retrofit = null;
 
@@ -69,7 +69,6 @@ public class ApiClient {
                     .build();
 
             Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                     .create();
 
             retrofit = new Retrofit.Builder()

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.fooddeliveryapp.R;
 import com.fooddeliveryapp.models.CartItem;
 
@@ -49,6 +50,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.tvName.setText(item.getFood().getName());
         holder.tvPrice.setText(item.getTotalPriceText());
         holder.tvQuantity.setText(String.valueOf(item.getQuantity()));
+
+        if (item.getFood().getImageUrl() != null && !item.getFood().getImageUrl().isEmpty()) {
+            Glide.with(context).load(item.getFood().getImageUrl()).centerCrop().into(holder.ivFood);
+        } else {
+            holder.ivFood.setImageResource(R.mipmap.ic_launcher);
+        }
 
         if (item.getSelectedSize() != null && !item.getSelectedSize().isEmpty()) {
             holder.tvCustomization.setVisibility(View.VISIBLE);

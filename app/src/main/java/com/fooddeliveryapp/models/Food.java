@@ -25,6 +25,7 @@ public class Food {
 
     private double rating;
     private int orderCount;
+    private int stockQuantity;
 
     public Food() {
     }
@@ -143,6 +144,14 @@ public class Food {
 
     public void setOrderCount(int orderCount) {
         this.orderCount = orderCount;
+    }
+
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
     public String getPriceText() {

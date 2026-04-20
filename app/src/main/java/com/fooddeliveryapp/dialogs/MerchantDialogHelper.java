@@ -24,6 +24,10 @@ public class MerchantDialogHelper {
         void onSubmit(T request);
     }
 
+    public interface OnRestockListener {
+        void onRestock(int amount);
+    }
+
     public static void showEditRestaurantDialog(Context context, Restaurant restaurant, OnDialogSubmitListener<Restaurant> listener) {
         View v = LayoutInflater.from(context).inflate(R.layout.dialog_edit_restaurant, null);
         EditText etName = v.findViewById(R.id.etEditRestaurantName);
@@ -59,6 +63,7 @@ public class MerchantDialogHelper {
         EditText etDesc = v.findViewById(R.id.etAddFoodDesc);
         EditText etPrice = v.findViewById(R.id.etAddFoodPrice);
         EditText etCat = v.findViewById(R.id.etAddFoodCategory);
+        EditText etStock = v.findViewById(R.id.etAddFoodStock);
         ImageView ivPreview = v.findViewById(R.id.ivAddFoodImage);
         TextView btnPick = v.findViewById(R.id.btnPickFoodImage);
 
@@ -73,8 +78,10 @@ public class MerchantDialogHelper {
                 .setPositiveButton("Add", (d, w) -> {
                     String name = etName.getText().toString().trim();
                     String price = etPrice.getText().toString().trim();
+                    String stockStr = etStock.getText().toString().trim();
                     if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(price)) {
-                        listener.onSubmit(new FoodData(name, etDesc.getText().toString(), Double.parseDouble(price), etCat.getText().toString(), ivPreview));
+                        int stock = TextUtils.isEmpty(stockStr) ? 0 : Integer.parseInt(stockStr);
+                        listener.onSubmit(new FoodData(name, etDesc.getText().toString(), Double.parseDouble(price), etCat.getText().toString(), stock, ivPreview));
                     }
                 })
                 .setNegativeButton("Cancel", null)
@@ -111,11 +118,38 @@ public class MerchantDialogHelper {
                 .show();
     }
 
+    public static void showRestockDialog(Context context, Food food, OnRestockListener listener) {
+        View v = LayoutInflater.from(context).inflate(R.layout.dialog_add_food, null);
+        // We will just create a dynamic view to keep it simple and avoid needing a new layout file
+        EditText etAmount = new EditText(context);
+        etAmount.setHint("Amount to Add (e.g. 50)");
+        etAmount.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_SIGNED);
+        
+        android.widget.LinearLayout layout = new android.widget.LinearLayout(context);
+        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        layout.setPadding(50, 20, 50, 20);
+        layout.addView(etAmount);
+
+        new AlertDialog.Builder(context)
+                .setTitle("Restock " + food.getName())
+                .setMessage("Current stock: " + food.getStockQuantity() + "\n\nEnter amount to add:")
+                .setView(layout)
+                .setPositiveButton("Add", (d, w) -> {
+                    String amountStr = etAmount.getText().toString().trim();
+                    if (!TextUtils.isEmpty(amountStr)) {
+                        listener.onRestock(Integer.parseInt(amountStr));
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
     public static class FoodData {
         public String name, desc, cat;
         public double price;
+        public int stockQuantity;
         public ImageView preview;
-        public FoodData(String n, String d, double p, String c, ImageView v) { name=n; desc=d; price=p; cat=c; preview=v; }
+        public FoodData(String n, String d, double p, String c, int s, ImageView v) { name=n; desc=d; price=p; cat=c; stockQuantity=s; preview=v; }
     }
 
     public static class AdData {

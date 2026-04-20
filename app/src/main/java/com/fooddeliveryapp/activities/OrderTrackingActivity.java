@@ -56,7 +56,7 @@ public class OrderTrackingActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(String message) {
+            public void onError(String message, int httpCode) {
                 if (isFinishing() || isDestroyed())
                     return;
                 AppUtils.showToast(OrderTrackingActivity.this, "Order not found");
@@ -163,7 +163,7 @@ public class OrderTrackingActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(String message) {
+                    public void onError(String message, int httpCode) {
                         if (isFinishing() || isDestroyed())
                             return;
                     }
